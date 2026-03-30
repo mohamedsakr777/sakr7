@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IronForge V14.1 | SAKR OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ================= PREMIUM DARK ORANGE THEME ================= */
+        :root {
+            --bg-base: #000000; 
+            --bg-card: #111111; 
+            --bg-elevated: #222222;
+            --text-main: #ffffff; 
+            --text-sub: #8e8e93;
+            
+            --apple-blue: #ff5e00;  /* Orange Primary */
+            --apple-green: #30d158; /* Green for Success */
+            --apple-red: #ff3b30;   /* Red for Danger */
+            --apple-orange: #ff9f0a; 
+            --apple-indigo: #ff7b00; /* Lighter Orange */
+            --apple-cyan: #00bcd4;   /* Cyan for Water */
+            
+            --border: rgba(255,255,255,0.1); 
+            --radius-lg: 24px; 
+            --radius-md: 14px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; outline: none;}
+        body { background-color: var(--bg-base); color: var(--text-main); padding-bottom: 100px; overflow-x: hidden; }
+        
+        /* --- HEADER --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px 10px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #fff; font-weight: 800; background: rgba(255, 94, 0, 0.15); border: 1px solid rgba(255, 94, 0, 0.4); padding: 10px 18px; border-radius: 12px; transition: 0.2s; font-size: 0.95rem; }
+        .back-btn:active { transform: scale(0.95); background: var(--apple-blue); color:#000;}
+        .lock-badge { background: rgba(48, 209, 88, 0.15); color: var(--apple-green); border: 1px solid rgba(48, 209, 88, 0.3); padding: 6px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 800; }
+        
+        .container { padding: 16px; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .text-mono { font-family: monospace; font-weight: 900; direction: ltr; display: inline-block;}
+        h1 { font-size: 2rem; font-weight: 900; letter-spacing: 0.5px; color: var(--apple-blue); margin-bottom: 2px;}
+        h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 15px; color: var(--text-main); display: flex; align-items: center; gap: 8px;}
+        .text-sub { color: var(--text-sub); font-size: 0.85rem; font-weight: 600;}
+
+        /* --- CARDS & SEGMENTS --- */
+        .ios-card { background: var(--bg-card); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .segmented-control { display: flex; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 4px; margin-bottom: 20px; border: 1px solid var(--border);}
+        .segment { flex: 1; text-align: center; padding: 10px 0; font-size: 0.9rem; font-weight: 700; color: var(--text-sub); border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .segment.active { background: var(--apple-blue); color: #000; box-shadow: 0 3px 10px rgba(255, 94, 0, 0.4); }
+
+        /* --- PROGRESS BARS --- */
+        .macro-row { margin-bottom: 15px; }
+        .macro-header { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+        .ios-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.02);}
+        .ios-bar-fill { height: 100%; border-radius: 10px; transition: width 0.8s ease; }
+
+        /* --- INPUTS & BUTTONS --- */
+        input, select, textarea { width: 100%; background: var(--bg-elevated); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); padding: 15px; border-radius: var(--radius-md); margin-bottom: 12px; font-size: 1rem; font-weight: 600; transition: 0.3s;}
+        input:focus, select:focus { border-color: var(--apple-blue); background: rgba(255, 94, 0, 0.05);}
+        
+        .ios-btn { width: 100%; padding: 16px; border: none; border-radius: var(--radius-md); font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .ios-btn:active { transform: scale(0.96); }
+        .btn-blue { background: rgba(255, 94, 0, 0.15); color: var(--apple-blue); border: 1px solid rgba(255, 94, 0, 0.3); }
+        .btn-green { background: var(--apple-green); color: #000; box-shadow: 0 5px 15px rgba(48, 209, 88, 0.3);}
+        .btn-gray { background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);}
+        .btn-danger { background: rgba(255, 59, 48, 0.15); color: var(--apple-red); border: 1px solid rgba(255, 59, 48, 0.3); }
+
+        /* --- TAB BAR --- */
+        .tab-bar { position: fixed; bottom: 0; width: 100%; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0 25px 0; z-index: 1000; }
+        .tab-item { color: var(--text-sub); text-align: center; font-size: 0.75rem; font-weight: 700; cursor: pointer; width: 25%; transition: 0.3s; }
+        .tab-item.active { color: var(--apple-blue); transform: translateY(-2px);}
+        .tab-icon { font-size: 1.4rem; display: block; margin-bottom: 5px; }
+
+        /* --- MODALS --- */
+        .ios-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: flex-end; justify-content: center;}
+        .modal-body { background: var(--bg-card); width: 100%; max-width: 450px; max-height: 85vh; border-radius: 30px 30px 0 0; padding: 25px; overflow-y: auto; border-top: 1px solid var(--border); animation: fadeUp 0.3s ease-out;}
+        .drag-indicator { width: 50px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 20px auto; }
+
+        /* --- LISTS --- */
+        .list-item { padding: 15px; border-bottom: 1px dashed rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 14px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.02);}
+        .history-card { background: rgba(0,0,0,0.3); border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; }
+        .history-header { background: rgba(255, 94, 0, 0.1); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 800; border-bottom: 1px solid rgba(255, 94, 0, 0.2); color: var(--apple-blue);}
+        .history-body { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .macro-badge { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 900; font-family: monospace;}
+
+        /* --- WORKOUT SETS --- */
+        .set-row { display: grid; grid-template-columns: 0.5fr 1fr 1fr 0.5fr; gap: 8px; align-items: center; margin-bottom: 10px; }
+        .check-circle { width: 34px; height: 34px; border-radius: 10px; border: 2px solid var(--border); background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; margin: auto; transition: 0.3s; cursor: pointer; color: transparent;}
+        .set-row.done .check-circle { background: var(--apple-green); border-color: var(--apple-green); color: #000; }
+
+        .view { display: none; animation: slideUp 0.3s ease-out; }
+        .view.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .chk-container { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.95rem; font-weight: 700;}
+        .chk-container input { width: 22px; height: 22px; margin: 0; accent-color: var(--apple-blue); }
+
+        /* --- WATER TRACKER --- */
+        .water-grid { display: flex; justify-content: space-between; margin-top: 15px; }
+        .water-drop { width: 35px; height: 45px; border: 2px solid rgba(0, 188, 212, 0.3); border-radius: 0 50% 50% 50%; transform: rotate(45deg); cursor: pointer; transition: 0.3s; background: rgba(0,0,0,0.5);}
+        .water-drop.filled { background: var(--apple-cyan); border-color: var(--apple-cyan); box-shadow: 0 0 15px rgba(0, 188, 212, 0.4);}
+
+        /* --- TIMER --- */
+        .timer-widget { background: rgba(255, 94, 0, 0.05); border: 1px solid rgba(255, 94, 0, 0.2); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 15px; text-align: center; }
+        .timer-display { font-size: 3.5rem; font-weight: 900; color: var(--apple-blue); letter-spacing: 2px; margin: 10px 0; font-family: monospace; text-shadow: 0 5px 20px rgba(255, 94, 0, 0.3);}
+        .timer-controls { display: flex; justify-content: center; gap: 10px; }
+        .timer-btn { background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: #fff; padding: 12px 20px; border-radius: 14px; font-weight: 900; cursor: pointer; transition: 0.2s;}
+        .timer-btn:active { transform: scale(0.9); }
+
+        /* --- CHART --- */
+        .chart-container { width: 100%; height: 200px; background: rgba(0,0,0,0.3); border-radius: var(--radius-md); margin-top: 15px; position: relative; padding: 10px; border: 1px solid var(--border);}
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+        .chart-tooltip { position: absolute; background: #fff; color: #000; padding: 6px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 900; pointer-events: none; opacity: 0; transition: 0.2s; transform: translate(-50%, -100%); margin-top: -10px; font-family: monospace;}
+
+        /* --- GALLERY --- */
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .pic-card { background: #000; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border); aspect-ratio: 1;}
+        .pic-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .pic-date { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); color: var(--apple-blue); font-size: 0.65rem; padding: 4px; text-align: center; font-weight: 900; font-family: monospace;}
+        .file-upload-btn { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .file-upload-btn input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+        <div style="flex:1; text-align:center;">
+            <h1>IronForge</h1>
+            <div class="text-sub" id="sysDate">V14.1 Stable</div>
+        </div>
+        <div id="lockBadge" class="lock-badge">🟢 Active</div>
+    </div>
+
+    <div id="view-summary" class="view active container">
+        
+        <div class="segmented-control" id="carbCycleControl">
+            <div class="segment active" onclick="setCarbCycle('high')">High (عنيف)</div>
+            <div class="segment" onclick="setCarbCycle('med')">Med (متوسط)</div>
+            <div class="segment" onclick="setCarbCycle('low')">Low (راحة)</div>
+        </div>
+
+        <div class="ios-card">
+            <div class="flex-between" style="margin-bottom: 20px; align-items: flex-end;">
+                <div>
+                    <div class="text-sub">المتبقي اليوم</div>
+                    <div class="text-mono" id="ui-rem-kcal" style="font-size: 3rem; line-height: 1; color: var(--apple-green); text-shadow: 0 5px 20px rgba(48, 209, 88, 0.3);">0</div>
+                </div>
+                <div style="text-align: left;">
+                    <div class="text-sub">الهدف: <span id="ui-goal-kcal" class="text-mono" style="color:#fff;">0</span></div>
+                    <div class="text-sub">حرق: <span id="ui-burn-kcal" class="text-mono" style="color:var(--apple-orange);">0</span></div>
+                </div>
+            </div>
+            
+            <div class="macro-row"><div class="macro-header"><span style="color: var(--apple-blue);">البروتين</span><span class="text-mono" id="ui-pro-text">0 / 0g</span></div><div class="ios-bar-bg"><div class="ios-bar-fill" id="ui-pro-bar" style="background: var(--apple-blue); width: 0%;"></div></div></div>
+            <div class="macro-row"><div class="macro-header"><span style="color: var(--gold);">الكارب</span><span class="text-mono" id="ui-carb-text">0 / 0g</span></div><div class="ios-bar-bg"><div class="ios-bar-fill" id="ui-carb-bar" style="background: var(--gold); width: 0%;"></div></div></div>
+            <div class="macro-row"><div class="macro-header"><span style="color: var(--apple-red);">الدهون</span><span class="text-mono" id="ui-fat-text">0 / 0g</span></div><div class="ios-bar-bg"><div class="ios-bar-fill" id="ui-fat-bar" style="background: var(--apple-red); width: 0%;"></div></div></div>
+        </div>
+
+        <div class="ios-card" style="border-color: rgba(0, 188, 212, 0.3);">
+            <div class="flex-between"><h2 style="margin:0; color: var(--apple-cyan);"><i class="fas fa-tint"></i> الترطيب</h2><span class="text-mono" id="ui-water-text" style="color: var(--apple-cyan);">0 / 4L</span></div>
+            <div class="water-grid" id="waterGrid"></div>
+        </div>
+
+        <div class="ios-card">
+            <div class="flex-between" style="margin-bottom: 15px;"><h2><i class="fas fa-utensils txt-accent"></i> سجل الوجبات</h2><span class="text-mono" id="ui-food-total" style="color:var(--gold); font-size:1.1rem;">0 Kcal</span></div>
+            <div id="foodListContainer"></div>
+            <div class="flex-between" style="gap: 10px; margin-top: 16px;">
+                <button class="ios-btn btn-gray" style="margin: 0;" onclick="openModal('modalFood')">+ طعام فردي</button>
+                <button class="ios-btn btn-blue" style="margin: 0;" onclick="renderGroupModal('food')"><i class="fas fa-box"></i> + وجبة جاهزة</button>
+            </div>
+        </div>
+
+        <button class="ios-btn btn-danger" id="btnLock" onclick="toggleDayLock()"><i class="fas fa-lock"></i> قفل وتشفير اليوم</button>
+    </div>
+
+    <div id="view-train" class="view container">
+        <div class="timer-widget">
+            <div class="text-sub" style="color: #fff; font-weight:800;">⏳ وقت الراحة المتبقي</div>
+            <div class="timer-display" id="timerDisplay">00:00</div>
+            <div class="timer-controls">
+                <button class="timer-btn" onclick="startTimer(60)">60s</button>
+                <button class="timer-btn" onclick="startTimer(90)">90s</button>
+                <button class="timer-btn" onclick="startTimer(120)">120s</button>
+                <button class="timer-btn" style="background: rgba(255, 59, 48, 0.2); color:var(--apple-red); border-color:var(--apple-red);" onclick="stopTimer()">Stop</button>
+            </div>
+        </div>
+
+        <div class="ios-card flex-between" style="background: rgba(255, 94, 0, 0.05); border-color: rgba(255, 94, 0, 0.3);">
+            <div>
+                <div class="text-sub" style="color: var(--apple-blue); font-weight:800;">الحجم التدريبي (Volume)</div>
+                <div class="text-mono" id="ui-volume" style="font-size: 2.2rem; color:#fff;">0 <span style="font-size:1rem; color:var(--text-sub);">kg</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="ios-btn btn-gray" style="padding: 10px 15px; margin:0; font-size: 0.85rem;" onclick="openModal('modalEx')">+ إضافة تمرين</button>
+                <button class="ios-btn btn-blue" style="padding: 10px 15px; margin:0; font-size: 0.85rem;" onclick="renderGroupModal('ex')"><i class="fas fa-clipboard-list"></i> + روتين جاهز</button>
+            </div>
+        </div>
+        <div id="workoutContainer"></div>
+    </div>
+
+    <div id="view-progress" class="view container">
+        <div class="ios-card">
+            <h2><i class="fas fa-weight" style="color:var(--apple-blue);"></i> متتبع الوزن (Project 88)</h2>
+            <div class="flex-between" style="gap: 10px;">
+                <input type="number" step="0.1" id="inpWeight" placeholder="وزن اليوم (Kg)" style="margin:0; text-align:center;">
+                <button class="ios-btn btn-green" style="margin:0; width: 40%;" onclick="logWeight()">تسجيل ✔</button>
+            </div>
+            <div class="chart-container">
+                <div class="text-sub" style="position: absolute; top: 10px; left: 10px; font-weight:800;">منحنى الوزن (آخر 7)</div>
+                <svg class="chart-svg" id="weightChart"></svg>
+                <div class="chart-tooltip" id="chartTooltip">--</div>
+            </div>
+            <div class="flex-between" style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
+                <div><div class="text-sub">آخر مسجل</div><div class="text-mono" id="ui-last-weight" style="font-size: 1.5rem; color:#fff;">--</div></div>
+                <div style="text-align: left;"><div class="text-sub">متوسط 7 أيام</div><div class="text-mono" id="ui-avg-weight" style="font-size: 1.5rem; color: var(--gold);">--</div></div>
+            </div>
+        </div>
+
+        <div class="ios-card">
+            <h2><i class="fas fa-ruler txt-orange"></i> قياسات الجسم (cm)</h2>
+            <div class="measure-grid">
+                <input type="number" id="inpBelly" placeholder="البطن">
+                <input type="number" id="inpNeck" placeholder="الرقبة">
+                <input type="number" id="inpArm" placeholder="الذراع">
+                <input type="number" id="inpThigh" placeholder="الفخذ">
+            </div>
+            <button class="ios-btn btn-blue" onclick="logMeasurements()">حفظ القياسات</button>
+            <div id="latestMeasurements" style="margin-top:10px; font-size: 0.85rem; color: var(--text-sub); text-align: center; font-weight:800;">
+                لا توجد قياسات مسجلة.
+            </div>
+        </div>
+
+        <div class="ios-card">
+            <h2><i class="fas fa-camera" style="color:var(--apple-indigo);"></i> التوثيق الشهري (الصور)</h2>
+            <div class="file-upload-btn ios-btn btn-gray" style="margin:0; border:1px dashed var(--border);">
+                <span style="color:var(--text-sub);"><i class="fas fa-plus"></i> إضافة صورة لتاريخ اليوم</span>
+                <input type="file" accept="image/*" onchange="handleImageUpload(event)">
+            </div>
+            <div class="gallery-grid" id="progressGallery"></div>
+        </div>
+
+        <h2 style="margin-top: 25px;"><i class="fas fa-history txt-gold"></i> السجل الشامل (Ledger)</h2>
+        <div id="historyLedgerContainer"></div>
+    </div>
+
+    <div id="view-db" class="view container">
+        
+        <div class="ios-card" style="border-color: rgba(255, 183, 0, 0.3);">
+            <h2 style="color: var(--gold);"><i class="fas fa-bullseye"></i> إعدادات الماكروز</h2>
+            <select id="targetModeSelect" onchange="loadTargetSettings()" style="margin-bottom: 15px; text-align:center;">
+                <option value="high">High Carb (تمرين عنيف)</option>
+                <option value="med">Medium Carb (متوسط/كارديو)</option>
+                <option value="low">Low Carb (راحة)</option>
+            </select>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <input type="number" id="targetKcal" placeholder="Kcal" style="text-align:center; margin:0;">
+                <input type="number" id="targetPro" placeholder="Pro" style="text-align:center; margin:0;">
+                <input type="number" id="targetCarb" placeholder="Carb" style="text-align:center; margin:0;">
+                <input type="number" id="targetFat" placeholder="Fat" style="text-align:center; margin:0;">
+            </div>
+            <button class="ios-btn" style="background: rgba(255, 183, 0, 0.15); color: var(--gold); border: 1px solid rgba(255, 183, 0, 0.3); margin-top: 10px;" onclick="saveTargetSettings()">تحديث الأهداف</button>
+        </div>
+
+        <div class="ios-card" style="border-color: rgba(255, 94, 0, 0.3);">
+            <h2 style="color: var(--apple-blue);"><i class="fas fa-layer-group"></i> الروتينات والقوالب</h2>
+            <div class="flex-between" style="gap: 10px;">
+                <button class="ios-btn btn-gray" style="margin:0;" onclick="openGroupMaker('food')">+ قالب وجبة</button>
+                <button class="ios-btn btn-gray" style="margin:0;" onclick="openGroupMaker('ex')">+ روتين تمرين</button>
+            </div>
+        </div>
+
+        <div class="ios-card">
+            <h2 style="color: var(--apple-green);"><i class="fas fa-apple-alt"></i> قاعدة الطعام</h2>
+            <input type="text" id="dbF-name" placeholder="اسم الأكلة (مثال: صدور دجاج)">
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="dbF-p" placeholder="Pro">
+                <input type="number" id="dbF-c" placeholder="Carb">
+                <input type="number" id="dbF-f" placeholder="Fat">
+            </div>
+            <button class="ios-btn btn-green" onclick="saveFoodDB()">حفظ في القاعدة ✔</button>
+            <div class="mini-db-list" id="dbFoodListUI"></div>
+        </div>
+
+        <div class="ios-card">
+            <h2 style="color: var(--purple);"><i class="fas fa-running"></i> قاعدة التمارين</h2>
+            <input type="text" id="dbE-name" placeholder="اسم التمرين (مثال: Bench Press)">
+            <button class="ios-btn" style="background: rgba(191, 90, 242, 0.15); color: var(--purple); border: 1px solid rgba(191, 90, 242, 0.3);" onclick="saveExDB()">حفظ التمرين ✔</button>
+            <div class="mini-db-list" id="dbExListUI"></div>
+        </div>
+
+        <div class="ios-card" style="border-color: rgba(48, 209, 88, 0.3);">
+            <h2 style="color: var(--apple-green);"><i class="fas fa-shield-alt"></i> أمان البيانات (Backup)</h2>
+            <p class="text-sub" style="margin-bottom: 15px;">احتفظ بنسخة من بياناتك لتجنب فقدانها.</p>
+            <button class="ios-btn" style="background:var(--apple-green); color:#000;" onclick="exportBackup()"><i class="fas fa-download"></i> تحميل ملف النسخة</button>
+            <button class="ios-btn btn-gray" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> استرجاع من ملف</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importBackup(event)">
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <div class="tab-item active" onclick="switchTab('summary', this)"><span class="tab-icon"><i class="fas fa-fire"></i></span><span>الدايت</span></div>
+        <div class="tab-item" onclick="switchTab('train', this)"><span class="tab-icon"><i class="fas fa-dumbbell"></i></span><span>الحديد</span></div>
+        <div class="tab-item" onclick="switchTab('progress', this)"><span class="tab-icon"><i class="fas fa-chart-line"></i></span><span>التطور</span></div>
+        <div class="tab-item" onclick="switchTab('db', this)"><span class="tab-icon"><i class="fas fa-database"></i></span><span>القاعدة</span></div>
+    </div>
+
+    <div class="ios-modal" id="modalFood"><div class="modal-body"><div class="drag-indicator"></div><h2 style="color:var(--apple-blue);"><i class="fas fa-utensils"></i> اختر طعام لليوم</h2><div id="modalFoodItems"></div><button class="ios-btn btn-gray" style="margin-top:20px;" onclick="closeModal('modalFood')">إغلاق</button></div></div>
+    <div class="ios-modal" id="modalEx"><div class="modal-body"><div class="drag-indicator"></div><h2 style="color:var(--apple-blue);"><i class="fas fa-running"></i> اختر تمرين</h2><div id="modalExItems"></div><button class="ios-btn btn-gray" style="margin-top:20px;" onclick="closeModal('modalEx')">إغلاق</button></div></div>
+    <div class="ios-modal" id="modalGroups"><div class="modal-body"><div class="drag-indicator"></div><h2 id="modalGroupTitle" style="color:var(--gold);">اختر قالب جاهز</h2><div id="modalGroupItems"></div><button class="ios-btn btn-gray" style="margin-top:20px;" onclick="closeModal('modalGroups')">إغلاق</button></div></div>
+    
+    <div class="ios-modal" id="modalCreateGroup">
+        <div class="modal-body">
+            <div class="drag-indicator"></div>
+            <h2 id="buildGroupTitle" style="color:var(--gold);">إنشاء قالب جديد</h2>
+            <input type="text" id="groupNameInp" placeholder="اسم القالب (مثال: فطار، روتين صدر)...">
+            <div id="groupChecklist" style="margin-bottom: 20px; max-height: 250px; overflow-y: auto; padding-right:5px;"></div>
+            <button class="ios-btn btn-blue" onclick="saveGroup()">حفظ القالب</button>
+            <button class="ios-btn btn-gray" onclick="closeModal('modalCreateGroup')">إلغاء</button>
+        </div>
+    </div>
+
+    <script>
+        // --- SAFE TIME & DB ---
+        function getLocalYMD() {
+            let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            return d.toISOString().split('T')[0];
+        }
+        const TODAY = getLocalYMD();
+        
+        function getSafeJSON(key, defaultVal) { 
+            try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } 
+            catch(e) { return defaultVal; } 
+        }
+
+        let DB = { foodDB: [], exDB: [], mealGroups: [], routines: [], history: {}, settings: {}, measurements: {}, progressPics: [] };
+        let currentGroupType = ''; 
+        let timerInterval; let timeLeft = 0;
+
+        // --- INIT ---
+        window.onload = function() {
+            let saved = localStorage.getItem('IronForge_V13_ORANGE'); 
+            if (saved) { 
+                try { DB = JSON.parse(saved); } catch(e) { console.error("Parse error"); }
+            } 
+            
+            if(DB.foodDB === undefined || DB.foodDB.length === 0) {
+                DB.foodDB = [ { id: 1, name: "صدور دجاج (100g)", p: 31, c: 0, f: 3, kcal: 165 }, { id: 2, name: "أرز مسلوق (100g)", p: 2, c: 28, f: 0, kcal: 130 } ];
+            }
+            if(DB.exDB === undefined || DB.exDB.length === 0) {
+                DB.exDB = [ { id: 1, name: "Deadlift" }, { id: 2, name: "Squat" } ];
+            }
+
+            // Fallback object initialization (Crash Protection)
+            if(!DB.mealGroups) DB.mealGroups = []; if(!DB.routines) DB.routines = []; if(!DB.settings) DB.settings = {};
+            if(!DB.measurements) DB.measurements = {}; if(!DB.progressPics) DB.progressPics = [];
+            
+            if(!DB.settings.targets) {
+                DB.settings.targets = {
+                    high: { kcal: 2400, p: 180, c: 250, f: 65, label: "High Carb" },
+                    med:  { kcal: 2100, p: 180, c: 150, f: 75, label: "Medium Carb" },
+                    low:  { kcal: 1800, p: 180, c: 80,  f: 85, label: "Low Carb" }
+                };
+            }
+
+            if (!DB.history[TODAY]) { DB.history[TODAY] = { locked: false, carbCycle: 'high', weight: null, water: 0, foodLog: [], workoutLog: [] }; }
+            
+            loadTargetSettings(); syncCarbCycleUI(); updateDashboard(); renderForge(); renderProgressLedger(); renderDBLists(); renderWaterTracker();
+            renderMeasurementsUI(); renderProgressPics();
+        }
+
+        // --- MASTER REPORT SYNC ---
+        function syncToMasterReport() {
+            let stats = getDailyStats(TODAY);
+            if(!stats) return;
+
+            let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {});
+            if(!masterDB[TODAY]) masterDB[TODAY] = {};
+
+            masterDB[TODAY].cals = stats.cons.kcal;
+            masterDB[TODAY].macros = { p: stats.cons.p, c: stats.cons.c, f: stats.cons.f };
+            if(DB.history[TODAY].weight) { masterDB[TODAY].weight = DB.history[TODAY].weight; }
+            
+            localStorage.setItem('SakrOS_MasterReport_V1', JSON.stringify(masterDB));
+        }
+
+        function saveDB() { 
+            localStorage.setItem('IronForge_V13_ORANGE', JSON.stringify(DB)); 
+            syncToMasterReport(); 
+        }
+
+        // --- UI NAVIGATION ---
+        function switchTab(viewId, element) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active'); element.classList.add('active');
+            window.scrollTo(0,0);
+            if(viewId === 'progress') { renderProgressLedger(); drawWeightChart(); renderMeasurementsUI(); renderProgressPics(); }
+            if(viewId === 'db') renderDBLists();
+        }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; if(id === 'modalFood') renderModalList('food'); if(id === 'modalEx') renderModalList('ex'); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // --- MEASUREMENTS & PICS ---
+        function logMeasurements() {
+            let belly = document.getElementById('inpBelly').value; let neck = document.getElementById('inpNeck').value;
+            let arm = document.getElementById('inpArm').value; let thigh = document.getElementById('inpThigh').value;
+            if(!belly && !neck && !arm && !thigh) return;
+            DB.measurements[TODAY] = { belly, neck, arm, thigh };
+            saveDB(); renderMeasurementsUI(); alert('تم حفظ القياسات بنجاح!');
+        }
+        function renderMeasurementsUI() {
+            let latestDate = Object.keys(DB.measurements).sort((a,b) => b.localeCompare(a))[0];
+            let ui = document.getElementById('latestMeasurements');
+            if(latestDate) {
+                let m = DB.measurements[latestDate];
+                ui.innerHTML = `آخر قياس (${latestDate}): <br> بطن: ${m.belly||'--'} | رقبة: ${m.neck||'--'} | ذراع: ${m.arm||'--'} | فخذ: ${m.thigh||'--'}`;
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0]; if(!file) return;
+            if(DB.progressPics.length >= 24) { alert("وصلت للحد الأقصى للصور (24). امسح القديم أولاً."); return; }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas'); const MAX_WIDTH = 400; const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    DB.progressPics.push({ date: TODAY, src: compressedBase64, id: Date.now() });
+                    saveDB(); renderProgressPics();
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+        function renderProgressPics() {
+            const gallery = document.getElementById('progressGallery'); gallery.innerHTML = '';
+            if(DB.progressPics.length === 0) { gallery.innerHTML = `<div class="text-sub" style="grid-column: span 3; text-align:center; padding:20px;">لم يتم رفع صور بعد.</div>`; return; }
+            [...DB.progressPics].reverse().forEach(pic => {
+                gallery.innerHTML += `<div class="pic-card"><span style="position:absolute; top:5px; right:5px; background:rgba(255,59,48,0.9); color:#fff; padding:2px 8px; border-radius:8px; cursor:pointer; font-weight:bold; z-index:10;" onclick="deletePic(${pic.id})">×</span><img src="${pic.src}"><div class="pic-date">${pic.date}</div></div>`;
+            });
+        }
+        function deletePic(id) { if(confirm("مسح هذه الصورة؟")) { DB.progressPics = DB.progressPics.filter(p => p.id !== id); saveDB(); renderProgressPics(); } }
+
+        // --- TIMER ---
+        function startTimer(seconds) {
+            clearInterval(timerInterval); timeLeft = seconds; updateTimerUI();
+            document.querySelector('.timer-widget').style.borderColor = 'var(--apple-green)'; document.getElementById('timerDisplay').style.color = 'var(--apple-green)';
+            timerInterval = setInterval(() => {
+                timeLeft--; updateTimerUI();
+                if(timeLeft <= 0) { clearInterval(timerInterval); 
+                    document.querySelector('.timer-widget').style.borderColor = 'var(--apple-red)'; document.getElementById('timerDisplay').style.color = 'var(--apple-red)'; document.getElementById('timerDisplay').innerText = "DONE!"; 
+                    if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                }
+            }, 1000);
+        }
+        function stopTimer() { clearInterval(timerInterval); timeLeft = 0; updateTimerUI(); document.querySelector('.timer-widget').style.borderColor = 'var(--apple-blue)'; document.getElementById('timerDisplay').style.color = 'var(--apple-blue)'; }
+        function updateTimerUI() {
+            if(timeLeft <= 0 && document.getElementById('timerDisplay').innerText !== "DONE!") { document.getElementById('timerDisplay').innerText = "00:00"; return; }
+            if(timeLeft > 0) { let m = Math.floor(timeLeft/60); let s = timeLeft%60; document.getElementById('timerDisplay').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`; }
+        }
+
+        // --- WATER ---
+        function renderWaterTracker() {
+            const grid = document.getElementById('waterGrid'); grid.innerHTML = '';
+            let current = DB.history[TODAY].water || 0; 
+            document.getElementById('ui-water-text').innerText = `${current * 0.5} / 4L`;
+            for(let i=1; i<=8; i++) { let fillClass = i <= current ? 'filled' : ''; grid.innerHTML += `<div class="water-drop ${fillClass}" onclick="toggleWater(${i})"></div>`; }
+        }
+        function toggleWater(index) {
+            if(DB.history[TODAY].locked) return;
+            if(DB.history[TODAY].water === index) DB.history[TODAY].water = index - 1; else DB.history[TODAY].water = index;
+            saveDB(); renderWaterTracker();
+        }
+
+        // --- TARGETS ---
+        function loadTargetSettings() {
+            let mode = document.getElementById('targetModeSelect').value; let t = DB.settings.targets[mode];
+            document.getElementById('targetKcal').value = t.kcal; document.getElementById('targetPro').value = t.p; document.getElementById('targetCarb').value = t.c; document.getElementById('targetFat').value = t.f;
+        }
+        function saveTargetSettings() {
+            let mode = document.getElementById('targetModeSelect').value;
+            DB.settings.targets[mode].kcal = parseInt(document.getElementById('targetKcal').value)||0; DB.settings.targets[mode].p = parseInt(document.getElementById('targetPro').value)||0; DB.settings.targets[mode].c = parseInt(document.getElementById('targetCarb').value)||0; DB.settings.targets[mode].f = parseInt(document.getElementById('targetFat').value)||0;
+            saveDB(); updateDashboard(); alert("تم التحديث!");
+        }
+
+        // --- GROUPS ---
+        function openGroupMaker(type) {
+            currentGroupType = type; document.getElementById('buildGroupTitle').innerText = type === 'food' ? 'إنشاء قالب وجبة' : 'إنشاء روتين تمرين'; document.getElementById('groupNameInp').value = '';
+            const list = document.getElementById('groupChecklist'); list.innerHTML = ''; let dbArr = type === 'food' ? DB.foodDB : DB.exDB;
+            dbArr.forEach(item => { let sub = type === 'food' ? `${item.kcal} kcal` : ''; list.innerHTML += `<div class="list-item"><label class="chk-container"><input type="checkbox" value="${item.id}" class="group-chk"><div><div style="font-weight:bold; color:#fff;">${item.name}</div><div class="text-sub">${sub}</div></div></label></div>`; });
+            openModal('modalCreateGroup');
+        }
+        function saveGroup() {
+            let name = document.getElementById('groupNameInp').value; if(!name) return alert("الرجاء كتابة اسم القالب");
+            let checkedIds = Array.from(document.querySelectorAll('.group-chk:checked')).map(cb => parseInt(cb.value));
+            if(checkedIds.length === 0) return alert("اختر عنصر واحد على الأقل");
+            if(currentGroupType === 'food') DB.mealGroups.push({ id: Date.now(), name: name, items: checkedIds }); else DB.routines.push({ id: Date.now(), name: name, items: checkedIds });
+            saveDB(); closeModal('modalCreateGroup'); alert("تم الحفظ!");
+        }
+        function renderGroupModal(type) {
+            document.getElementById('modalGroupTitle').innerText = type === 'food' ? 'اختر قالب وجبة' : 'اختر روتين تمرين';
+            const list = document.getElementById('modalGroupItems'); list.innerHTML = ''; let arr = type === 'food' ? DB.mealGroups : DB.routines;
+            if(arr.length===0) list.innerHTML = `<div class="text-sub" style="text-align:center; padding: 20px;">لا يوجد قوالب محفوظة.</div>`;
+            arr.forEach(g => { list.innerHTML += `<div class="list-item" style="cursor:pointer;" onclick="applyGroup('${type}', ${g.id})"><div><div style="font-weight:bold; color:#fff;">${g.name}</div><div class="text-sub">${g.items.length} عناصر</div></div><div style="color:var(--apple-blue); font-weight:900; font-size:1.5rem;">+</div></div>`; });
+            openModal('modalGroups');
+        }
+        function applyGroup(type, id) {
+            if(DB.history[TODAY].locked) return alert("اليوم مغلق."); let group = (type === 'food' ? DB.mealGroups : DB.routines).find(g => g.id === id); if(!group) return;
+            group.items.forEach(itemId => { let uid = Date.now() + Math.floor(Math.random()*1000).toString(); if(type === 'food') DB.history[TODAY].foodLog.push({ uid: uid, id: itemId }); else DB.history[TODAY].workoutLog.push({ uid: uid, id: itemId, sets: [] }); });
+            saveDB(); updateDashboard(); renderForge(); closeModal('modalGroups');
+        }
+
+        // --- DASHBOARD (SAFE DATA HANDLING) ---
+        function syncCarbCycleUI() {
+            let mode = DB.history[TODAY].carbCycle || 'high'; document.querySelectorAll('.segment').forEach(s => s.classList.remove('active'));
+            if(mode==='high') document.querySelectorAll('.segment')[0].classList.add('active'); if(mode==='med') document.querySelectorAll('.segment')[1].classList.add('active'); if(mode==='low') document.querySelectorAll('.segment')[2].classList.add('active');
+        }
+        function setCarbCycle(mode) { if(DB.history[TODAY].locked) return; DB.history[TODAY].carbCycle = mode; saveDB(); syncCarbCycleUI(); updateDashboard(); }
+        
+        function getDailyStats(dateStr) {
+            let day = DB.history[dateStr]; if(!day) return null; let cons = { kcal:0, p:0, c:0, f:0 };
+            
+            (day.foodLog || []).forEach(f => { let dbItem = DB.foodDB.find(x => x.id === f.id); if(dbItem) { cons.kcal += dbItem.kcal; cons.p += dbItem.p; cons.c += dbItem.c; cons.f += dbItem.f; } });
+            
+            let burned = 0; let vol = 0; let setsDone = 0;
+            (day.workoutLog || []).forEach(w => { (w.sets || []).forEach(s => { if(s.done) { burned += 15; vol += (s.kg * s.reps); setsDone++; } }); });
+            
+            let target = DB.settings.targets[day.carbCycle || 'high']; return { cons, burned, vol, setsDone, target, isLocked: day.locked, typeLabel: target.label };
+        }
+
+        function updateDashboard() {
+            let stats = getDailyStats(TODAY); let day = DB.history[TODAY];
+            
+            // LOCK LOGIC
+            let btnLock = document.getElementById('btnLock');
+            if(stats.isLocked) {
+                document.getElementById('lockBadge').innerText = '🔒 Locked'; document.getElementById('lockBadge').style.color = 'var(--apple-red)';
+                btnLock.innerHTML = '<i class="fas fa-lock-open"></i> فتح اليوم لتعديل البيانات'; btnLock.className = 'ios-btn btn-gray';
+            } else {
+                document.getElementById('lockBadge').innerText = '🟢 Active'; document.getElementById('lockBadge').style.color = 'var(--apple-green)';
+                btnLock.innerHTML = '<i class="fas fa-lock"></i> قفل وتشفير اليوم'; btnLock.className = 'ios-btn btn-danger';
+            }
+            document.getElementById('carbCycleControl').style.pointerEvents = stats.isLocked ? 'none' : 'auto';
+
+            let remKcal = (stats.target.kcal - stats.cons.kcal) + stats.burned;
+            document.getElementById('ui-goal-kcal').innerText = stats.target.kcal; document.getElementById('ui-burn-kcal').innerText = stats.burned; document.getElementById('ui-food-total').innerText = `${stats.cons.kcal} Kcal`;
+            document.getElementById('ui-rem-kcal').innerText = Math.round(remKcal); document.getElementById('ui-rem-kcal').style.color = remKcal < 0 ? 'var(--apple-red)' : 'var(--apple-green)';
+
+            const updateBar = (id, current, max, color) => { document.getElementById(`ui-${id}-text`).innerText = `${current} / ${max}g`; let pct = max>0 ? (current/max)*100 : 0; document.getElementById(`ui-${id}-bar`).style.width = `${Math.min(pct,100)}%`; document.getElementById(`ui-${id}-bar`).style.background = pct>100 ? 'var(--apple-red)' : `var(${color})`; };
+            updateBar('pro', stats.cons.p, stats.target.p, '--cyan'); updateBar('carb', stats.cons.c, stats.target.c, '--gold'); updateBar('fat', stats.cons.f, stats.target.f, '--red');
+
+            const list = document.getElementById('foodListContainer'); list.innerHTML = '';
+            (day.foodLog || []).forEach(entry => {
+                let dbItem = DB.foodDB.find(x => x.id === entry.id); if(!dbItem) return;
+                list.innerHTML += `<div class="list-item"><div><div style="font-weight:800; color:#fff;">${dbItem.name}</div><div class="text-sub">P:${dbItem.p} • C:${dbItem.c} • F:${dbItem.f}</div></div><div class="flex-between" style="gap:15px;"><span class="text-mono" style="color:var(--gold); font-size:1.1rem;">${dbItem.kcal}</span>${!stats.isLocked ? `<span style="color:var(--apple-red); font-size:1.5rem; cursor:pointer; background:rgba(255,59,48,0.1); width:30px; height:30px; border-radius:8px; display:flex; justify-content:center; align-items:center;" onclick="delFood('${entry.uid}')">×</span>` : ''}</div></div>`;
+            });
+        }
+
+        // --- LOGGING / EDITING (SAFE UID STRINGS) ---
+        function renderModalList(type) {
+            const list = document.getElementById(type === 'food' ? 'modalFoodItems' : 'modalExItems'); list.innerHTML = ''; let dbArr = type === 'food' ? DB.foodDB : DB.exDB;
+            dbArr.forEach(item => { let sub = type === 'food' ? `${item.kcal} Kcal` : ''; list.innerHTML += `<div class="list-item" style="cursor:pointer;" onclick="addItem('${type}', ${item.id})"><div><div style="font-weight:800; color:#fff;">${item.name}</div><div class="text-sub">${sub}</div></div><div style="color:var(--apple-blue); font-weight:900; font-size:1.5rem;">+</div></div>`; });
+        }
+        function addItem(type, id) { 
+            if(DB.history[TODAY].locked) return; 
+            let uid = Date.now() + Math.floor(Math.random()*1000).toString();
+            if(type === 'food') { DB.history[TODAY].foodLog = DB.history[TODAY].foodLog || []; DB.history[TODAY].foodLog.push({ uid: uid, id: id }); }
+            if(type === 'ex') { DB.history[TODAY].workoutLog = DB.history[TODAY].workoutLog || []; DB.history[TODAY].workoutLog.push({ uid: uid, id: id, sets: [] }); }
+            saveDB(); updateDashboard(); renderForge(); closeModal(type === 'food' ? 'modalFood' : 'modalEx'); 
+        }
+        function delFood(uid) { DB.history[TODAY].foodLog = DB.history[TODAY].foodLog.filter(f => String(f.uid) !== String(uid)); saveDB(); updateDashboard(); }
+
+        function renderForge() {
+            const container = document.getElementById('workoutContainer'); container.innerHTML = ''; let day = DB.history[TODAY]; let isLocked = day.locked; let vol = 0;
+            (day.workoutLog || []).forEach((w, wIdx) => {
+                let dbEx = DB.exDB.find(x => x.id === w.id); let setsHtml = '';
+                (w.sets || []).forEach((s, sIdx) => {
+                    if(s.done) vol += (s.kg * s.reps); let disabled = isLocked ? 'disabled' : '';
+                    setsHtml += `<div class="set-row ${s.done ? 'done' : ''}"><div style="font-family:monospace; color:var(--text-sub); font-weight:bold;">${sIdx + 1}</div><input type="number" placeholder="Kg" value="${s.kg}" onchange="updateSet('${w.uid}',${sIdx},'kg',this.value)" ${disabled} style="margin:0; text-align:center;"><input type="number" placeholder="Reps" value="${s.reps}" onchange="updateSet('${w.uid}',${sIdx},'reps',this.value)" ${disabled} style="margin:0; text-align:center;"><div class="check-circle" onclick="${isLocked ? '' : `toggleSet('${w.uid}',${sIdx})`}"><i class="fas fa-check"></i></div></div>`;
+                });
+                container.innerHTML += `<div class="ios-card"><div class="flex-between" style="margin-bottom:15px;"><h2 style="margin:0; border:none; color:var(--cyan);">${dbEx ? dbEx.name : 'Unknown'}</h2><div style="display:flex; gap:10px;">${!isLocked ? `<div style="background:rgba(0, 188, 212, 0.1); color:var(--cyan); padding:4px 10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.8rem;" onclick="addSet('${w.uid}')">+ Add Set</div>` : ''}${!isLocked ? `<div style="background:rgba(255, 59, 48, 0.1); color:var(--apple-red); padding:4px 10px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.8rem;" onclick="delEx('${w.uid}')"><i class="fas fa-trash"></i></div>` : ''}</div></div><div class="set-row text-sub" style="margin-bottom:8px; text-align:center;"><div>Set</div><div>Kg</div><div>Reps</div><div>Done</div></div>${setsHtml}</div>`;
+            });
+            document.getElementById('ui-volume').innerHTML = `${vol} <span style="font-size:1rem; color:var(--text-sub);">kg</span>`; updateDashboard();
+        }
+        function addSet(uid) { let w = DB.history[TODAY].workoutLog.find(x => String(x.uid) === String(uid)); if(!w) return; let last = w.sets[w.sets.length-1]; w.sets.push({ kg: last ? last.kg : '', reps: last ? last.reps : '', done: false }); saveDB(); renderForge(); }
+        function updateSet(uid, sIdx, f, v) { let w = DB.history[TODAY].workoutLog.find(x => String(x.uid) === String(uid)); if(!w) return; w.sets[sIdx][f] = parseFloat(v) || 0; saveDB(); updateDashboard(); }
+        function toggleSet(uid, sIdx) { let w = DB.history[TODAY].workoutLog.find(x => String(x.uid) === String(uid)); if(!w) return; w.sets[sIdx].done = !w.sets[sIdx].done; saveDB(); renderForge(); }
+        function delEx(uid) { if(confirm('حذف هذا التمرين من سجل اليوم؟')) { DB.history[TODAY].workoutLog = DB.history[TODAY].workoutLog.filter(w => String(w.uid) !== String(uid)); saveDB(); renderForge(); } }
+
+        // --- PROGRESS ---
+        function logWeight() { let val = parseFloat(document.getElementById('inpWeight').value); if(!val) return; DB.history[TODAY].weight = val; saveDB(); document.getElementById('inpWeight').value = ''; renderProgressLedger(); drawWeightChart(); }
+        function drawWeightChart() {
+            const svg = document.getElementById('weightChart'); const tooltip = document.getElementById('chartTooltip'); svg.innerHTML = '';
+            let dates = Object.keys(DB.history).sort((a,b) => a.localeCompare(b)); let weightData = []; dates.forEach(d => { if(DB.history[d].weight) weightData.push({ date: d, weight: DB.history[d].weight }); });
+            weightData = weightData.slice(-7); if(weightData.length < 2) { svg.innerHTML = '<text x="50%" y="50%" fill="var(--text-secondary)" text-anchor="middle" font-size="0.8rem" font-weight="bold">سجل وزنين على الأقل للرسم</text>'; return; }
+            let maxW = Math.max(...weightData.map(d=>d.weight))+2; let minW = Math.min(...weightData.map(d=>d.weight))-2; let range = maxW - minW;
+            let w = svg.clientWidth || 300; let h = 180; let points = ""; let circles = "";
+            weightData.forEach((d, i) => {
+                let x = (i/(weightData.length-1))*(w-20)+10; let y = h - ((d.weight-minW)/range)*(h-20)-10; points += `${x},${y} `;
+                circles += `<circle cx="${x}" cy="${y}" r="5" fill="#000" stroke="var(--cyan)" stroke-width="3" style="cursor:pointer;" onmouseenter="showChartTooltip(event, '${d.weight} kg', '${d.date}')" onmouseleave="hideChartTooltip()" ontouchstart="showChartTooltip(event, '${d.weight} kg', '${d.date}')"/>`;
+            });
+            svg.innerHTML = `<polyline points="${points}" fill="none" stroke="var(--cyan)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0px 5px 10px rgba(0, 188, 212, 0.4));" />` + circles;
+        }
+        window.showChartTooltip = function(e, val, date) { const t = document.getElementById('chartTooltip'); t.innerText = `${val} \n ${date.substring(5)}`; t.style.left = e.target.getAttribute('cx')+'px'; t.style.top = (parseFloat(e.target.getAttribute('cy'))+15)+'px'; t.style.opacity = 1; }
+        window.hideChartTooltip = function() { document.getElementById('chartTooltip').style.opacity = 0; }
+        
+        function renderProgressLedger() {
+            let dates = Object.keys(DB.history).sort((a,b) => b.localeCompare(a)); let lastWeight = "--"; let sumWeight = 0; let countWeight = 0;
+            for(let i=0; i<Math.min(7, dates.length); i++) { let w = DB.history[dates[i]].weight; if(w) { if(lastWeight === "--") lastWeight = w; sumWeight += w; countWeight++; } }
+            document.getElementById('ui-last-weight').innerText = lastWeight; document.getElementById('ui-avg-weight').innerText = countWeight > 0 ? (sumWeight/countWeight).toFixed(1) : "--";
+            
+            const ledger = document.getElementById('historyLedgerContainer'); ledger.innerHTML = '';
+            dates.forEach(dateStr => {
+                let stats = getDailyStats(dateStr); if(!stats) return; let colorLabel = (stats.cons.kcal/stats.target.kcal)>1.05 ? 'var(--apple-red)' : '#fff';
+                let workoutBadge = stats.setsDone > 0 ? `<span style="background:rgba(0, 188, 212, 0.15); color:var(--cyan); padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:900;">🏋️‍♂️ Vol: ${stats.vol}kg</span>` : `<span style="background:rgba(255,255,255,0.05); color:var(--text-sub); padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:900;">🛋️ Rest Day</span>`;
+                ledger.innerHTML += `<div class="history-card"><div class="history-header"><span style="color:#fff;">${dateStr}</span><span style="color:var(--gold);">${stats.typeLabel}</span></div><div class="history-body"><div><div style="font-size:1.3rem; font-weight:900; color:${colorLabel}; font-family:monospace;">${stats.cons.kcal} <span style="font-size:0.75rem; color:var(--text-sub);">/ ${stats.target.kcal} Kcal</span></div><div style="display:flex; gap:10px; margin-top:8px;"><span class="macro-badge" style="color:var(--cyan);">P:${stats.cons.p}</span><span class="macro-badge" style="color:var(--gold);">C:${stats.cons.c}</span><span class="macro-badge" style="color:var(--apple-red);">F:${stats.cons.f}</span></div></div><div style="text-align:right;">${workoutBadge}${DB.history[dateStr].weight ? `<div style="margin-top:10px; font-size:0.9rem; color:#fff; font-weight:900;">⚖️ ${DB.history[dateStr].weight} kg</div>` : ''}</div></div></div>`;
+            });
+        }
+
+        // --- DB OPS ---
+        function saveFoodDB() { let name = document.getElementById('dbF-name').value; let p = parseFloat(document.getElementById('dbF-p').value)||0; let c = parseFloat(document.getElementById('dbF-c').value)||0; let f = parseFloat(document.getElementById('dbF-f').value)||0; if(!name) return; DB.foodDB.unshift({ id: Date.now(), name, p, c, f, kcal: (p*4 + c*4 + f*9) }); saveDB(); renderDBLists(); document.querySelectorAll('input[id^="dbF"]').forEach(i=>i.value=''); }
+        function saveExDB() { let name = document.getElementById('dbE-name').value; if(!name) return; DB.exDB.unshift({ id: Date.now(), name }); saveDB(); renderDBLists(); document.getElementById('dbE-name').value=''; }
+        function renderDBLists() {
+            const fList = document.getElementById('dbFoodListUI'); const eList = document.getElementById('dbExListUI'); fList.innerHTML = ''; eList.innerHTML = '';
+            DB.foodDB.forEach(f => { fList.innerHTML += `<div class="mini-db-item"><div><div style="font-weight:800; color:#fff;">${f.name}</div><div class="text-sub">${f.kcal} kcal</div></div><button style="background:rgba(255,59,48,0.1); border:none; color:var(--apple-red); width:30px; height:30px; border-radius:8px; cursor:pointer;" onclick="deleteFromDB('food', ${f.id})"><i class="fas fa-trash"></i></button></div>`; });
+            DB.exDB.forEach(e => { eList.innerHTML += `<div class="mini-db-item"><div style="font-weight:800; color:#fff;">${e.name}</div><button style="background:rgba(255,59,48,0.1); border:none; color:var(--apple-red); width:30px; height:30px; border-radius:8px; cursor:pointer;" onclick="deleteFromDB('ex', ${e.id})"><i class="fas fa-trash"></i></button></div>`; });
+        }
+        function deleteFromDB(type, id) { if(!confirm("حذف العنصر نهائياً؟")) return; if(type === 'food') DB.foodDB = DB.foodDB.filter(x => x.id !== id); else DB.exDB = DB.exDB.filter(x => x.id !== id); saveDB(); renderDBLists(); }
+
+        // --- LOCK ---
+        function toggleDayLock() {
+            DB.history[TODAY].locked = !DB.history[TODAY].locked;
+            saveDB(); updateDashboard(); renderForge(); renderWaterTracker(); window.scrollTo(0,0);
+        }
+
+        // --- EXPORT / IMPORT ---
+        function exportBackup() {
+            const blob = new Blob([JSON.stringify(DB)], {type:"application/json"});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `IronForge_Backup_${TODAY}.json`;
+            document.body.appendChild(a); a.click(); a.remove();
+        }
+        function importBackup(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if(imported.history) {
+                        if(confirm('سيتم استبدال قاعدة البيانات الحالية بالكامل. هل أنت متأكد؟')) {
+                            DB = imported; saveDB(); alert("تم استرجاع البيانات بنجاح! 🦅"); location.reload();
+                        }
+                    } else { alert("الملف غير صالح للاسترجاع."); }
+                } catch(err) { alert("حدث خطأ أثناء قراءة الملف."); }
+            };
+            reader.readAsText(file);
+        }
+
+        window.addEventListener('resize', () => { if(document.getElementById('view-progress').classList.contains('active')) drawWeightChart(); });
+    </script>
+</body>
+</html>

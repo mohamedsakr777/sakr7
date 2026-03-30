@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAKR OS | AlterEgo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <meta name="theme-color" content="#0B1021">
+
+    <style>
+        /* ================= DEEP NAVY THEME (AlterEgo V16.1) ================= */
+        :root {
+            --bg-main: #060913;      
+            --card-bg: rgba(27, 35, 65, 0.7);      
+            --card-hover: rgba(35, 44, 80, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --text-main: #ffffff; 
+            --text-sub: rgba(255, 255, 255, 0.6);
+            
+            --apple-eng: #ff5e00;  /* English Orange */
+            --apple-ita: #cc0000;  /* Italian Red */
+            --apple-red: #ff3b30; 
+            --apple-orange: #ff9f0a; 
+            --apple-teal: #00bcd4;   
+            --apple-yellow: #ffd60a;
+            
+            --radius-lg: 24px; 
+            --radius-md: 14px;
+            
+            --theme-color: var(--apple-eng); 
+            --theme-bg: rgba(255, 94, 0, 0.15);
+            
+            --font: 'Cairo', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); -webkit-tap-highlight-color: transparent; outline: none;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-main); padding-bottom: 100px; overflow-x: hidden; transition: 0.4s; 
+            background-image: 
+                radial-gradient(circle at 10% 10%, var(--theme-bg), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(0, 188, 212, 0.05), transparent 50%);
+        }
+        
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* --- HEADER & BACK BTN --- */
+        .header-top { display: flex; align-items: center; padding: 20px; gap: 15px; animation: fadeUp 0.5s ease-out forwards; }
+        .back-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: #fff; width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; text-decoration: none;}
+        .back-btn:active { transform: scale(0.9); background: var(--theme-color); color: #000; border-color: var(--theme-color);}
+        
+        .header-info h1 { font-size: 1.8rem; font-weight: 900; line-height: 1.1; color: #fff; margin:0;}
+        .cefr-tag { font-size:0.7rem; color:#000; background:#ffffff; padding:2px 8px; border-radius:10px; vertical-align: middle; margin-right: 5px; font-weight: 900;}
+
+        .container { padding: 0 16px; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .text-mono { font-family: -apple-system, BlinkMacSystemFont, monospace; }
+        h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; color: var(--text-main); display: flex; align-items: center; gap: 8px;}
+        .text-sub { color: var(--text-sub); font-size: 0.85rem; line-height: 1.5;}
+
+        /* --- LANG TOGGLE --- */
+        .lang-toggle { display: flex; background: rgba(0,0,0,0.5); border-radius: 16px; padding: 5px; margin-bottom: 15px; border: 1px solid var(--border); animation: fadeUp 0.5s ease-out forwards; opacity: 0; animation-delay: 0.1s;}
+        .lang-seg { flex: 1; text-align: center; padding: 12px 0; font-size: 0.9rem; font-weight: 800; color: var(--text-sub); border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .lang-seg.active { color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
+        .lang-seg.eng.active { background: var(--apple-eng); } 
+        .lang-seg.ita.active { background: var(--apple-ita); }
+
+        /* --- IOS CARDS --- */
+        .ios-card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; animation: fadeUp 0.5s ease-out forwards; opacity: 0; animation-delay: 0.15s;}
+        
+        textarea, input[type="number"], input[type="text"] { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: var(--text-main); padding: 15px; border-radius: var(--radius-md); margin-bottom: 12px; font-size: 1rem; font-weight: 600; resize: none; line-height: 1.5; transition: 0.3s;}
+        textarea:focus, input:focus { outline: none; border-color: var(--theme-color); background: rgba(0,0,0,0.6); }
+        textarea.ltr { direction: ltr; font-family: -apple-system, sans-serif; font-size: 1.05rem;}
+
+        .ios-btn { width: 100%; padding: 15px; border: none; border-radius: var(--radius-md); font-weight: 900; font-size: 0.95rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px;}
+        .ios-btn:active { transform: scale(0.96); }
+        .btn-theme { background: var(--theme-color); color: #fff; margin-top: 5px; box-shadow: 0 5px 15px var(--theme-bg);}
+        .btn-ai { background: rgba(255,255,255,0.05); color: var(--theme-color); border: 1px solid var(--border); padding: 12px; }
+        .icon-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.2s; color: #fff;}
+        .icon-btn:active { transform: scale(0.9); background: var(--theme-color); border-color: var(--theme-color); color: #000;}
+
+        /* --- TAB BAR --- */
+        .tab-bar { position: fixed; bottom: 0; width: 100%; background: rgba(6, 9, 19, 0.9); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0 25px 0; z-index: 1000; }
+        .tab-item { color: var(--text-sub); text-align: center; font-size: 0.75rem; font-weight: 800; cursor: pointer; width: 25%; transition: 0.3s; position: relative;}
+        .tab-item.active { color: var(--theme-color); transform: translateY(-3px);}
+        .tab-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+        
+        .view { display: none; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .view.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- DASHBOARD UI --- */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;}
+        .streak-card { background: linear-gradient(135deg, var(--theme-bg), rgba(0,0,0,0.5)); border: 1px solid var(--theme-color); border-radius: 20px; padding: 15px; text-align: center; display: flex; flex-direction: column; justify-content: center;}
+        .streak-num { font-size: 2.8rem; font-weight: 900; color: #ffffff; line-height: 1; font-family: monospace;}
+        .streak-label { font-size: 0.8rem; font-weight: 800; color: var(--theme-color); text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;}
+        .rings-card { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 20px; padding: 15px; display: flex; justify-content: center; align-items: center; position: relative;}
+        
+        .ring-svg { width: 90px; height: 90px; transform: rotate(-90deg); }
+        .ring-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 8; stroke-linecap: round; }
+        .ring-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .ring-red { stroke: var(--theme-color); stroke-dasharray: 226; stroke-dashoffset: 226; } 
+        .ring-green { stroke: #ffffff; stroke-dasharray: 163; stroke-dashoffset: 163; } 
+        .ring-blue { stroke: rgba(255,255,255,0.3); stroke-dasharray: 100; stroke-dashoffset: 100; } 
+        
+        .exp-float { position: absolute; color: var(--apple-yellow); font-weight: 900; font-size: 1.2rem; pointer-events: none; animation: floatUp 1s forwards; z-index: 3000; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
+
+        /* --- MATRIX --- */
+        .matrix-card { border: 2px solid var(--theme-color); margin-top: 10px; transition: 0.3s; background: rgba(0,0,0,0.5);}
+        .bomb-bar-container { width: 100%; height: 6px; background: rgba(0,0,0,0.5); position: absolute; top: 0; left: 0;}
+        .bomb-bar-fill { height: 100%; background: var(--theme-color); width: 100%; transition: width 1s linear; }
+        .native-text { font-size: 1.1rem; font-weight: 800; color: #fff; line-height: 1.6; padding-right: 5px;}
+        .target-text { font-size: 1.2rem; line-height: 1.8; direction: ltr; font-family: -apple-system, sans-serif; color: var(--text-sub); margin-top: 20px;}
+        .blank-input { width: auto; min-width: 80px; max-width: 150px; background: rgba(0,0,0,0.5); border: 2px solid var(--border); border-radius: 8px; color: #fff; padding: 4px 8px; font-size: 1.1rem; font-weight: 900; text-align: center; margin: 0 4px; transition: 0.3s;}
+        .blank-input:focus { border-color: var(--theme-color); background: rgba(255,255,255,0.05);}
+        .blank-input.correct { border-color: var(--green) !important; color: var(--green) !important; background: rgba(48, 209, 88, 0.1); pointer-events: none;}
+        .blank-input.wrong { border-color: var(--apple-red) !important; color: var(--apple-red) !important; background: rgba(255, 69, 58, 0.1); animation: shake 0.4s; }
+        .hint-flash { color: var(--theme-color) !important; }
+        @keyframes shake { 0%{transform:translateX(0);} 25%{transform:translateX(-5px);} 50%{transform:translateX(5px);} 75%{transform:translateX(-5px);} 100%{transform:translateX(0);} }
+        
+        .check-btn { background: var(--theme-color); color: #fff; border: none; padding: 18px; border-radius: 16px; font-weight: 900; font-size: 1.1rem; width: 100%; margin-top: 20px; cursor: pointer; transition: 0.2s;}
+        .check-btn:active { transform: scale(0.97); }
+        .clickable-word { cursor: pointer; border-radius: 4px; transition: 0.2s; display: inline-block;}
+        .progress-container { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; margin-top: 10px; border: 1px solid var(--border);}
+        .progress-fill { height: 100%; background: var(--theme-color); transition: width 0.3s; width: 0%;}
+
+        /* --- LABS UI --- */
+        .timer-circle { width: 90px; height: 90px; border-radius: 50%; border: 4px solid var(--apple-red); display: flex; justify-content: center; align-items: center; font-size: 1.8rem; font-weight: 900; margin: 0 auto 15px auto; color: var(--apple-red); transition: 0.3s; font-family: monospace;}
+        .immersion-bar-bg { width: 100%; height: 24px; background: rgba(0,0,0,0.5); border-radius: 12px; overflow: hidden; margin-bottom: 15px; position: relative; border: 1px solid var(--border);}
+        .immersion-bar-fill { height: 100%; background: linear-gradient(90deg, var(--theme-color), var(--gold)); width: 0%; transition: 1s;}
+        .immersion-text { position: absolute; width: 100%; text-align: center; top: 3px; font-size: 0.8rem; font-weight: 900; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); font-family: monospace;}
+        
+        .eval-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; text-align: center; }
+        .eval-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; border: 1px solid var(--border);}
+        .eval-val { font-size: 1.4rem; font-weight: 900; color: #fff; margin-top: 4px; font-family: monospace;}
+
+        /* --- VAULT --- */
+        .db-item { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 12px;}
+        .del-btn { color: var(--apple-red); background: rgba(255,69,58,0.1); font-size: 0.8rem; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 800; border: none;}
+        .srs-badge { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 10px; font-size: 0.75rem; color: var(--text-sub); font-weight: 800;}
+        .db-native { font-size: 0.95rem; font-weight: 800; color: #fff; margin-top: 10px;}
+        .db-target { font-size: 1rem; color: var(--text-sub); direction: ltr; font-family: -apple-system, sans-serif; margin-top: 5px;}
+
+        /* --- SCRAPER --- */
+        .shred-item { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;}
+        .shred-text { direction: ltr; font-family: -apple-system, sans-serif; font-size: 1rem; color: var(--theme-color); font-weight: 600;}
+
+        .cefr-badge { background: #fff; color: #000; font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: 900; letter-spacing: 1px; font-family: monospace;}
+    </style>
+</head>
+<body class="eng-mode">
+
+    <div class="header-top">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+        <div class="header-info">
+            <h1>Alter<span style="color: var(--theme-color); transition: 0.3s;" id="logoEgo">Ego</span> <span class="cefr-tag">V16.1 AI</span></h1>
+        </div>
+    </div>
+
+    <div class="container" style="padding-bottom: 0;">
+        <div class="lang-toggle">
+            <div class="lang-seg eng active" onclick="setLang('eng')">🇬🇧 English</div>
+            <div class="lang-seg ita" onclick="setLang('ita')">🇮🇹 Italiano</div>
+        </div>
+    </div>
+
+    <div id="view-capture" class="view active container">
+        <div class="ios-card" style="padding: 20px;">
+            <div class="dashboard-grid">
+                <div class="streak-card"><div class="streak-num" id="ui-streak">0</div><div class="streak-label">🔥 Streak</div></div>
+                <div class="rings-card">
+                    <svg class="ring-svg" viewBox="0 0 90 90">
+                        <circle class="ring-bg" cx="45" cy="45" r="36"></circle><circle class="ring-fill ring-red" id="ring-red" cx="45" cy="45" r="36"></circle>
+                        <circle class="ring-bg" cx="45" cy="45" r="26"></circle><circle class="ring-fill ring-green" id="ring-green" cx="45" cy="45" r="26"></circle>
+                        <circle class="ring-bg" cx="45" cy="45" r="16"></circle><circle class="ring-fill ring-blue" id="ring-blue" cx="45" cy="45" r="16"></circle>
+                    </svg>
+                </div>
+            </div>
+            <div class="flex-between">
+                <div>
+                    <span class="cefr-badge" id="ui-cefr-badge">A1</span>
+                    <span style="font-size: 0.9rem; font-weight: 800; color: #fff; margin-right: 5px;" id="ui-rank">Beginner</span>
+                </div>
+                <span class="text-mono" style="font-weight:900; color:var(--gold);" id="ui-exp">0 EXP</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; margin-top: 12px; border:1px solid var(--border);">
+                <div style="height: 100%; background: var(--gold); transition: width 0.8s; width: 0%;" id="ui-exp-bar"></div>
+            </div>
+        </div>
+
+        <div class="ios-card">
+            <h2><i class="fas fa-brain txt-accent"></i> تفريغ أفكارك</h2>
+            <textarea id="inpNative" rows="3" placeholder="اكتب الموقف الذي عشته بالعربي..."></textarea>
+            <div class="flex-between" style="gap:10px;">
+                <button class="ios-btn btn-ai" style="margin:0;" onclick="autoTranslate()"><i class="fas fa-magic"></i> ترجمة</button>
+                <button class="ios-btn" style="background:rgba(255, 255, 255, 0.05); color:#fff; margin:0;" onclick="copyGeneralC1Prompt()"><i class="fas fa-level-up-alt"></i> ترقية C1</button>
+            </div>
+            
+            <h2 style="margin-top: 20px;"><i class="fas fa-code txt-cyan"></i> التكويد (الترجمة)</h2>
+            <textarea id="inpTarget" class="ltr" rows="3" placeholder="الترجمة ستظهر هنا..."></textarea>
+            <button class="ios-btn btn-theme" onclick="saveEntry(event)">حفظ في الشبكة <i class="fas fa-save"></i></button>
+        </div>
+
+        <div class="ios-card" style="border-color: rgba(255,255,255,0.15);">
+            <div class="flex-between" style="margin-bottom: 10px;">
+                <h2 style="margin:0;"><i class="fas fa-book-open"></i> مفكك المعرفة</h2>
+                <button class="ios-btn" style="width:auto; margin:0; padding: 8px 15px; font-size:0.8rem; background:rgba(255,255,255,0.1); color:#fff;" onclick="fetchUniversalArticle()"><i class="fas fa-globe"></i> مقال عشوائي</button>
+            </div>
+            <p class="text-sub" style="margin-bottom: 12px;" id="scraperDesc">سيجلب مقال يناسب مستواك الحالي.</p>
+            <textarea id="inpStory" class="ltr" rows="3" placeholder="Press the button to fetch knowledge..."></textarea>
+            <button class="ios-btn" style="background: rgba(255, 255, 255, 0.1); color: #fff; margin-bottom: 15px;" onclick="shredStory()"><i class="fas fa-cogs"></i> تفكيك النص</button>
+            <div id="shreddedContainer"></div>
+        </div>
+    </div>
+
+    <div id="view-matrix" class="view container">
+        <div class="flex-between" style="margin-bottom: 10px;">
+            <h2 style="margin:0;"><i class="fas fa-user-secret"></i> المصفوفة</h2>
+            <button id="btnBlindMode" class="ios-btn" style="width:auto; margin:0; padding: 8px 15px; font-size:0.8rem; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid var(--border);" onclick="toggleBlindMode()"><i class="fas fa-headphones"></i> الأعمى: إيقاف</button>
+        </div>
+
+        <div class="flex-between text-sub" style="font-size: 0.85rem; font-weight:800; margin-top: 10px;">
+            <span id="matrixStatus">مهام اليوم: 0</span>
+            <span id="matrixProgressTxt" style="font-family:monospace;">0%</span>
+        </div>
+        <div class="progress-container"><div class="progress-fill" id="matrixProgressBar"></div></div>
+
+        <div id="activeCardContainer"></div>
+    </div>
+
+    <div id="view-labs" class="view container">
+        <div class="ios-card" style="text-align: center;">
+            <h2 style="justify-content: center; color: var(--theme-color);"><i class="fas fa-microphone-alt"></i> محاكي التحدث الذكي</h2>
+            <p class="text-sub" style="margin-bottom: 15px;">الأسئلة تتدرج بناءً على مستواك (A1 -> C1). الخوارزمية ستقيم جودة كلامك.</p>
+            <div class="timer-circle" id="ieltsTimer">60s</div>
+            <div id="ieltsQuestion" class="target-text" style="font-weight: 800; margin-bottom: 15px; color:#fff;">Press Start</div>
+            <div id="ieltsTranscript" class="text-sub ltr" style="font-size:0.95rem; min-height: 40px; margin-bottom: 15px; text-align:left; background:rgba(0,0,0,0.3); padding:10px; border-radius:12px;">...</div>
+            
+            <div id="evalContainer" style="display:none;">
+                <div style="font-size: 2.5rem; font-weight: 900; color: var(--theme-color); margin-bottom: 15px; font-family:monospace;" id="evalTotalScore">0%</div>
+                <div class="eval-grid">
+                    <div class="eval-box">
+                        <div class="text-sub">السرعة (WPM)</div>
+                        <div class="eval-val" id="evalWPM">0</div>
+                    </div>
+                    <div class="eval-box">
+                        <div class="text-sub">مفردات متقدمة</div>
+                        <div class="eval-val" id="evalVocab" style="color:var(--apple-teal);">0</div>
+                    </div>
+                    <div class="eval-box">
+                        <div class="text-sub">تعقيد الجمل</div>
+                        <div class="eval-val" id="evalComplexity" style="color:var(--gold);">0</div>
+                    </div>
+                    <div class="eval-box">
+                        <div class="text-sub">تردد (أمم، اه)</div>
+                        <div class="eval-val" id="evalHesitation" style="color:var(--apple-red);">0</div>
+                    </div>
+                </div>
+                <div id="evalFeedbackText" style="font-size: 0.9rem; font-weight:700; line-height: 1.6; color: #fff; margin-bottom: 15px; background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border:1px solid var(--border); text-align:right;"></div>
+            </div>
+
+            <button class="ios-btn" style="background: var(--theme-color); color: #fff;" id="btnStartIelts" onclick="startSimulator()"><i class="fas fa-play"></i> ابدأ التحدث</button>
+        </div>
+
+        <div class="ios-card">
+            <h2><i class="fas fa-headphones"></i> رادار الانغماس</h2>
+            <div class="immersion-bar-bg"><div class="immersion-bar-fill" id="ui-immersion-bar"></div><div class="immersion-text" id="ui-immersion-text">0 / 400 Hours</div></div>
+            <div class="flex-between" style="gap:10px; margin-top:15px;">
+                <input type="number" id="inpMins" placeholder="دقائق الاستماع..." style="margin:0;">
+                <button class="ios-btn" style="margin:0; background: #fff; color: #000; width: 40%; box-shadow:0 5px 15px rgba(255,255,255,0.2);" onclick="logImmersion()">تسجيل ✔</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-vault" class="view container">
+        <div class="ios-card">
+            <h2><i class="fas fa-database"></i> الخزنة السيبرانية</h2>
+            <div class="flex-between" style="gap:10px; margin-bottom: 20px;">
+                <button class="ios-btn" style="background: rgba(0,0,0,0.5); color: #fff; font-size:0.9rem; padding: 12px; border:1px solid var(--border);" onclick="exportDB()"><i class="fas fa-download"></i> حفظ ملف</button>
+                <button class="ios-btn" style="background: rgba(0,0,0,0.5); color: #fff; font-size:0.9rem; padding: 12px; border:1px solid var(--border);" onclick="importDB()"><i class="fas fa-upload"></i> استرجاع</button>
+            </div>
+            <div id="vaultList"></div>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <div class="tab-item active" onclick="switchTab('capture', this)"><span class="tab-icon"><i class="fas fa-pen-nib"></i></span><span>التفريغ</span></div>
+        <div class="tab-item" onclick="switchTab('matrix', this)"><span class="tab-icon"><i class="fas fa-cubes"></i></span><span>المصفوفة</span></div>
+        <div class="tab-item" onclick="switchTab('labs', this)"><span class="tab-icon"><i class="fas fa-flask"></i></span><span>المختبر</span></div>
+        <div class="tab-item" onclick="switchTab('vault', this)"><span class="tab-icon"><i class="fas fa-hdd"></i></span><span>الخزنة</span></div>
+    </div>
+
+    <script>
+        // --- SAFE TIME & DB HELPERS ---
+        function getLocalYMD(dateObj = new Date()) {
+            let y = dateObj.getFullYear(); let m = String(dateObj.getMonth() + 1).padStart(2, '0'); let d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+        const TODAY = getLocalYMD();
+
+        function getSafeJSON(key, defaultVal) {
+            try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; }
+        }
+        
+        let currentLang = 'eng'; 
+        let DB = []; 
+        let Stats = { exp: 0, streak: 0, lastActiveDate: '', dailyLog: {}, immersionMins: 0 };
+        
+        const synth = window.speechSynthesis; 
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+
+        let isBlindMode = false; let matrixDeck = []; let initialDeckSize = 0; let currentCardTimer;
+        
+        // --- CEFR LOGIC ---
+        const CEFR_LEVELS = [
+            { id: 'A1', name: 'Beginner', minExp: 0, topics: ['Family', 'Food', 'Daily_routine', 'Hobby'] },
+            { id: 'A2', name: 'Elementary', minExp: 200, topics: ['Travel', 'Job', 'Book', 'Shopping'] },
+            { id: 'B1', name: 'Intermediate', minExp: 600, topics: ['City', 'Technology', 'Health', 'Environment'] },
+            { id: 'B2', name: 'Upper Int.', minExp: 1500, topics: ['Psychology', 'Space_exploration', 'Economy', 'Social_media'] },
+            { id: 'C1', name: 'Advanced', minExp: 3000, topics: ['Artificial_intelligence', 'Philosophy', 'Globalization', 'Ethics'] }
+        ];
+
+        const CEFR_QUESTIONS = {
+            'A1': ["Talk about your family.", "What do you do every day?", "Describe your favorite food.", "Where do you live?"],
+            'A2': ["Describe your last holiday.", "Talk about a book you read.", "What is your dream job?", "How do you spend your weekends?"],
+            'B1': ["What are the advantages of living in a big city?", "Describe a difficult project you worked on.", "How do you stay healthy?", "Talk about a skill you want to learn."],
+            'B2': ["How does social media affect human relationships?", "What are the main challenges of climate change?", "Describe a time when you had to adapt to a major change.", "Should university education be free?"],
+            'C1': ["Discuss the ethical implications of artificial intelligence.", "Analyze the impact of globalization on local cultures.", "Evaluate the importance of space exploration for humanity.", "How will automation reshape the future workforce?"]
+        };
+
+        function getCurrentCEFR() {
+            let level = CEFR_LEVELS[0];
+            for (let i = CEFR_LEVELS.length - 1; i >= 0; i--) { if (Stats.exp >= CEFR_LEVELS[i].minExp) { level = CEFR_LEVELS[i]; break; } }
+            return level;
+        }
+
+        // --- INIT APP ---
+        function initApp() {
+            let savedDB = getSafeJSON('AlterEgo_DB_V16', null);
+            if(!savedDB) savedDB = getSafeJSON('AlterEgo_DB_V15', []); // Fallback
+            DB = savedDB; DB.forEach(e => { if(e.interval===undefined) e.interval=0; if(e.nextReview===undefined) e.nextReview=Date.now(); });
+            
+            let savedStats = getSafeJSON('AlterEgo_Stats_V16', null);
+            if(!savedStats) savedStats = getSafeJSON('AlterEgo_Stats_V15', { exp: 0, streak: 0, lastActiveDate: '', dailyLog: {}, immersionMins: 0 });
+            Stats = savedStats; if(!Stats.immersionMins) Stats.immersionMins = 0;
+            
+            updateGamificationEngine(); updateImmersionUI(); 
+            if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = () => synth.getVoices();
+        }
+
+        function saveDB() { localStorage.setItem('AlterEgo_DB_V16', JSON.stringify(DB)); }
+        function saveStats() { localStorage.setItem('AlterEgo_Stats_V16', JSON.stringify(Stats)); updateGamificationUI(); updateImmersionUI(); }
+
+        // --- MASTER REPORT SYNC ---
+        function syncToMasterReport(minsAdded) {
+            let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {});
+            if(!masterDB[TODAY]) masterDB[TODAY] = {};
+            
+            if(currentLang === 'eng') {
+                masterDB[TODAY].english = (masterDB[TODAY].english || 0) + minsAdded;
+            } else {
+                masterDB[TODAY].italian = (masterDB[TODAY].italian || 0) + minsAdded;
+            }
+            
+            localStorage.setItem('SakrOS_MasterReport_V1', JSON.stringify(masterDB));
+        }
+
+        // --- CORE FUNCTIONS ---
+        function getEditDistance(a, b) {
+            if(a.length === 0) return b.length; if(b.length === 0) return a.length;
+            var matrix = []; for(let i=0; i<=b.length; i++) { matrix[i] = [i]; } for(let j=0; j<=a.length; j++) { matrix[0][j] = j; }
+            for(let i=1; i<=b.length; i++) { for(let j=1; j<=a.length; j++) {
+                if(b.charAt(i-1) === a.charAt(j-1)) matrix[i][j] = matrix[i-1][j-1];
+                else matrix[i][j] = Math.min(matrix[i-1][j-1]+1, Math.min(matrix[i][j-1]+1, matrix[i-1][j]+1));
+            }} return matrix[b.length][a.length];
+        }
+
+        function logImmersion() { 
+            let mins = parseInt(document.getElementById('inpMins').value); if(!mins || mins <= 0) return; 
+            Stats.immersionMins += mins; 
+            
+            // Sync to global OS
+            syncToMasterReport(mins);
+            
+            if(Stats.lastActiveDate !== TODAY) { Stats.streak++; Stats.lastActiveDate = TODAY; }
+            if(!Stats.dailyLog[TODAY]) Stats.dailyLog[TODAY] = { capture: 0, matrix: 0, shadow: 0, total: 0 };
+            Stats.dailyLog[TODAY].shadow += 1; Stats.dailyLog[TODAY].total++;
+            saveStats(); document.getElementById('inpMins').value = ''; triggerActivity('immersion', 5, null); 
+        }
+        function updateImmersionUI() { let hours = (Stats.immersionMins / 60).toFixed(1); let pct = Math.min((hours / 400) * 100, 100); document.getElementById('ui-immersion-bar').style.width = `${pct}%`; document.getElementById('ui-immersion-text').innerText = `${hours} / 400 H`; }
+        
+        function updateGamificationEngine() {
+            if (Stats.lastActiveDate !== TODAY) {
+                let yesterday = new Date(); yesterday.setMinutes(yesterday.getMinutes() - yesterday.getTimezoneOffset());
+                yesterday.setDate(yesterday.getDate() - 1);
+                let yStr = yesterday.toISOString().split('T')[0];
+                
+                if (Stats.lastActiveDate !== yStr && Stats.lastActiveDate !== '') Stats.streak = 0; 
+                if(!Stats.dailyLog[TODAY]) Stats.dailyLog[TODAY] = { capture: 0, matrix: 0, shadow: 0, total: 0 };
+            }
+            updateGamificationUI();
+        }
+
+        function triggerActivity(type, points, event) {
+            if(Stats.lastActiveDate !== TODAY) { Stats.streak++; Stats.lastActiveDate = TODAY; }
+            Stats.exp += points; if(!Stats.dailyLog[TODAY]) Stats.dailyLog[TODAY] = { capture: 0, matrix: 0, shadow: 0, total: 0 };
+            if(type !== 'immersion') Stats.dailyLog[TODAY][type]++; Stats.dailyLog[TODAY].total++; saveStats();
+            
+            if(event && event.clientX) {
+                let floater = document.createElement('div'); floater.className = 'exp-float'; floater.innerText = `+${points} EXP`;
+                floater.style.left = `${event.clientX}px`; floater.style.top = `${event.clientY - 20}px`; document.body.appendChild(floater); setTimeout(() => floater.remove(), 1000);
+            }
+        }
+
+        function updateGamificationUI() {
+            document.getElementById('ui-streak').innerText = Stats.streak; document.getElementById('ui-exp').innerText = `${Stats.exp.toLocaleString()} XP`;
+            
+            let cefr = getCurrentCEFR();
+            let nextIndex = CEFR_LEVELS.findIndex(l => l.id === cefr.id) + 1;
+            let nextLevel = CEFR_LEVELS[nextIndex] || cefr;
+            let maxExp = nextLevel.minExp > cefr.minExp ? nextLevel.minExp : 5000;
+            let pct = cefr.id === 'C1' ? 100 : ((Stats.exp - cefr.minExp) / (maxExp - cefr.minExp)) * 100;
+
+            document.getElementById('ui-cefr-badge').innerText = cefr.id;
+            document.getElementById('ui-rank').innerText = cefr.name;
+            document.getElementById('ui-exp-bar').style.width = `${Math.min(pct, 100)}%`;
+            document.getElementById('scraperDesc').innerText = `سيجلب مقال يناسب مستواك الحالي (${cefr.id}).`;
+            
+            let daily = Stats.dailyLog[TODAY] || { capture: 0, matrix: 0, shadow: 0 };
+            document.getElementById('ring-red').style.strokeDashoffset = 226 - Math.min((daily.capture / 3) * 226, 226); 
+            document.getElementById('ring-green').style.strokeDashoffset = 163 - Math.min((daily.matrix / 10) * 163, 163); 
+            document.getElementById('ring-blue').style.strokeDashoffset = 100 - Math.min((daily.shadow / 1) * 100, 100);
+        }
+
+        function setLang(lang) {
+            currentLang = lang; document.querySelectorAll('.lang-seg').forEach(el => el.classList.remove('active')); document.querySelector(`.lang-seg.${lang}`).classList.add('active');
+            document.body.className = lang === 'eng' ? 'eng-mode' : 'ita-mode'; 
+            document.documentElement.style.setProperty('--theme-color', lang === 'eng' ? 'var(--apple-eng)' : 'var(--apple-ita)'); 
+            document.documentElement.style.setProperty('--theme-bg', lang === 'eng' ? 'rgba(255, 94, 0, 0.15)' : 'rgba(204, 0, 0, 0.15)');
+            synth.cancel(); if (document.getElementById('view-matrix').classList.contains('active')) initMatrixSession(); if (document.getElementById('view-vault').classList.contains('active')) buildVault(); 
+        }
+
+        function switchTab(viewId, element) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.querySelectorAll('.tab-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active'); element.classList.add('active'); window.scrollTo(0,0); synth.cancel(); 
+            if(currentCardTimer) clearInterval(currentCardTimer);
+            if(simInterval) { clearInterval(simInterval); if(recognition) recognition.stop(); }
+            if(viewId === 'matrix') initMatrixSession(); 
+            if(viewId === 'vault') buildVault(); 
+            if(viewId === 'capture') updateGamificationUI();
+        }
+
+        // --- CAPTURE & AI TRANSLATE ---
+        async function autoTranslate() {
+            let nativeText = document.getElementById('inpNative').value.trim(); if (!nativeText) return;
+            let btn = document.querySelector('.btn-ai'); let orig = btn.innerHTML; btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i>";
+            try { let res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(nativeText)}&langpair=ar|${currentLang === 'eng' ? 'en' : 'it'}`); let data = await res.json(); if (data && data.responseData) document.getElementById('inpTarget').value = data.responseData.translatedText; } catch (error) {} finally { btn.innerHTML = orig; }
+        }
+
+        function copyGeneralC1Prompt() {
+            let text = document.getElementById('inpNative').value.trim(); if(!text) return;
+            let prompt = `أنا أستعد لاختبار الآيلتس وأريد تحسين لغتي لمستوى C1. لقد كتبت هذه الجملة:\n"${text}"\nأعطني 3 خيارات لترجمتها:\n1. ترجمة طبيعية (B2).\n2. ترجمة متقدمة جداً (C1 Collocations).\n3. ترجمة رسمية أكاديمية (Formal).`;
+            navigator.clipboard.writeText(prompt).then(()=>alert("تم النسخ! الصقه في ChatGPT."));
+        }
+
+        function saveEntry(event) {
+            let native = document.getElementById('inpNative').value.trim(); let target = document.getElementById('inpTarget').value.trim(); if (!native || !target) return;
+            DB.unshift({ id: Date.now(), lang: currentLang, native: native, target: target, date: new Date().toLocaleDateString('ar-EG'), interval: 0, nextReview: Date.now()});
+            saveDB(); document.getElementById('inpNative').value = ''; document.getElementById('inpTarget').value = ''; triggerActivity('capture', 10, event);
+        }
+        
+        function speakText(text, rate=0.85) { if (!text) return; if (synth.speaking) synth.cancel(); let utt = new SpeechSynthesisUtterance(text); utt.lang = currentLang === 'eng' ? 'en-US' : 'it-IT'; utt.rate = rate; synth.speak(utt); }
+        function speakEntryById(id) { let e = DB.find(x => x.id === id); if(e) speakText(e.target); }
+
+        // --- UNIVERSAL SCRAPER ---
+        async function fetchUniversalArticle() {
+            let cefr = getCurrentCEFR();
+            let topics = cefr.topics; 
+            let randomTopic = topics[Math.floor(Math.random() * topics.length)];
+            let langCode = currentLang === 'eng' ? 'en' : 'it';
+            let domain = (langCode === 'en' && (cefr.id === 'A1' || cefr.id === 'A2')) ? 'simple.wikipedia.org' : `${langCode}.wikipedia.org`;
+            
+            let btn = document.querySelector('button[onclick="fetchUniversalArticle()"]');
+            let origText = btn.innerHTML; btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i>";
+            
+            try {
+                let url = `https://${domain}/w/api.php?action=query&format=json&origin=*&prop=extracts&titles=${randomTopic}&exsentences=3&exintro=1&explaintext=1`;
+                let response = await fetch(url); let data = await response.json();
+                let pages = data.query.pages; let pageId = Object.keys(pages)[0];
+                let extract = pages[pageId].extract;
+                if(extract) document.getElementById('inpStory').value = extract;
+                else alert("لم يتم العثور على النص، جرب مرة أخرى.");
+            } catch (err) { alert("خطأ في الاتصال."); } finally { btn.innerHTML = origText; }
+        }
+
+        function shredStory() {
+            let text = document.getElementById('inpStory').value.trim(); if(!text) return;
+            let sentences = text.match(/[^.!?]+[.!?]+/g) || [text]; const container = document.getElementById('shreddedContainer'); container.innerHTML = '';
+            sentences.forEach((s, index) => {
+                let cleanS = s.trim(); if(cleanS.length > 10) { container.innerHTML += `<div class="shred-item" id="shred-${index}"><div class="shred-text">${cleanS}</div><button class="ios-btn" style="padding:10px; font-size:0.9rem; background:rgba(255,255,255,0.05); margin:0;" onclick="translateAndSaveShred('${encodeURIComponent(cleanS)}', ${index}, event)"><i class="fas fa-plus"></i> ترجم واحفظ</button></div>`; }
+            });
+        }
+        async function translateAndSaveShred(encodedTarget, index, event) {
+            let targetText = decodeURIComponent(encodedTarget); let btn = document.querySelector(`#shred-${index} button`); btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i>"; btn.disabled = true;
+            try {
+                let res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(targetText)}&langpair=${currentLang === 'eng' ? 'en' : 'it'}|ar`); let data = await res.json();
+                if (data && data.responseData) { DB.unshift({ id: Date.now()+Math.random(), lang: currentLang, native: data.responseData.translatedText, target: targetText, date: new Date().toLocaleDateString('ar-EG'), interval: 0, nextReview: Date.now() }); saveDB(); btn.innerHTML = "<i class='fas fa-check'></i> تم الحفظ"; btn.style.background = "var(--green)"; btn.style.color = "#000"; triggerActivity('capture', 10, event); }
+            } catch (error) { btn.innerText = "❌ خطأ"; btn.disabled = false; }
+        }
+
+        // --- MATRIX ---
+        function toggleBlindMode() { isBlindMode = !isBlindMode; let btn = document.getElementById('btnBlindMode'); if(isBlindMode) { btn.style.background = '#fff'; btn.style.color = '#000'; btn.innerHTML = '<i class="fas fa-headphones"></i> الأعمى: مُفعل'; } else { btn.style.background = 'rgba(0,0,0,0.5)'; btn.style.color = '#fff'; btn.innerHTML = '<i class="fas fa-headphones"></i> الأعمى: إيقاف'; } renderActiveCard(); }
+        
+        function initMatrixSession() {
+            matrixDeck = [];
+            let dueEntries = DB.filter(x => x.lang === currentLang && x.nextReview <= Date.now()); 
+            dueEntries.forEach(e => { matrixDeck.push({ id: e.id, repsLeft: 2 }); }); 
+            matrixDeck.sort(() => Math.random() - 0.5); initialDeckSize = matrixDeck.length; updateMatrixHeader(); renderActiveCard();
+        }
+
+        function updateMatrixHeader() {
+            let done = initialDeckSize - matrixDeck.length; let pct = initialDeckSize === 0 ? 100 : Math.round((done / initialDeckSize) * 100);
+            document.getElementById('matrixStatus').innerText = `البطاقات المتبقية: ${matrixDeck.length}`;
+            document.getElementById('matrixProgressTxt').innerText = `${pct}%`; document.getElementById('matrixProgressBar').style.width = `${pct}%`;
+        }
+
+        function renderActiveCard() {
+            const container = document.getElementById('activeCardContainer'); if(currentCardTimer) clearInterval(currentCardTimer);
+            if (matrixDeck.length === 0) { container.innerHTML = `<div class="ios-card" style="text-align:center; margin-top:20px; border-color:var(--green);"><h3 style="color:var(--green);">🎉 اكتملت المراجعة اليوم!</h3></div>`; return; }
+            let currentItem = matrixDeck[0]; let entry = DB.find(x => x.id === currentItem.id); if(!entry) { matrixDeck.shift(); renderActiveCard(); return; }
+            
+            let cardHTML = '';
+            if(isBlindMode) {
+                cardHTML = `<div class="ios-card matrix-card" id="card-${entry.id}" style="border-color: #ffffff;"><div style="text-align:center; padding: 10px 0;"><button class="icon-btn" style="width:65px; height:65px; font-size:2.2rem; margin:auto; background:rgba(255,255,255,0.1);" onclick="speakEntryById(${entry.id})"><i class="fas fa-play"></i></button></div><textarea id="blind-inp-${entry.id}" class="ltr" rows="3" placeholder="Type exactly what you hear..."></textarea><button class="check-btn" style="background:#ffffff; color:#000;" id="btn-check-${entry.id}" onclick="checkBlindAnswer(${entry.id}, event)">تحقق من الإجابة</button></div>`;
+            } else {
+                let words = entry.target.split(/(\s+)/); let eligibleIndices = []; words.forEach((w, i) => { if(w.replace(/[.,;!?]/g, "").trim().length > 2) eligibleIndices.push({index: i, word: w}); });
+                let blanksCount = currentItem.repsLeft === 2 ? Math.min(3, Math.max(1, Math.floor(eligibleIndices.length/2))) : 1; 
+                let indicesToBlank = eligibleIndices.sort(() => 0.5 - Math.random()).slice(0, blanksCount).map(e => e.index);
+                let htmlTarget = ''; words.forEach((w, i) => { if (indicesToBlank.includes(i)) { let cleanWord = w.replace(/[.,;!?]/g, "").trim(); let punctuation = w.replace(cleanWord, ""); htmlTarget += `<input type="text" class="blank-input" onfocus="startCardTimer(20)" data-ans="${cleanWord.toLowerCase()}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="?">${punctuation}`; } else htmlTarget += w.trim()==='' ? w : `<span class="clickable-word" onclick="speakText('${w.replace(/[.,;!?]/g,"").trim()}')">${w}</span>`; });
+                cardHTML = `<div class="ios-card matrix-card" id="card-${entry.id}"><div class="bomb-bar-container"><div class="bomb-bar-fill" id="card-bomb-fill"></div></div><div class="flex-between" style="border-bottom: 1px dashed var(--border); padding-bottom: 15px; margin-top: 5px;"><div class="native-text" style="border:none; padding:0; margin:0;">${entry.native}</div><button class="icon-btn" onclick="speakEntryById(${entry.id})"><i class="fas fa-volume-up"></i></button></div><div class="target-text" id="target-${entry.id}">${htmlTarget}</div><button class="check-btn" id="btn-check-${entry.id}" onclick="checkAnswers(${entry.id}, event)">تحقق من التشفير</button></div>`;
+            }
+            container.innerHTML = cardHTML;
+        }
+
+        function startCardTimer(maxTime) {
+            if(currentCardTimer) return; let fill = document.getElementById(`card-bomb-fill`); if(!fill) return; fill.parentElement.style.display = 'block'; let timeLeft = maxTime; 
+            currentCardTimer = setInterval(() => {
+                timeLeft--; fill.style.width = `${(timeLeft/maxTime)*100}%`;
+                if(timeLeft <= Math.floor(maxTime/2)) fill.style.background = 'var(--apple-orange)'; if(timeLeft <= Math.floor(maxTime/4)) fill.style.background = 'var(--apple-red)';
+                if(timeLeft <= 0) { clearInterval(currentCardTimer); let item = matrixDeck[0]; document.getElementById(`card-${item.id}`).style.animation = 'shake 0.5s'; checkAnswers(item.id, null, true); }
+            }, 1000);
+        }
+
+        function processCardResult(cardId, isCorrect, event) {
+            let item = matrixDeck.shift(); let entry = DB.find(x => x.id === cardId);
+            if(isCorrect) {
+                item.repsLeft--; triggerActivity('matrix', 2, event);
+                syncToMasterReport(1); // Add 1 min of study time to OS Master Report
+                if(item.repsLeft > 0) { matrixDeck.push(item); } else { if(entry.interval === 0) entry.interval = 1; else if(entry.interval === 1) entry.interval = 2; else if(entry.interval === 2) entry.interval = 4; else if(entry.interval === 4) entry.interval = 7; else entry.interval = 14; entry.nextReview = Date.now() + (entry.interval * 86400000); saveDB(); }
+            } else { entry.interval = 0; entry.nextReview = Date.now(); saveDB(); matrixDeck.push(item); }
+            updateMatrixHeader(); setTimeout(() => { renderActiveCard(); }, 1200);
+        }
+
+        function checkBlindAnswer(cardId, event) {
+            let entry = DB.find(x => x.id === cardId); if(!entry) return; let inp = document.getElementById(`blind-inp-${cardId}`);
+            let userAns = inp.value.trim().toLowerCase().replace(/[.,;!?]/g, ""); let targetAns = entry.target.trim().toLowerCase().replace(/[.,;!?]/g, ""); let dist = getEditDistance(userAns, targetAns); let allowedErr = Math.floor(targetAns.length * 0.15); let btn = document.getElementById(`btn-check-${cardId}`);
+            if(dist <= allowedErr && userAns.length > 5) { inp.style.borderColor = 'var(--green)'; inp.style.color = 'var(--green)'; inp.value = entry.target; inp.disabled = true; btn.innerText = `إجابة صحيحة ✔`; btn.style.background = 'var(--green)'; btn.style.color = '#000'; processCardResult(cardId, true, event); } else { inp.style.borderColor = 'var(--apple-red)'; document.getElementById(`card-${cardId}`).style.animation = 'shake 0.4s'; setTimeout(()=>{ inp.style.borderColor = 'var(--apple-orange)'; inp.value = entry.target; }, 500); btn.innerText = `إجابة خاطئة ✖`; btn.style.background = 'var(--apple-red)'; btn.style.color = '#fff'; processCardResult(cardId, false, event); }
+        }
+
+        function checkAnswers(cardId, event, isTimeout = false) {
+            if(currentCardTimer) clearInterval(currentCardTimer); let inputs = document.querySelectorAll('.blank-input'); let allCorrect = true;
+            inputs.forEach(inp => {
+                let ans = inp.getAttribute('data-ans'); let userAns = inp.value.trim().toLowerCase(); inp.classList.remove('correct', 'wrong', 'hint-flash');
+                if(isTimeout) { allCorrect = false; inp.classList.add('wrong'); inp.value = ans; inp.classList.add('hint-flash'); inp.disabled = true; return; }
+                let dist = getEditDistance(userAns, ans); let allowedDist = ans.length > 4 ? 2 : 1; 
+                if (dist === 0) { inp.classList.add('correct'); inp.disabled = true;} else if (dist <= allowedDist && userAns.length > 1) { inp.classList.add('correct'); inp.style.color="var(--gold)"; inp.value = ans; inp.disabled = true;} else { inp.classList.add('wrong'); allCorrect = false; inp.value = ans; inp.classList.add('hint-flash'); inp.disabled = true; setTimeout(() => { inp.classList.remove('wrong', 'hint-flash'); inp.value = ''; inp.disabled = false; }, 800); }
+            });
+            let btn = document.getElementById(`btn-check-${cardId}`);
+            if (allCorrect) { btn.innerText = `رائع! ✔`; btn.style.background = 'var(--green)'; btn.style.color = '#000'; btn.disabled = true; speakEntryById(cardId); processCardResult(cardId, true, event); } else if (isTimeout) { btn.innerText = `انتهى الوقت ✖`; btn.style.background = 'var(--apple-red)'; btn.style.color = '#fff'; btn.disabled = true; setTimeout(() => { processCardResult(cardId, false, event); }, 1200); } else { btn.innerText = `حاول مرة أخرى`; btn.style.background = 'var(--apple-orange)'; }
+        }
+
+        // --- LABS: SIMULATOR ---
+        let simInterval; let simTimeLeft = 0; 
+        
+        function evaluateSpeechQuality(transcript, timeUsed) {
+            let words = transcript.trim().split(/\s+/); let wordCount = words.length; let wpm = Math.round((wordCount / Math.max(timeUsed, 1)) * 60);
+
+            let advancedEn = ['however', 'therefore', 'moreover', 'significant', 'impact', 'consequently', 'crucial', 'essential', 'analyze', 'perspective', 'furthermore', 'although', 'despite', 'concept', 'structure'];
+            let advancedIt = ['tuttavia', 'inoltre', 'significativo', 'impatto', 'fondamentale', 'essenziale', 'analizzare', 'prospettiva', 'sebbene', 'nonostante', 'concetto', 'struttura'];
+            let advancedWords = currentLang === 'eng' ? advancedEn : advancedIt;
+            
+            let vocabScore = 0; let vocabMatches = 0;
+            words.forEach(w => { if(advancedWords.includes(w.toLowerCase().replace(/[^a-z]/g,''))) { vocabScore += 15; vocabMatches++; }});
+
+            let fillersEn = ['um', 'uh', 'like', 'you know', 'ah']; let fillersIt = ['ehm', 'uhm', 'cioè', 'sai', 'ah'];
+            let fillers = currentLang === 'eng' ? fillersEn : fillersIt;
+            
+            let hesitationPenalty = 0; let hesitationMatches = 0;
+            fillers.forEach(f => { let count = (transcript.toLowerCase().match(new RegExp('\\b' + f + '\\b', 'g')) || []).length; hesitationMatches += count; hesitationPenalty += (count * 5); });
+
+            let sentences = transcript.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            let avgSentenceLength = sentences.length > 0 ? Math.round(wordCount / sentences.length) : wordCount;
+            let complexityScore = Math.min((avgSentenceLength / 12) * 30, 30); 
+
+            let fluencyScore = Math.min((wpm / 120) * 70, 70);
+            let totalScore = Math.min(Math.max(Math.round(fluencyScore + vocabScore + complexityScore - hesitationPenalty), 0), 100);
+            return { totalScore, wpm, vocabMatches, hesitationMatches, avgSentenceLength };
+        }
+
+        function startSimulator() {
+            if(!recognition) return alert("متصفحك لا يدعم الميكروفون.");
+            
+            let cefr = getCurrentCEFR();
+            let qs = CEFR_QUESTIONS[cefr.id] || CEFR_QUESTIONS['A1'];
+            let promptText = qs[Math.floor(Math.random() * qs.length)]; 
+            
+            document.getElementById('ieltsQuestion').innerHTML = `<span style="color:var(--gold); font-family:monospace;">[${cefr.id}]</span> ${promptText}`; 
+            speakText(promptText, 0.9);
+            
+            document.getElementById('evalContainer').style.display = 'none';
+            let btn = document.getElementById('btnStartIelts'); 
+            btn.style.background = 'var(--apple-red)'; btn.innerHTML = "<i class='fas fa-stop'></i> إنهاء التحدث"; btn.setAttribute('onclick', `stopSimulator()`);
+            
+            document.getElementById('ieltsTranscript').innerText = "Listening..."; 
+            document.getElementById('ieltsTimer').style.borderColor = "var(--theme-color)"; document.getElementById('ieltsTimer').style.color = "var(--theme-color)";
+            
+            simTimeLeft = 60; document.getElementById('ieltsTimer').innerText = "60s";
+            
+            recognition.lang = currentLang === 'eng' ? 'en-US' : 'it-IT'; 
+            recognition.continuous = true; recognition.interimResults = true; 
+            let finalTranscript = "";
+            recognition.onresult = (e) => { let interim = ""; for(let i=e.resultIndex; i<e.results.length; i++) { if(e.results[i].isFinal) finalTranscript += e.results[i][0].transcript + " "; else interim += e.results[i][0].transcript; } document.getElementById('ieltsTranscript').innerText = finalTranscript + interim; };
+            recognition.start();
+
+            simInterval = setInterval(() => { 
+                simTimeLeft--; document.getElementById('ieltsTimer').innerText = `${simTimeLeft}s`; 
+                if(simTimeLeft <= 15) { document.getElementById('ieltsTimer').style.borderColor = "var(--apple-red)"; document.getElementById('ieltsTimer').style.color = "var(--apple-red)"; } 
+                if(simTimeLeft <= 0) stopSimulator(); 
+            }, 1000);
+        }
+
+        function stopSimulator() {
+            clearInterval(simInterval); if(recognition) recognition.stop();
+            let btn = document.getElementById('btnStartIelts'); btn.style.background = "var(--theme-color)"; btn.innerHTML = "<i class='fas fa-redo'></i> إعادة الاستجواب"; btn.setAttribute('onclick', `startSimulator()`); 
+            
+            let transcript = document.getElementById('ieltsTranscript').innerText;
+            if(transcript.length < 5 || transcript === "Listening...") { document.getElementById('evalFeedbackText').innerText = "لم يتم رصد إجابة."; document.getElementById('evalContainer').style.display = 'block'; return; }
+            
+            let timeUsed = 60 - simTimeLeft; 
+            let analysis = evaluateSpeechQuality(transcript, timeUsed);
+            
+            document.getElementById('evalContainer').style.display = 'block';
+            
+            let scoreColor = "var(--apple-red)";
+            if(analysis.totalScore >= 80) scoreColor = "var(--green)";
+            else if(analysis.totalScore >= 60) scoreColor = "var(--gold)";
+            else if(analysis.totalScore >= 40) scoreColor = "var(--apple-orange)";
+            
+            document.getElementById('evalTotalScore').innerText = `${analysis.totalScore}%`;
+            document.getElementById('evalTotalScore').style.color = scoreColor;
+            
+            document.getElementById('evalWPM').innerText = analysis.wpm;
+            document.getElementById('evalVocab').innerText = analysis.vocabMatches;
+            document.getElementById('evalComplexity').innerText = analysis.avgSentenceLength;
+            document.getElementById('evalHesitation').innerText = analysis.hesitationMatches;
+
+            let feedback = "";
+            if(analysis.wpm < 80) feedback += "🗣️ تحدث بشكل أسرع لزيادة الطلاقة.<br>";
+            if(analysis.vocabMatches === 0) feedback += "📚 استخدم مفردات أكثر تعقيداً لرفع مستواك.<br>";
+            if(analysis.avgSentenceLength < 8) feedback += "🔗 جملك قصيرة جداً، حاول ربط الأفكار ببعضها.<br>";
+            if(analysis.hesitationMatches > 2) feedback += "🚨 قلل من استخدام كلمات التردد (Ah, Um).<br>";
+            if(feedback === "") feedback = "🏆 أداء استثنائي! استمر على هذا المستوى.";
+
+            document.getElementById('evalFeedbackText').innerHTML = feedback;
+
+            if(analysis.totalScore >= 60) {
+                triggerActivity('shadow', 20, null); 
+                syncToMasterReport(2); // Add 2 mins to Master Report for good speaking
+            }
+        }
+
+        // --- VAULT ---
+        function buildVault() {
+            const list = document.getElementById('vaultList'); list.innerHTML = ''; let langEntries = DB.filter(x => x.lang === currentLang);
+            if (langEntries.length === 0) { list.innerHTML = `<div class="text-sub" style="text-align:center; padding:20px;">الخزنة فارغة لغة ${currentLang}.</div>`; return; }
+            langEntries.forEach(entry => {
+                let clickableTarget = entry.target.split(/(\s+)/).map(w => w.trim()==='' ? w : `<span class="clickable-word" onclick="speakText('${w.replace(/[.,;!?]/g,"").trim()}')">${w}</span>`).join('');
+                let srsStatus = entry.interval === 0 ? 'يحتاج مراجعة' : `حفظ: ${entry.interval} أيام`;
+                list.innerHTML += `<div class="db-item"><div class="flex-between"><div><span class="srs-badge">${srsStatus}</span></div><button class="del-btn" onclick="deleteEntry(${entry.id})"><i class="fas fa-trash"></i> حذف</button></div><div class="db-native">${entry.native}</div><div class="db-target">${clickableTarget}</div></div>`;
+            });
+        }
+        function deleteEntry(id) { if(!confirm("حذف الجملة نهائياً؟")) return; DB = DB.filter(x => x.id !== id); saveDB(); buildVault(); }
+        function exportDB() { const blob = new Blob([JSON.stringify({db: DB, stats: Stats})], {type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='AlterEgo_V16_Backup.json'; a.click(); }
+        function importDB() { let dataStr = prompt("الصق كود الـ JSON هنا للاسترجاع:"); if (!dataStr) return; try { let imp = JSON.parse(dataStr); if(imp.db){ DB=imp.db; Stats=imp.stats; saveDB(); saveStats(); alert("تم الاسترجاع 🦅"); buildVault(); updateGamificationEngine();} }catch(e){alert("الكود غير صالح.");} }
+
+        window.onload = initApp; 
+    </script>
+</body>
+</html>

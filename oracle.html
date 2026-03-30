@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAKR OS | The Oracle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <meta name="theme-color" content="#0B1021">
+    
+    <style>
+        /* ================= DEEP NAVY THEME (ORACLE V4.3) ================= */
+        :root {
+            --bg-main: #060913;      
+            --card-bg: rgba(27, 35, 65, 0.7);      
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --accent-blue: #5A75FF;  
+            --gold: #FFB700;
+            --green: #30D158;
+            --cyan: #00bcd4;
+            --purple: #BF5AF2;
+            --red: #ff453a;
+            --orange: #FF9500;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #8A94B5;
+            
+            --radius: 24px;
+            --font: 'Cairo', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; -webkit-tap-highlight-color: transparent;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; padding: 25px 20px 120px; overflow-x: hidden; 
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 188, 212, 0.15), transparent 60%),
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* --- HEADER --- */
+        .header { display: flex; align-items: center; margin-bottom: 25px; animation: fadeUp 0.5s ease-out forwards; gap: 15px;}
+        .btn-back { background: rgba(0, 188, 212, 0.1); border: 1px solid rgba(0, 188, 212, 0.3); color: var(--cyan); width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; text-decoration: none;}
+        .btn-back:active { transform: scale(0.9); background: var(--cyan); color: #000; }
+        
+        .header-info h1 { font-size: 2.2rem; font-weight: 900; line-height: 1.1; color: #fff; letter-spacing: 1px;}
+        .header-info p { font-size: 0.85rem; color: var(--cyan); font-weight: 800; margin-top: 4px; text-transform: uppercase; letter-spacing: 2px;}
+
+        /* --- BENTO GRID --- */
+        .bento-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        
+        .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; position: relative; animation: fadeUp 0.5s ease-out forwards; opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;}
+        .card-title { font-size: 1.1rem; font-weight: 900; display: flex; align-items: center; gap: 8px; color: #fff;}
+        .card-value { font-size: 1.6rem; font-weight: 900; font-family: monospace;}
+
+        .chart-container { width: 100%; height: 220px; position: relative; margin-top: 10px;}
+
+        /* --- STATS GRID --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .stat-box { background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 16px; padding: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;}
+        .stat-icon { font-size: 1.6rem; margin-bottom: 8px; }
+        .stat-num { font-size: 1.5rem; font-weight: 900; font-family: monospace; color: #fff; line-height: 1;}
+        .stat-lbl { font-size: 0.75rem; color: var(--text-secondary); font-weight: 800; margin-top: 5px;}
+
+        .txt-accent { color: var(--accent-blue); } .txt-gold { color: var(--gold); } .txt-cyan { color: var(--cyan); } .txt-green { color: var(--green); } .txt-purple { color: var(--purple); } .txt-red { color: var(--red); }
+
+        /* --- PREDICTION BOX --- */
+        .prediction-box { background: linear-gradient(135deg, rgba(0, 188, 212, 0.1), rgba(0, 188, 212, 0.02)); border: 1px solid rgba(0, 188, 212, 0.3); border-radius: 20px; padding: 20px; margin-top: 5px; animation: fadeUp 0.6s ease-out forwards; opacity: 0; animation-delay: 0.3s; position: relative; overflow: hidden;}
+        .prediction-box::before { content:''; position:absolute; top:0; right:0; width:4px; height:100%; background:var(--cyan); }
+        .pred-title { font-size: 1.1rem; font-weight: 900; color: var(--cyan); display: flex; align-items: center; gap: 8px; margin-bottom: 12px;}
+        .pred-text { font-size: 0.95rem; color: #fff; line-height: 1.7; font-weight: 700;}
+        .pred-highlight { color: var(--gold); font-weight: 900; font-family: monospace; font-size: 1.1rem; background: rgba(255, 183, 0, 0.1); padding: 0 4px; border-radius: 4px;}
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-right"></i></a>
+        <div class="header-info">
+            <h1>THE ORACLE</h1>
+            <p>Data & Projections V4.3</p>
+        </div>
+    </header>
+
+    <div class="bento-grid">
+
+        <div class="bento-card" style="animation-delay: 0.05s;">
+            <div class="card-header" style="border:none; padding:0; margin-bottom:15px;">
+                <div class="card-title"><i class="fas fa-chart-pie txt-gold"></i> ملخص الإمبراطورية الشامل</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon txt-gold"><i class="fas fa-crown"></i></div>
+                    <div class="stat-num" id="statXP">0</div>
+                    <div class="stat-lbl">Global XP</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon txt-green"><i class="fas fa-coins"></i></div>
+                    <div class="stat-num" id="statWealth">0</div>
+                    <div class="stat-lbl">إجمالي الأصول (EGP)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon txt-cyan"><i class="fas fa-drafting-compass"></i></div>
+                    <div class="stat-num" id="statStudy">0</div>
+                    <div class="stat-lbl">ساعات الأكاديمية</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon txt-purple"><i class="fas fa-language"></i></div>
+                    <div class="stat-num" id="statLang">0</div>
+                    <div class="stat-lbl">ساعات اللغات</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bento-card" style="animation-delay: 0.1s;">
+            <div class="card-header">
+                <div class="card-title"><i class="fas fa-tachometer-alt txt-cyan"></i> مؤشر الكفاءة (آخر 14 يوم)</div>
+                <div class="card-value txt-cyan" id="avgEffDisp">0%</div>
+            </div>
+            <div class="chart-container">
+                <canvas id="effChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bento-card" style="animation-delay: 0.15s;">
+            <div class="card-header">
+                <div class="card-title"><i class="fas fa-weight txt-accent"></i> منحنى الوزن (Project 88)</div>
+                <div class="card-value txt-accent" id="currWeightDisp">-- Kg</div>
+            </div>
+            <div class="chart-container">
+                <canvas id="weightChart"></canvas>
+            </div>
+        </div>
+
+        <div class="prediction-box">
+            <div class="pred-title"><i class="fas fa-magic"></i> رؤية العرّاف (مارس 2027)</div>
+            <div class="pred-text" id="oracleText">
+                جاري استدعاء البيانات وتحليل الأنماط...
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SAFE DATA LOADER ---
+        function getLocalYMD(dateObj = new Date()) {
+            let y = dateObj.getFullYear(); let m = String(dateObj.getMonth() + 1).padStart(2, '0'); let d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function getSafeJSON(key, defaultVal) {
+            try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; }
+        }
+
+        // Global Chart Defaults for Dark Mode
+        Chart.defaults.color = 'rgba(255, 255, 255, 0.6)';
+        Chart.defaults.font.family = "'Cairo', sans-serif";
+        Chart.defaults.font.weight = 'bold';
+
+        window.onload = () => {
+            processOracleData();
+        };
+
+        function processOracleData() {
+            let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {});
+            let dates = Object.keys(masterDB).sort(); 
+            
+            // Fetch Global Stats
+            let totalXP = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0;
+            
+            // --- THE FIX: DYNAMIC GOLD PRICE SYNC ---
+            let fin = getSafeJSON('Falcon_Final_V29_Pro', { goldGrams: 0, cash: 0, manualPrice: 4000 });
+            let currentGoldPrice = parseFloat(fin.manualPrice) || 4000;
+            let totalWealth = parseFloat(fin.cash || 0) + (parseFloat(fin.goldGrams || 0) * currentGoldPrice); 
+
+            if(dates.length === 0) {
+                document.getElementById('oracleText').innerHTML = "لا توجد بيانات كافية للتحليل. قم بتسجيل تقاريرك اليومية من اللوحة الرئيسية لتبدأ التوقعات.";
+                document.getElementById('statXP').innerText = totalXP.toLocaleString('en-US');
+                document.getElementById('statWealth').innerText = (totalWealth/1000).toFixed(1) + "k";
+                return;
+            }
+
+            // Extract Data
+            let last14Dates = dates.slice(-14);
+            let labels = [];
+            let effData = [];
+            let weightData = [];
+            
+            let totalStudy = 0;
+            let totalLangMins = 0;
+            let totalEffScore = 0;
+
+            // Process all time for stats
+            dates.forEach(d => {
+                let rep = masterDB[d];
+                totalStudy += (parseFloat(rep.study) || 0);
+                totalLangMins += (parseInt(rep.english) || 0) + (parseInt(rep.italian) || 0);
+                totalEffScore += (parseInt(rep.score) || 0);
+            });
+
+            // Process last 14 days for charts
+            let latestWeight = null;
+            last14Dates.forEach(d => {
+                let dObj = new Date(d);
+                labels.push(`${dObj.getDate()}/${dObj.getMonth()+1}`);
+                
+                let rep = masterDB[d];
+                effData.push(rep.score || 0);
+                
+                if(rep.weight && rep.weight > 0) {
+                    weightData.push(rep.weight);
+                    latestWeight = rep.weight;
+                } else {
+                    weightData.push(weightData.length > 0 ? weightData[weightData.length-1] : null);
+                }
+            });
+
+            // Calculate Averages
+            let avgEff = Math.round(totalEffScore / dates.length);
+            
+            // Populate UI Stats
+            document.getElementById('avgEffDisp').innerText = avgEff + "%";
+            if(latestWeight) document.getElementById('currWeightDisp').innerText = latestWeight + " Kg";
+            
+            document.getElementById('statXP').innerText = totalXP.toLocaleString('en-US');
+            document.getElementById('statWealth').innerText = (totalWealth/1000).toFixed(1) + "k";
+            document.getElementById('statStudy').innerText = totalStudy.toFixed(1);
+            document.getElementById('statLang').innerText = (totalLangMins / 60).toFixed(1);
+
+            // --- DRAW CHARTS ---
+            drawEffChart(labels, effData);
+            if(latestWeight) drawWeightChart(labels, weightData);
+
+            // --- GENERATE PREDICTIONS ---
+            generateOracleText(avgEff, latestWeight, totalWealth, totalStudy, totalLangMins, currentGoldPrice);
+        }
+
+        function drawEffChart(labels, data) {
+            const ctx = document.getElementById('effChart').getContext('2d');
+            let gradient = ctx.createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(0, 188, 212, 0.4)');
+            gradient.addColorStop(1, 'rgba(0, 188, 212, 0.0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'الكفاءة %',
+                        data: data,
+                        borderColor: '#00bcd4',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#000',
+                        pointBorderColor: '#00bcd4',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4 
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function drawWeightChart(labels, data) {
+            const ctx = document.getElementById('weightChart').getContext('2d');
+            let gradient = ctx.createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(90, 117, 255, 0.4)');
+            gradient.addColorStop(1, 'rgba(90, 117, 255, 0.0)');
+
+            let cleanData = data.filter(n => n !== null);
+            if(cleanData.length === 0) return;
+            
+            let minW = Math.min(...cleanData) - 2;
+            let maxW = Math.max(...cleanData) + 2;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'الوزن (Kg)',
+                        data: data,
+                        borderColor: '#5A75FF',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#000',
+                        pointBorderColor: '#5A75FF',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        y: { min: Math.max(88, minW), max: maxW, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function generateOracleText(avgEff, currentWeight, totalWealth, studyHours, langMins, currentGoldPrice) {
+            let text = "";
+            let wTarget = 88;
+            let wealthTarget = 500000;
+            let targetDate = "مارس 2027";
+
+            text += `أهلاً بك يا صقر. بصفتي العرّاف السيبراني للإمبراطورية، قمت بتحليل أدائك الأخير:<br><br>`;
+
+            // Efficiency Logic
+            if(avgEff >= 80) {
+                text += `⚡ <b>مؤشر الانضباط:</b> أداؤك الحالي بمعدل <span class="pred-highlight">${avgEff}%</span> هو أداء إمبراطوري صارم. بهذا المعدل، أنت لا تتمنى النجاح، أنت تفرضه كواقع رياضي. <br><br>`;
+            } else if(avgEff >= 50) {
+                text += `⚡ <b>مؤشر الانضباط:</b> كفاءتك الحالية <span class="pred-highlight">${avgEff}%</span> مقبولة، لكنها منطقة راحة. لتصل لنسختك الخارقة في ${targetDate}، يجب رفع الالتزام بمهام الأكاديمية واللغات. <br><br>`;
+            } else {
+                text += `⚡ <b>مؤشر الانضباط:</b> هناك حالة تراخي (الكفاءة <span class="pred-highlight">${avgEff}%</span>). يجب العودة لـ "المهام الصارمة" في اللوحة الرئيسية فوراً لإنقاذ الجدول الزمني. <br><br>`;
+            }
+
+            // Weight Logic
+            if(currentWeight) {
+                let toLose = (currentWeight - wTarget).toFixed(1);
+                if(toLose > 0) {
+                    text += `🏋️‍♂️ <b>Project 88:</b> يفصلك <span class="pred-highlight">${toLose} Kg</span> عن الهدف. منحنى نزولك يعمل، استمر في تفعيل وضع הـ Low Carb في أيام الراحة. <br><br>`;
+                } else {
+                    text += `🏋️‍♂️ <b>Project 88:</b> لقد حطمت الهدف! حافظ على بنيتك العضلية الآن. <br><br>`;
+                }
+            }
+
+            // Wealth Logic
+            let wealthRem = wealthTarget - totalWealth;
+            if(wealthRem > 0) {
+                text += `💰 <b>الخزنة:</b> تم جمع <span class="pred-highlight">${(totalWealth/1000).toFixed(1)}k</span> من أصل 500k (تم احتساب الجرام بسعر ${currentGoldPrice} ج.م). استمر في تحويل السيولة لذهب لحماية أصولك من التضخم. <br><br>`;
+            }
+
+            // Architecture & Italy Logic
+            let langHours = (langMins / 60).toFixed(1);
+            if(studyHours > 10 || langHours > 10) {
+                text += `🏛️ <b>تذكرة إيطاليا:</b> تراكم ${studyHours} ساعات في المعمار و ${langHours} ساعات في اللغات سيبني لك بورتفوليو قوي. المنحة الإيطالية في ${targetDate} تقترب.`;
+            } else {
+                text += `🏛️ <b>تذكرة إيطاليا:</b> رصيدك الأكاديمي واللغوي يحتاج لدعم. قم بتفعيل "مفاعل التركيز" يومياً لضمان قبولك في ${targetDate}.`;
+            }
+
+            document.getElementById('oracleText').innerHTML = text;
+        }
+
+    </script>
+</body>
+</html>

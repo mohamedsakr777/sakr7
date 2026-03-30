@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAKR OS | The Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <meta name="theme-color" content="#0B1021">
+    
+    <style>
+        /* ================= DEEP NAVY THEME (ACADEMY V4.3) ================= */
+        :root {
+            --bg-main: #060913;      
+            --card-bg: rgba(27, 35, 65, 0.7);      
+            --card-hover: rgba(35, 44, 80, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --accent-blue: #5A75FF;  
+            --gold: #FFB700;
+            --green: #30D158;
+            --cyan: #00bcd4;
+            --purple: #BF5AF2;
+            --red: #ff453a;
+            --silver: #e5e5e5;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #8A94B5;
+            
+            --radius: 24px;
+            --font: 'Cairo', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; -webkit-tap-highlight-color: transparent;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; padding: 25px 20px 120px; overflow-x: hidden; 
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(0, 188, 212, 0.1), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(90, 117, 255, 0.1), transparent 50%),
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+            transition: background-color 0.8s ease, filter 0.8s ease;
+        }
+
+        /* --- FLOW STATE MODE (FOCUS) --- */
+        body.flow-mode {
+            background-color: #000;
+            background-image: radial-gradient(circle at 50% 50%, rgba(0, 188, 212, 0.15) 0, transparent 60%);
+        }
+        body.flow-mode .bento-card:not(.reactor-card), 
+        body.flow-mode .header, 
+        body.flow-mode .stats-grid {
+            opacity: 0.05;
+            pointer-events: none;
+            filter: blur(8px);
+            transition: 0.8s ease;
+        }
+        .bento-card { transition: 0.8s ease; }
+
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* --- HEADER --- */
+        .header { display: flex; align-items: center; margin-bottom: 25px; animation: fadeUp 0.5s ease-out forwards; gap: 15px;}
+        .btn-back { background: rgba(0, 188, 212, 0.1); border: 1px solid rgba(0, 188, 212, 0.3); color: var(--cyan); width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; text-decoration: none;}
+        .btn-back:active { transform: scale(0.9); background: var(--cyan); color: #000; }
+        
+        .header-info h1 { font-size: 2rem; font-weight: 900; line-height: 1.1; color: #fff; letter-spacing: 1px;}
+        .header-info p { font-size: 0.85rem; color: var(--cyan); font-weight: 800; margin-top: 4px; text-transform: uppercase; letter-spacing: 2px;}
+
+        /* --- RANK BADGE & STATS --- */
+        .rank-badge { background: linear-gradient(90deg, rgba(0, 188, 212, 0.2), rgba(90, 117, 255, 0.2)); color: var(--cyan); border: 1px solid var(--cyan); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 900; display: inline-block; margin-bottom: 10px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; animation: fadeUp 0.5s ease-out forwards; opacity: 0; animation-delay: 0.1s;}
+        .stat-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 15px; text-align: center; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        .stat-val { font-size: 1.6rem; font-weight: 900; color: #fff; line-height: 1; font-family: monospace;}
+        .stat-lbl { font-size: 0.7rem; color: var(--text-secondary); font-weight: 900; margin-top: 5px; text-transform: uppercase;}
+
+        /* --- BENTO GRID --- */
+        .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .span-2 { grid-column: span 2; }
+        
+        .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; position: relative; animation: fadeUp 0.5s ease-out forwards; opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
+        
+        .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;}
+        .card-title-box { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 900; color: #fff; }
+        .icon-sq { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border);}
+        
+        .add-btn-sm { background: rgba(0, 188, 212, 0.1); color: var(--cyan); border: 1px solid rgba(0, 188, 212, 0.3); padding: 6px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 800; cursor: pointer; transition: 0.2s; font-family: var(--font);}
+        .add-btn-sm:active { transform: scale(0.9); background: var(--cyan); color: #000; }
+
+        /* --- DAILY QUESTS --- */
+        .quest-item { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.3); padding: 12px 15px; border-radius: 14px; margin-bottom: 10px; border: 1px solid var(--border); transition: 0.3s; cursor: pointer;}
+        .quest-item.done { opacity: 0.6; border-color: var(--green); background: rgba(48, 209, 88, 0.1);}
+        .quest-item.done .quest-txt { text-decoration: line-through; color: var(--green); }
+        .quest-chk { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--cyan); display: flex; justify-content: center; align-items: center; transition: 0.2s; color: transparent; font-size: 0.8rem;}
+        .quest-item.done .quest-chk { background: var(--green); border-color: var(--green); color: #000; }
+        .quest-txt { font-size: 0.9rem; font-weight: 800; flex: 1; color: #fff;}
+        .quest-reward { font-size: 0.75rem; font-weight: 900; color: var(--gold); background: rgba(255, 183, 0, 0.1); padding: 2px 8px; border-radius: 8px; font-family: monospace;}
+
+        /* --- FOCUS REACTOR (TIMER) --- */
+        .reactor-card { border-color: rgba(0, 188, 212, 0.4); box-shadow: 0 0 30px rgba(0, 188, 212, 0.1); z-index: 100;}
+        .reactor-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0;}
+        .subject-select { width: 100%; max-width: 300px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 14px; font-family: var(--font); font-weight: 800; font-size: 0.95rem; margin-bottom: 25px; outline: none; text-align: center; appearance: none; cursor: pointer;}
+        .subject-select:focus { border-color: var(--cyan); }
+        
+        .reactor-ring { width: 200px; height: 200px; border-radius: 50%; border: 4px dashed rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; position: relative; transition: 0.3s;}
+        body.flow-mode .reactor-ring { border-color: var(--cyan); border-style: solid; box-shadow: 0 0 50px rgba(0, 188, 212, 0.4); animation: pulseReactor 2s infinite alternate;}
+        @keyframes pulseReactor { 0% { box-shadow: 0 0 20px rgba(0, 188, 212, 0.2); transform: scale(1); } 100% { box-shadow: 0 0 60px rgba(0, 188, 212, 0.5); transform: scale(1.05); } }
+        
+        .timer-display { font-size: 4rem; font-weight: 900; color: #fff; font-family: monospace; position: absolute; z-index: 10; text-shadow: 0 5px 15px rgba(0,0,0,0.5);}
+        body.flow-mode .timer-display { color: var(--cyan); text-shadow: 0 0 20px rgba(0, 188, 212, 0.5); }
+
+        .timer-controls { display: flex; gap: 15px; margin-top: 25px; width: 100%; justify-content: center;}
+        .t-btn { padding: 12px 20px; border-radius: 14px; border: none; font-weight: 900; font-family: var(--font); cursor: pointer; transition: 0.2s; font-size: 0.95rem; background: rgba(0,0,0,0.4); color: var(--text-secondary); border: 1px solid var(--border);}
+        .t-btn-start { background: rgba(0, 188, 212, 0.1); color: var(--cyan); border-color: rgba(0, 188, 212, 0.3); flex: 1; max-width: 200px;}
+        .t-btn:active { transform: scale(0.92); }
+
+        /* --- LIST ITEMS --- */
+        .track-item { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 12px; transition: 0.3s;}
+        .track-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .track-name { font-weight: 900; font-size: 1rem; color: #fff; }
+        .track-actions { display: flex; gap: 10px; }
+        .action-icon { color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; transition: 0.2s; background: rgba(255,255,255,0.05); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px;}
+        .action-icon:active { transform: scale(0.9); background: var(--cyan); color: #000; }
+        
+        .prog-row { display: flex; align-items: center; gap: 10px; }
+        .prog-bg { flex: 1; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);}
+        .prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent-blue), var(--cyan)); transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 4px;}
+        .prog-text { font-size: 0.85rem; font-weight: 900; color: var(--cyan); font-family: monospace; width: 45px; text-align: left;}
+        .time-badge { background: rgba(255, 183, 0, 0.1); color: var(--gold); padding: 3px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 900; margin-right: 8px; font-family: monospace;}
+
+        /* --- MICRO-LEARNINGS --- */
+        .log-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .log-input { flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 14px; border-radius: 14px; color: #fff; font-family: var(--font); font-size: 0.95rem; transition: 0.3s; }
+        .log-input:focus { border-color: var(--cyan); background: rgba(0, 188, 212, 0.05); }
+        .log-btn { background: var(--cyan); border: none; width: 50px; border-radius: 14px; color: #000; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 900; transition: 0.2s;}
+        .log-btn:active { transform: scale(0.9); }
+        
+        .log-list { max-height: 250px; overflow-y: auto; padding-right: 5px;}
+        .log-list::-webkit-scrollbar { width: 4px; } .log-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+        .log-item { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 10px; position: relative; border-right: 4px solid var(--cyan);}
+        .log-date { font-size: 0.7rem; color: var(--cyan); margin-bottom: 5px; font-weight: 800;}
+        .log-text { font-size: 0.9rem; font-weight: 700; line-height: 1.6; color: #fff;}
+
+        /* --- MODALS --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index:3000; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 15px;}
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 400px; padding: 25px; border-radius: 30px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.7); animation: fadeUp 0.3s ease-out; }
+        .modal-title { margin-top:0; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:15px; font-weight: 900; color: var(--cyan); text-align: center;}
+        
+        .modal-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 14px; margin-bottom: 15px; font-family: var(--font); font-size: 0.95rem; font-weight: 700; transition: 0.3s;}
+        .modal-input:focus { border-color: var(--cyan); }
+        
+        .modal-btn { width: 100%; padding: 15px; border: none; border-radius: 14px; font-weight: 900; font-size: 1rem; font-family: var(--font); cursor: pointer; margin-bottom: 10px; transition: 0.2s;}
+        .modal-btn:active { transform: scale(0.97); }
+        .btn-confirm { background: var(--cyan); color: #000; box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);}
+        .btn-cancel { background: transparent; color: var(--text-secondary); border: 1px solid var(--border);}
+        
+        .txt-cyan { color: var(--cyan); } .txt-green { color: var(--green); } .txt-gold { color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-right"></i></a>
+        <div class="header-info">
+            <div class="rank-badge" id="ui-rank">مبتدئ التأسيس</div>
+            <h1>الأكاديمية</h1>
+            <p>التطوير وبناء البورتفوليو</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-val" id="st-xp">0</div>
+                <div class="stat-lbl">Global XP</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val" id="st-hours">0</div>
+                <div class="stat-lbl">ساعات الدراسة</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val" id="st-sparks">0</div>
+                <div class="stat-lbl">ومضات معرفة</div>
+            </div>
+        </div>
+
+        <div class="bento-grid">
+            
+            <div class="bento-card span-2" style="animation-delay: 0.15s;">
+                <div class="card-head">
+                    <div class="card-title-box"><div class="icon-sq" style="color: var(--green); border-color: rgba(48, 209, 88, 0.3);">🎯</div> مهام الأكاديمية اليومية</div>
+                </div>
+                <div id="questsContainer">
+                    </div>
+            </div>
+
+            <div class="bento-card span-2 reactor-card" style="animation-delay: 0.2s;">
+                <div class="card-head" style="border:none; margin-bottom:5px;">
+                    <div class="card-title-box"><div class="icon-sq txt-cyan" style="border-color: rgba(0, 188, 212, 0.3);">☢️</div> مفاعل التركيز العميق</div>
+                </div>
+                <div class="reactor-box">
+                    <select id="subjectSelect" class="subject-select">
+                        </select>
+
+                    <div class="reactor-ring" id="reactorRing">
+                        <div class="timer-display" id="timerDisp">25:00</div>
+                    </div>
+                    
+                    <div class="timer-controls">
+                        <button class="t-btn" onclick="setTimer(25)">25 د</button>
+                        <button class="t-btn t-btn-start" id="startTimerBtn" onclick="toggleTimer()"><i class="fas fa-play"></i> إشعال المفاعل</button>
+                        <button class="t-btn" onclick="setTimer(50)">50 د</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bento-card span-2" style="animation-delay: 0.25s;">
+                <div class="card-head">
+                    <div class="card-title-box"><div class="icon-sq txt-gold">⚡</div> مصفوفة المهارات</div>
+                    <button class="add-btn-sm" onclick="openModal('skill')">+ مهارة جديدة</button>
+                </div>
+                <div id="skillsContainer"></div>
+            </div>
+
+            <div class="bento-card span-2" style="animation-delay: 0.3s;">
+                <div class="card-head">
+                    <div class="card-title-box"><div class="icon-sq" style="color:#BF5AF2;">🎓</div> الكورسات والمحاضرات</div>
+                    <button class="add-btn-sm" onclick="openModal('course')">+ كورس جديد</button>
+                </div>
+                <div id="coursesContainer"></div>
+            </div>
+
+            <div class="bento-card span-2" style="animation-delay: 0.35s;">
+                <div class="card-head">
+                    <div class="card-title-box"><div class="icon-sq" style="color:#e5e5e5;">📚</div> المكتبة والقراءة</div>
+                    <button class="add-btn-sm" onclick="openModal('book')">+ كتاب جديد</button>
+                </div>
+                <div id="booksContainer"></div>
+            </div>
+
+            <div class="bento-card span-2" style="animation-delay: 0.4s;">
+                <div class="card-head" style="border:none; margin-bottom:5px;">
+                    <div class="card-title-box"><div class="icon-sq txt-cyan">💡</div> ومضات المعرفة</div>
+                    <button class="add-btn-sm" style="background:transparent; color:var(--text-secondary); border-color:var(--border);" onclick="reviewRandomSpark()"><i class="fas fa-random"></i> مراجعة عشوائية</button>
+                </div>
+                <div class="log-input-group">
+                    <input type="text" id="logInput" class="log-input" placeholder="سجل فكرة أو استنتاج اتعلمته النهارده...">
+                    <button class="log-btn" onclick="addLog()"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="log-list" id="logContainer"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">إضافة عنصر</h2>
+            <label style="font-size:0.8rem; color:var(--text-secondary); font-weight:800; margin-bottom:5px; display:block;">الاسم / العنوان:</label>
+            <input type="text" id="inpName" class="modal-input" placeholder="اكتب هنا...">
+            
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label style="font-size:0.8rem; color:var(--text-secondary); font-weight:800; margin-bottom:5px; display:block;">الإنجاز الحالي:</label>
+                    <input type="number" id="inpCurrent" class="modal-input" placeholder="0">
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size:0.8rem; color:var(--text-secondary); font-weight:800; margin-bottom:5px; display:block;" id="lblTotal">الإجمالي:</label>
+                    <input type="number" id="inpTotal" class="modal-input" placeholder="100">
+                </div>
+            </div>
+            
+            <input type="hidden" id="inpType"><input type="hidden" id="inpId">
+            <button class="modal-btn btn-confirm" onclick="saveItem()">حفظ البيانات</button>
+            <button class="modal-btn btn-cancel" onclick="closeModal()">إلغاء</button>
+        </div>
+    </div>
+
+    <div class="modal" id="reviewModal">
+        <div class="modal-content" style="text-align:center;">
+            <div style="font-size:3.5rem; margin-bottom:10px; color:var(--cyan);"><i class="fas fa-brain"></i></div>
+            <h3 style="color:var(--text-primary); margin-bottom:15px; font-weight:900;">هل تتذكر هذه المعلومة؟</h3>
+            <div id="reviewContent" style="font-size:1.1rem; line-height:1.6; margin-bottom:20px; font-weight:800; color:var(--cyan);"></div>
+            <p id="reviewDate" style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:25px; font-family:monospace;"></p>
+            <button class="modal-btn btn-confirm" onclick="document.getElementById('reviewModal').style.display='none'">تذكرتها جيداً! (+5 XP)</button>
+        </div>
+    </div>
+
+<script>
+    // --- SAFE TIME & DB HELPERS ---
+    function getLocalYMD(dateObj = new Date()) {
+        let y = dateObj.getFullYear(); let m = String(dateObj.getMonth() + 1).padStart(2, '0'); let d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+    const TODAY = getLocalYMD();
+    function getSafeJSON(key, defaultVal) { try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; } }
+
+    const DB_KEY = 'SakrOS_Academy_V3';
+
+    // Database Structure
+    let db = getSafeJSON(DB_KEY, {
+        totalStudyMins: 0,
+        books: [], courses: [],
+        skills: [
+            { id: 1, name: "IELTS Preparation", current: 40, total: 100, studyMins: 0 },
+            { id: 2, name: "اللغة الإيطالية", current: 20, total: 100, studyMins: 0 },
+            { id: 3, name: "Revit / Lumion", current: 70, total: 100, studyMins: 0 },
+            { id: 4, name: "Adobe Premiere", current: 85, total: 100, studyMins: 0 }
+        ],
+        logs: [],
+        quests: { date: null, items: [] }
+    });
+
+    let timerInt; let selectedSessionMins = 25; let timeSec = selectedSessionMins * 60; let isRunning = false;
+
+    window.onload = function() {
+        if(db.totalStudyMins === undefined) db.totalStudyMins = 0;
+        db.skills.forEach(s => { if(s.studyMins === undefined) s.studyMins = 0; });
+        if(!db.quests) db.quests = { date: null, items: [] };
+        
+        generateDailyQuests();
+        updateStats(); renderAllLists(); renderLogs(); updateTimerDisplay();
+    };
+
+    function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); updateStats(); }
+
+    // --- GLOBAL SYNC (XP & OS MASTER REPORT) ---
+    function addGlobalXP(amount) {
+        let curXp = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0;
+        localStorage.setItem('SakrOS_TotalXP', curXp + amount);
+        updateStats();
+    }
+    
+    function syncToMasterReport(minsAdded) {
+        let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {});
+        if(!masterDB[TODAY]) masterDB[TODAY] = {};
+        
+        // Add hours to Master Report
+        let currentHours = parseFloat(masterDB[TODAY].study) || 0;
+        masterDB[TODAY].study = currentHours + (minsAdded / 60);
+        
+        localStorage.setItem('SakrOS_MasterReport_V1', JSON.stringify(masterDB));
+    }
+
+    // --- RANKS & STATS ---
+    function updateStats() {
+        let globalXp = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0;
+        document.getElementById('st-xp').innerText = globalXp.toLocaleString('en-US');
+        document.getElementById('st-sparks').innerText = db.logs.length;
+        
+        let totalHours = (db.totalStudyMins / 60).toFixed(1);
+        document.getElementById('st-hours').innerText = totalHours + "h";
+        
+        // Ranking System Based on Hours
+        let rankObj = document.getElementById('ui-rank');
+        if(totalHours < 10) { rankObj.innerText = "مبتدئ التأسيس"; }
+        else if(totalHours < 50) { rankObj.innerText = "باحث شغوف"; }
+        else if(totalHours < 150) { rankObj.innerText = "عالم متمرس"; }
+        else if(totalHours < 300) { rankObj.innerText = "عقل مدبر"; }
+        else { rankObj.innerText = "معمار المعرفة 🏛️"; }
+    }
+
+    // --- DAILY QUESTS ---
+    function generateDailyQuests() {
+        const questBank = [
+            "اقرأ 10 صفحات من كتاب منهجي", "أنهِ جلسة تركيز عميقة (25 دقيقة)", "سجل ومضة معرفة أو استنتاج جديد", 
+            "ذاكر لغة لمدة 25 دقيقة", "شاهد حلقة من كورس وطبق عليها", "راجع معلومة قديمة (مراجعة عشوائية)"
+        ];
+        
+        if(db.quests.date !== TODAY) {
+            let shuffled = questBank.sort(() => 0.5 - Math.random());
+            db.quests = {
+                date: TODAY,
+                items: [
+                    { text: shuffled[0], done: false, xp: 20 },
+                    { text: shuffled[1], done: false, xp: 20 },
+                    { text: shuffled[2], done: false, xp: 30 }
+                ]
+            };
+            saveDB();
+        }
+        renderQuests();
+    }
+
+    function renderQuests() {
+        const qContainer = document.getElementById('questsContainer');
+        qContainer.innerHTML = '';
+        db.quests.items.forEach((q, i) => {
+            qContainer.innerHTML += `
+                <div class="quest-item ${q.done ? 'done' : ''}" onclick="toggleQuest(${i})">
+                    <div class="quest-chk">${q.done ? '✔' : ''}</div>
+                    <div class="quest-txt">${q.text}</div>
+                    <div class="quest-reward">+${q.xp} XP</div>
+                </div>
+            `;
+        });
+    }
+
+    function toggleQuest(index) {
+        if(db.quests.items[index].done) return; 
+        db.quests.items[index].done = true;
+        addGlobalXP(db.quests.items[index].xp);
+        saveDB(); renderQuests();
+        if(typeof confetti !== 'undefined') confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 }, colors: ['#00bcd4'] });
+    }
+
+    // --- LISTS & SUBJECTS ---
+    function updateSubjectDropdown() {
+        const select = document.getElementById('subjectSelect');
+        select.innerHTML = `<option value="general">⏱️ جلسة تركيز عامة</option>`;
+        db.skills.forEach(s => { select.innerHTML += `<option value="${s.id}">📚 مذاكرة: ${s.name}</option>`; });
+    }
+
+    function renderAllLists() {
+        renderList('books', 'booksContainer', 'صفحة');
+        renderList('courses', 'coursesContainer', 'حلقة');
+        renderList('skills', 'skillsContainer', '%');
+        updateSubjectDropdown();
+    }
+
+    function renderList(type, containerId, unitLabel) {
+        const container = document.getElementById(containerId); container.innerHTML = '';
+        let items = db[type];
+        if(items.length === 0) { container.innerHTML = `<div style="text-align:center; color:var(--text-secondary); font-size:0.85rem; padding:15px; border:1px dashed var(--border); border-radius:14px;">لا توجد عناصر. اضغط إضافة للبدء.</div>`; return; }
+        
+        items.forEach(item => {
+            let pct = item.total > 0 ? Math.min(100, (item.current / item.total) * 100) : 0;
+            let isComplete = item.current >= item.total;
+            let timeBadgeHtml = '';
+            if (type === 'skills') {
+                let hoursSpent = ((item.studyMins || 0) / 60).toFixed(1);
+                timeBadgeHtml = `<span class="time-badge">⏱️ ${hoursSpent}h</span>`;
+            }
+            container.innerHTML += `
+                <div class="track-item" style="${isComplete ? 'border-color: var(--gold); background:rgba(255, 183, 0, 0.05);' : ''}">
+                    <div class="track-header">
+                        <div class="track-name">${isComplete ? '🏆 ' : ''}${item.name}</div>
+                        <div class="track-actions">
+                            <div class="action-icon" onclick="editItem('${type}', ${item.id})"><i class="fas fa-pen"></i></div>
+                            <div class="action-icon" style="color:var(--red);" onclick="deleteItem('${type}', ${item.id})"><i class="fas fa-trash"></i></div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:800; margin-bottom:8px; display:flex; align-items:center;">
+                        ${timeBadgeHtml}<span>الإنجاز: ${item.current} / ${item.total} ${unitLabel}</span>
+                    </div>
+                    <div class="prog-row">
+                        <div class="prog-bg"><div class="prog-fill" style="width: ${pct}%; ${isComplete ? 'background: var(--gold);' : ''}"></div></div>
+                        <div class="prog-text" style="${isComplete ? 'color:var(--gold);' : ''}">${pct.toFixed(0)}%</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // --- MODALS (CRUD) ---
+    function openModal(type, id = null) {
+        document.getElementById('inpType').value = type; document.getElementById('inpId').value = id || '';
+        let titleMap = { 'book': 'كتاب', 'course': 'كورس', 'skill': 'مهارة' };
+        let unitMap = { 'book': 'إجمالي الصفحات:', 'course': 'إجمالي الحلقات:', 'skill': 'النسبة القصوى (100):' };
+        document.getElementById('lblTotal').innerText = unitMap[type];
+        if(id) {
+            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-pen"></i> تعديل ${titleMap[type]}`;
+            let arr = type === 'book' ? db.books : (type === 'course' ? db.courses : db.skills);
+            let item = arr.find(x => x.id === id);
+            document.getElementById('inpName').value = item.name; document.getElementById('inpCurrent').value = item.current; document.getElementById('inpTotal').value = item.total;
+            if(type === 'skill') document.getElementById('inpTotal').disabled = true; 
+        } else {
+            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-plus-circle"></i> إضافة ${titleMap[type]} جديد`;
+            document.getElementById('inpName').value = ''; document.getElementById('inpCurrent').value = '0'; document.getElementById('inpTotal').value = type === 'skill' ? '100' : ''; document.getElementById('inpTotal').disabled = false;
+        }
+        document.getElementById('itemModal').style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('itemModal').style.display = 'none'; }
+
+    function saveItem() {
+        let type = document.getElementById('inpType').value; let id = document.getElementById('inpId').value;
+        let name = document.getElementById('inpName').value.trim(); let current = parseInt(document.getElementById('inpCurrent').value) || 0; let total = parseInt(document.getElementById('inpTotal').value) || 1;
+        if(!name) return alert("الرجاء إدخال الاسم.");
+        let arrType = type === 'book' ? 'books' : (type === 'course' ? 'courses' : 'skills'); let arr = db[arrType];
+
+        if(id) {
+            let oldItem = arr.find(x => x.id == id);
+            if(current > oldItem.current) addGlobalXP((current - oldItem.current) * 5); 
+            oldItem.name = name; oldItem.current = current; oldItem.total = total;
+        } else {
+            let newItem = { id: Date.now(), name: name, current: current, total: total };
+            if(type === 'skill') newItem.studyMins = 0; 
+            arr.push(newItem); addGlobalXP(10); 
+        }
+        saveDB(); renderAllLists(); closeModal();
+    }
+
+    function editItem(arrType, id) { let type = arrType === 'books' ? 'book' : (arrType === 'courses' ? 'course' : 'skill'); openModal(type, id); }
+    function deleteItem(arrType, id) { if(confirm("هل أنت متأكد من الحذف نهائياً؟")) { db[arrType] = db[arrType].filter(x => x.id !== id); saveDB(); renderAllLists(); } }
+
+    // --- MICRO-LEARNINGS ---
+    function addLog() {
+        let text = document.getElementById('logInput').value.trim(); if(!text) return;
+        db.logs.unshift({ id: Date.now(), date: TODAY, text: text }); addGlobalXP(15); saveDB(); renderLogs(); document.getElementById('logInput').value = '';
+    }
+
+    function renderLogs() {
+        const container = document.getElementById('logContainer'); container.innerHTML = '';
+        if(db.logs.length === 0) { container.innerHTML = `<div style="text-align:center; color:var(--text-secondary); font-size:0.85rem; padding:20px;">لا يوجد ومضات مسجلة.</div>`; return; }
+        db.logs.forEach(log => {
+            container.innerHTML += `<div class="log-item"><button onclick="deleteLog(${log.id})" style="position:absolute; top:10px; left:10px; background:none; border:none; color:var(--red); opacity:0.5; cursor:pointer;"><i class="fas fa-times"></i></button><div class="log-date">${log.date}</div><div class="log-text">${log.text}</div></div>`;
+        });
+    }
+
+    function deleteLog(id) { if(confirm("حذف المعلومة من السجل؟")) { db.logs = db.logs.filter(l => l.id !== id); saveDB(); renderLogs(); } }
+
+    function reviewRandomSpark() {
+        if(db.logs.length === 0) return alert("لا يوجد ومضات مسجلة لاختبارها.");
+        let randomLog = db.logs[Math.floor(Math.random() * db.logs.length)];
+        document.getElementById('reviewContent').innerText = randomLog.text;
+        document.getElementById('reviewDate').innerText = `سُجلت في: ${randomLog.date}`;
+        document.getElementById('reviewModal').style.display = 'flex';
+        addGlobalXP(5); saveDB(); 
+    }
+
+    // --- TIMER & FLOW MODE LOGIC ---
+    function updateTimerDisplay() {
+        let m = Math.floor(timeSec / 60).toString().padStart(2, '0');
+        let s = (timeSec % 60).toString().padStart(2, '0');
+        document.getElementById('timerDisp').innerText = `${m}:${s}`;
+    }
+
+    function setTimer(mins) { if(isRunning) return alert("الرجاء إيقاف المفاعل أولاً."); selectedSessionMins = mins; timeSec = selectedSessionMins * 60; updateTimerDisplay(); }
+
+    function toggleTimer() {
+        let btn = document.getElementById('startTimerBtn');
+        let subjectDropdown = document.getElementById('subjectSelect');
+        
+        if(isRunning) {
+            clearInterval(timerInt); isRunning = false;
+            btn.innerHTML = "<i class='fas fa-play'></i> استكمال التشغيل"; btn.style.background = "rgba(0, 188, 212, 0.1)"; btn.style.color = "var(--cyan)";
+            document.body.classList.remove('flow-mode'); 
+            subjectDropdown.disabled = false; 
+        } else {
+            isRunning = true;
+            btn.innerHTML = "<i class='fas fa-stop'></i> إيقاف المفاعل"; btn.style.background = "rgba(255, 69, 58, 0.1)"; btn.style.color = "var(--red)"; btn.style.borderColor = "rgba(255, 69, 58, 0.3)";
+            document.body.classList.add('flow-mode'); 
+            subjectDropdown.disabled = true; 
+            
+            timerInt = setInterval(() => {
+                timeSec--; updateTimerDisplay();
+                if(timeSec <= 0) {
+                    clearInterval(timerInt); isRunning = false; document.body.classList.remove('flow-mode');
+                    
+                    let selectedSkillId = subjectDropdown.value;
+                    db.totalStudyMins += selectedSessionMins; 
+                    
+                    // SYNC TO GLOBAL MASTER REPORT
+                    syncToMasterReport(selectedSessionMins);
+                    
+                    let skillNameAlert = "جلسة عامة";
+                    if (selectedSkillId !== 'general') {
+                        let skill = db.skills.find(s => s.id == selectedSkillId);
+                        if (skill) { skill.studyMins += selectedSessionMins; skillNameAlert = skill.name; }
+                    }
+
+                    addGlobalXP(selectedSessionMins === 50 ? 100 : 50); 
+                    saveDB(); renderAllLists(); 
+                    timeSec = selectedSessionMins * 60; updateTimerDisplay();
+                    
+                    btn.innerHTML = "<i class='fas fa-play'></i> إشعال المفاعل"; btn.style.background = "rgba(0, 188, 212, 0.1)"; btn.style.color = "var(--cyan)"; btn.style.borderColor = "rgba(0, 188, 212, 0.3)";
+                    subjectDropdown.disabled = false;
+                    
+                    if(typeof confetti !== 'undefined') confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#00bcd4', '#ffffff'] });
+                    alert(`أحسنت! أتممت جلسة التركيز (${skillNameAlert}).\nتم مزامنة الوقت بنجاح مع التقرير السيبراني 🦅`);
+                    if (navigator.vibrate) navigator.vibrate([500, 200, 500]);
+                }
+            }, 1000);
+        }
+    }
+</script>
+</body>
+</html>

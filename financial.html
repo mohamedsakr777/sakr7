@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAKR OS | Financial Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <meta name="theme-color" content="#0B1021">
+    
+    <style>
+        /* ================= DEEP NAVY THEME (FINANCIAL V4.3) ================= */
+        :root {
+            --bg-main: #060913;      
+            --card-bg: rgba(27, 35, 65, 0.7);      
+            --card-hover: rgba(35, 44, 80, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --accent-blue: #5A75FF;  
+            --gold: #FFB700;
+            --green: #30D158;
+            --cyan: #00bcd4;
+            --purple: #BF5AF2;
+            --red: #ff453a;
+            --silver: #e5e5e5;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #8A94B5;
+            
+            --radius: 24px;
+            --font: 'Cairo', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; -webkit-tap-highlight-color: transparent;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; padding: 25px 20px 120px; overflow-x: hidden; 
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(48, 209, 88, 0.1), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 183, 0, 0.1), transparent 50%),
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* --- HEADER --- */
+        .header { display: flex; align-items: center; margin-bottom: 25px; animation: fadeUp 0.5s ease-out forwards; gap: 15px;}
+        .btn-back { background: rgba(48, 209, 88, 0.1); border: 1px solid rgba(48, 209, 88, 0.3); color: var(--green); width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; text-decoration: none;}
+        .btn-back:active { transform: scale(0.9); background: var(--green); color: #000; }
+        
+        .header-info h1 { font-size: 2rem; font-weight: 900; line-height: 1.1; color: #fff; letter-spacing: 1px;}
+        .header-info p { font-size: 0.85rem; color: var(--green); font-weight: 800; margin-top: 4px; text-transform: uppercase; letter-spacing: 2px;}
+
+        /* --- BENTO GRID --- */
+        .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .span-2 { grid-column: span 2; }
+        
+        .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; position: relative; animation: fadeUp 0.5s ease-out forwards; opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
+        
+        .card-title { font-size: 1.05rem; font-weight: 900; margin-bottom: 15px; color: #fff; display: flex; align-items: center; justify-content: space-between;}
+        .title-group { display: flex; align-items: center; gap: 10px; }
+
+        /* --- NET WORTH --- */
+        .net-worth-box { text-align: center; margin-bottom: 15px; }
+        .net-worth-val { font-size: 3rem; font-weight: 900; color: #fff; font-family: monospace; letter-spacing: -1px; text-shadow: 0 5px 20px rgba(48, 209, 88, 0.3);}
+        .net-worth-lbl { font-size: 0.9rem; color: var(--green); font-weight: 800; }
+
+        .progress-wrap { margin-top: 10px; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 800; margin-bottom: 5px; color: var(--text-secondary);}
+        .progress-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);}
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-blue), var(--green)); border-radius: 4px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* --- INPUTS & TRADING --- */
+        .market-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 183, 0, 0.1); padding: 15px; border-radius: 16px; border: 1px solid rgba(255, 183, 0, 0.3); margin-top: 15px;}
+        .market-price-inp { background: transparent; border: none; font-size: 1.2rem; font-weight: 900; color: var(--gold); width: 80px; text-align: left; font-family: monospace; border-bottom: 2px solid var(--gold); outline: none;}
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .field-group { display: flex; flex-direction: column; gap: 5px; }
+        .field-group label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 800; }
+        .field-input { background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 16px; font-family: monospace; font-size: 1.1rem; font-weight: 900; transition: 0.3s; text-align: center;}
+        .field-input:focus { border-color: var(--green); background: rgba(48, 209, 88, 0.05); }
+
+        .trade-zone { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 15px; border: 1px solid var(--border); margin-top: 15px;}
+        .trade-inputs { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+        .t-inp { flex: 1; border: 1px solid var(--border); background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; text-align: center; font-weight: 900; font-size: 1rem; color: var(--gold); font-family: monospace; transition: 0.3s;}
+        .t-inp:focus { border-color: var(--gold); }
+        .t-inp.readonly { color: #fff; background: rgba(255,255,255,0.02); border-color: transparent;}
+        
+        .btn-trade { background: var(--gold); color: #000; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: 900; font-size: 1rem; margin-top: 12px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 183, 0, 0.3); transition: 0.2s; font-family: var(--font);}
+        .btn-trade:active { transform: scale(0.97); }
+
+        /* --- BUTTONS --- */
+        .btn-group { display: flex; gap: 10px; margin-top: 15px;}
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 16px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-family: var(--font); font-size: 0.9rem;}
+        .btn:active { transform: scale(0.95); }
+        .btn-inc { background: rgba(48, 209, 88, 0.15); color: var(--green); border: 1px solid rgba(48, 209, 88, 0.3); }
+        .btn-exp { background: rgba(255, 69, 58, 0.15); color: var(--red); border: 1px solid rgba(255, 69, 58, 0.3); }
+        .btn-zakat { background: rgba(0, 188, 212, 0.1); color: var(--cyan); border: 1px solid rgba(0, 188, 212, 0.3); padding: 5px 15px; border-radius: 12px; font-size: 0.8rem;}
+
+        /* --- TRANSACTION LOG --- */
+        .tx-log { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 16px; border: 1px solid var(--border); }
+        .tx-info { display: flex; align-items: center; gap: 12px; }
+        .tx-icon { width: 35px; height: 35px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+        .tx-icon.inc { background: rgba(48, 209, 88, 0.1); color: var(--green); }
+        .tx-icon.exp { background: rgba(255, 69, 58, 0.1); color: var(--red); }
+        .tx-desc { font-weight: 800; color: #fff; font-size: 0.9rem;}
+        .tx-date { font-size: 0.7rem; color: var(--text-secondary); font-weight: 700; margin-top: 2px;}
+        .tx-val { font-weight: 900; font-family: monospace; font-size: 1.1rem; }
+
+        /* --- CHART --- */
+        .chart-box { height: 150px; display: flex; align-items: flex-end; justify-content: space-between; padding-top: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; margin: 0 4px;}
+        .bar-bg { width: 100%; height: 100px; background: rgba(0,0,0,0.4); border-radius: 6px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.02);}
+        .bar-fill { position: absolute; bottom: 0; width: 100%; background: var(--green); border-radius: 6px; transition: height 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .bar-lbl { font-size: 0.65rem; color: var(--text-secondary); font-weight: 800; }
+
+        /* --- MODAL --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 15px;}
+        .modal-content { background: var(--card-bg); padding: 30px 20px; border-radius: 30px; width: 100%; max-width: 350px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); text-align: center; animation: fadeUp 0.3s ease-out;}
+        .zakat-res { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; margin: 20px 0; border: 1px solid rgba(0, 188, 212, 0.2);}
+        .z-lbl { font-size: 0.8rem; color: var(--text-secondary); font-weight: 800; }
+        .z-val { font-size: 2.2rem; font-weight: 900; color: var(--cyan); font-family: monospace; margin-top: 5px;}
+        
+        .txt-green { color: var(--green); } .txt-gold { color: var(--gold); } .txt-cyan { color: var(--cyan); } .txt-red { color: var(--red); }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-right"></i></a>
+        <div class="header-info">
+            <h1>THE TREASURY</h1>
+            <p>المركز المالي والمحفظة</p>
+        </div>
+    </header>
+
+    <div class="bento-grid">
+        
+        <div class="bento-card span-2" style="animation-delay: 0.05s;">
+            <div class="card-title">
+                <div class="title-group"><i class="fas fa-wallet txt-green"></i> إجمالي الثروة</div>
+                <button class="btn btn-zakat" onclick="openZakat()"><i class="fas fa-hand-holding-heart"></i> حساب الزكاة</button>
+            </div>
+            
+            <div class="net-worth-box">
+                <div class="net-worth-val" id="netWorth">0</div>
+                <div class="net-worth-lbl">EGP (ذهب + كاش)</div>
+            </div>
+
+            <div class="progress-wrap">
+                <div class="progress-header">
+                    <span id="goalPct" style="color:#fff;">0%</span>
+                    <span>الهدف: 500,000 EGP</span>
+                </div>
+                <div class="progress-bg"><div class="progress-fill" id="goalBar"></div></div>
+            </div>
+
+            <div class="market-row">
+                <div style="font-weight:900; color:var(--gold); font-size:0.9rem;"><i class="fas fa-coins"></i> جرام عيار 21</div>
+                <div style="display:flex; align-items:center;">
+                    <input type="number" id="goldPriceMan" class="market-price-inp" value="4000" onkeyup="updatePrice()">
+                    <span style="font-weight:900; font-size:0.8rem; color:var(--text-secondary); margin-right:5px;">EGP</span>
+                </div>
+            </div>
+
+            <div class="trade-zone">
+                <div style="font-size:0.8rem; font-weight:900; color:var(--text-secondary);"><i class="fas fa-exchange-alt"></i> شراء ذهب (يُخصم من الكاش)</div>
+                <div class="trade-inputs">
+                    <input type="number" id="buyAmount" class="t-inp" placeholder="المبلغ بالكاش">
+                    <i class="fas fa-arrow-left" style="color:var(--text-secondary);"></i>
+                    <input type="text" id="buyGramsResult" class="t-inp readonly" placeholder="الجرامات" readonly>
+                </div>
+                <button class="btn-trade" onclick="buyGold()">تأكيد الشراء وتحويل الأصل</button>
+            </div>
+        </div>
+
+        <div class="bento-card span-2" style="animation-delay: 0.1s;">
+            <div class="card-title"><div class="title-group"><i class="fas fa-chart-pie txt-gold"></i> توزيع الأصول</div></div>
+            
+            <div class="input-grid">
+                <div class="field-group">
+                    <label>السيولة النقدية (الكاش)</label>
+                    <input type="number" id="inpCash" class="field-input" onchange="updateAssets()">
+                </div>
+                <div class="field-group">
+                    <label>احتياطي الذهب (جرام)</label>
+                    <input type="number" step="0.01" id="inpGold" class="field-input" onchange="updateAssets()">
+                </div>
+            </div>
+        </div>
+
+        <div class="bento-card span-2" style="animation-delay: 0.15s;">
+            <div class="card-title"><div class="title-group"><i class="fas fa-money-check-alt txt-cyan"></i> تسجيل حركة مالية</div></div>
+            
+            <div class="input-grid" style="grid-template-columns: 2fr 1fr;">
+                <div class="field-group">
+                    <label>وصف الحركة</label>
+                    <input type="text" id="txDesc" class="field-input" placeholder="مثال: أرباح تصميم..." style="text-align:right;">
+                </div>
+                <div class="field-group">
+                    <label>المبلغ (EGP)</label>
+                    <input type="number" id="txVal" class="field-input" placeholder="0">
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-inc" onclick="addTx('inc')"><i class="fas fa-arrow-down"></i> إضافة دخل</button>
+                <button class="btn btn-exp" onclick="addTx('exp')"><i class="fas fa-arrow-up"></i> خصم مصروف</button>
+            </div>
+        </div>
+
+        <div class="bento-card span-2" style="animation-delay: 0.2s;">
+            <div class="card-title"><div class="title-group"><i class="fas fa-chart-line txt-accent"></i> النمو الأسبوعي</div></div>
+            <div class="chart-box" id="chartBox"></div>
+        </div>
+
+        <div class="bento-card span-2" style="animation-delay: 0.25s; background: transparent; border: none; box-shadow: none; padding: 0;">
+            <div style="font-size:1rem; font-weight:900; color:var(--text-secondary); margin-bottom:5px; padding:0 10px;">سجل الحركات الأخير</div>
+            <div class="tx-log" id="txLog"></div>
+        </div>
+
+    </div>
+
+    <div class="modal" id="zakatModal">
+        <div class="modal-content">
+            <h2 style="color:var(--cyan); margin-top:0; margin-bottom:5px;"><i class="fas fa-hand-holding-heart"></i> زكاة المال</h2>
+            <div class="zakat-res">
+                <div class="z-lbl">قيمة الزكاة المقدرة (2.5%)</div>
+                <div class="z-val" id="zakatVal">0</div>
+                <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:5px;">EGP</div>
+            </div>
+            <button class="btn btn-exp" style="width:100%; justify-content:center; padding:18px;" onclick="payZakat()">تأكيد وخصم من الكاش</button>
+            <button onclick="document.getElementById('zakatModal').style.display='none'" style="margin-top:15px; border:none; background:transparent; color:var(--text-secondary); cursor:pointer; font-weight:800; font-family: var(--font); font-size:1rem;">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        // --- SAFE DB INTEGRATION (Falcon_Final_V29_Pro) ---
+        function getSafeJSON(key, defaultVal) { try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; } }
+        
+        const DB_KEY = 'Falcon_Final_V29_Pro';
+        const GOAL_TARGET = 500000;
+
+        let db = getSafeJSON(DB_KEY, {
+            goldGrams: 19.8,
+            cash: 30000,
+            manualPrice: 4000,
+            txs: [],
+            history: Array(7).fill(0)
+        });
+
+        window.onload = () => {
+            loadData();
+            renderAll();
+            
+            // Auto-Calc Trading Input
+            document.getElementById('buyAmount').addEventListener('input', function() {
+                let cash = parseFloat(this.value) || 0;
+                let grams = cash / (db.manualPrice || 4000);
+                document.getElementById('buyGramsResult').value = grams.toFixed(3) + ' g';
+            });
+        };
+
+        function save() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+        function updatePrice() {
+            let p = parseFloat(document.getElementById('goldPriceMan').value);
+            if(p) { db.manualPrice = p; save(); renderWealth(); }
+        }
+
+        function updateAssets() {
+            db.cash = parseFloat(document.getElementById('inpCash').value) || 0;
+            db.goldGrams = parseFloat(document.getElementById('inpGold').value) || 0;
+            save(); renderWealth();
+        }
+
+        function renderWealth() {
+            const goldVal = (db.goldGrams || 0) * (db.manualPrice || 4000);
+            const total = (db.cash || 0) + goldVal;
+            
+            document.getElementById('netWorth').innerText = total.toLocaleString('en-US');
+            
+            // Goal Progress
+            const pct = Math.min((total / GOAL_TARGET) * 100, 100).toFixed(1);
+            document.getElementById('goalBar').style.width = pct + '%';
+            document.getElementById('goalPct').innerText = pct + '%';
+
+            // Update Chart History (Simple rotation for visual effect)
+            if(db.history[6] !== total) {
+                db.history.shift(); 
+                db.history.push(total);
+            }
+            
+            save(); renderChart();
+        }
+
+        function buyGold() {
+            let cost = parseFloat(document.getElementById('buyAmount').value);
+            if(!cost) return;
+            
+            if(cost > db.cash) {
+                alert("⚠️ رصيد الكاش لا يكفي لإتمام عملية الشراء!");
+                return;
+            }
+
+            let grams = cost / db.manualPrice;
+            if(confirm(`تأكيد شراء ${grams.toFixed(2)} جرام ذهب بقيمة ${cost.toLocaleString()} جنيه؟`)) {
+                db.cash -= cost;
+                db.goldGrams += grams;
+                
+                db.txs.unshift({
+                    desc: `شراء أصول ذهب (${grams.toFixed(2)}g)`,
+                    val: cost,
+                    type: 'exp', // Deducted from cash visually
+                    date: new Date().toLocaleDateString('ar-EG')
+                });
+
+                document.getElementById('buyAmount').value = '';
+                document.getElementById('buyGramsResult').value = '';
+                
+                save(); loadData(); renderWealth(); renderTx();
+            }
+        }
+
+        function addTx(type) {
+            let desc = document.getElementById('txDesc').value.trim();
+            let val = parseFloat(document.getElementById('txVal').value);
+            
+            if(val && val > 0) {
+                db.txs.unshift({
+                    desc: desc || (type==='inc'?'إيداع سيولة':'سحب/مصروف'),
+                    val: val,
+                    type: type,
+                    date: new Date().toLocaleDateString('ar-EG')
+                });
+                
+                if(type === 'inc') db.cash += val;
+                else db.cash -= val;
+                
+                document.getElementById('inpCash').value = db.cash;
+                document.getElementById('txDesc').value = '';
+                document.getElementById('txVal').value = '';
+                
+                save(); renderWealth(); renderTx();
+            }
+        }
+
+        function renderTx() {
+            let h = "";
+            let txArray = db.txs || [];
+            txArray.slice(0, 10).forEach(t => {
+                let color = t.type === 'inc' ? 'var(--green)' : 'var(--red)';
+                let icon = t.type === 'inc' ? 'fa-arrow-down' : 'fa-arrow-up';
+                let iconClass = t.type === 'inc' ? 'inc' : 'exp';
+                let sign = t.type === 'inc' ? '+' : '-';
+                
+                h += `
+                <div class="tx-item">
+                    <div class="tx-info">
+                        <div class="tx-icon ${iconClass}"><i class="fas ${icon}"></i></div>
+                        <div>
+                            <div class="tx-desc">${t.desc}</div>
+                            <div class="tx-date">${t.date}</div>
+                        </div>
+                    </div>
+                    <div class="tx-val" style="color:${color};">${sign}${t.val.toLocaleString()}</div>
+                </div>`;
+            });
+            document.getElementById('txLog').innerHTML = h || '<div style="text-align:center; color:var(--text-secondary); padding:20px; font-weight:800;">لا توجد حركات مسجلة.</div>';
+        }
+
+        function renderChart() {
+            const box = document.getElementById('chartBox'); box.innerHTML = '';
+            let hist = db.history || Array(7).fill(0);
+            const max = Math.max(...hist, 10000); // Prevent div by 0
+            const days = ['S','M','T','W','T','F','Today'];
+            
+            hist.forEach((val, i) => {
+                let h = Math.max((val / max) * 100, 5); // Min 5% height for visibility
+                let bg = i === 6 ? 'var(--gold)' : 'var(--accent-blue)'; // Highlight today
+                box.innerHTML += `
+                    <div class="bar-col">
+                        <div class="bar-bg">
+                            <div class="bar-fill" style="height:${h}%; background:${bg}"></div>
+                        </div>
+                        <span class="bar-lbl">${days[i]}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function openZakat() {
+            let wealth = (db.cash || 0) + ((db.goldGrams || 0) * (db.manualPrice || 4000));
+            let zakat = wealth * 0.025;
+            document.getElementById('zakatVal').innerText = Math.floor(zakat).toLocaleString('en-US');
+            document.getElementById('zakatModal').style.display = 'flex';
+        }
+        
+        function payZakat() {
+            let wealth = (db.cash || 0) + ((db.goldGrams || 0) * (db.manualPrice || 4000));
+            let zakat = wealth * 0.025;
+            
+            if(zakat > db.cash) {
+                alert("⚠️ الكاش لا يكفي لإخراج الزكاة! تحتاج لتسييل جزء من الذهب أولاً.");
+                return;
+            }
+
+            if(confirm("تأكيد إخراج الزكاة وخصمها من الرصيد النقدي؟")) {
+                db.cash -= zakat;
+                db.txs.unshift({desc:'إخراج زكاة المال النقدية', val:zakat, type:'exp', date:new Date().toLocaleDateString('ar-EG')});
+                
+                document.getElementById('inpCash').value = db.cash;
+                save(); renderWealth(); renderTx();
+                document.getElementById('zakatModal').style.display = 'none';
+                alert("تقبل الله منك صالح الأعمال! ✨");
+            }
+        }
+
+        function renderAll() { renderWealth(); renderTx(); renderChart(); }
+        
+        function loadData() {
+            document.getElementById('inpCash').value = db.cash || 0;
+            document.getElementById('inpGold').value = db.goldGrams || 0;
+            document.getElementById('goldPriceMan').value = db.manualPrice || 4000;
+        }
+    </script>
+</body>
+</html>

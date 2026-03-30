@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAKR OS | Spiritual Protocol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <meta name="theme-color" content="#0B1021">
+    
+    <style>
+        /* ================= DEEP NAVY THEME (V4.3 RELIGION) ================= */
+        :root {
+            --bg-main: #060913;      
+            --card-bg: rgba(27, 35, 65, 0.7);      
+            --card-hover: rgba(35, 44, 80, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --accent-blue: #5A75FF;  
+            --gold: #FFB700;
+            --green: #30D158;
+            --cyan: #00bcd4;
+            --purple: #BF5AF2;
+            --red: #ff453a;
+            --orange: #FF9500;
+            --silver: #e5e5e5;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #8A94B5;
+            
+            --radius: 24px;
+            --font: 'Cairo', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; -webkit-tap-highlight-color: transparent;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; padding: 25px 20px 120px; overflow-x: hidden; 
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(48, 209, 88, 0.1), transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(255, 183, 0, 0.1), transparent 50%),
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* --- HEADER --- */
+        .header { display: flex; align-items: center; margin-bottom: 25px; animation: fadeUp 0.5s ease-out forwards; gap: 15px;}
+        .btn-back { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: #fff; width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; text-decoration: none;}
+        .btn-back:active { transform: scale(0.9); background: var(--gold); color: #000; border-color: var(--gold);}
+        
+        .header-info h1 { font-size: 2rem; font-weight: 900; line-height: 1.1; color: #fff; letter-spacing: 1px;}
+        .header-info p { font-size: 0.85rem; color: var(--gold); font-weight: 800; margin-top: 4px; letter-spacing: 1px;}
+
+        /* --- BENTO GRID --- */
+        .bento-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        
+        .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; position: relative; animation: fadeUp 0.5s ease-out forwards; opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
+        
+        .card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; font-size: 1.1rem; font-weight: 900; color: #fff; }
+        .icon-sq { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+
+        /* --- PRAYERS --- */
+        .pray-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .pray-pill { flex: 1; min-width: 60px; background: rgba(0,0,0,0.4); padding: 14px 0; text-align: center; border-radius: 16px; font-size: 0.9rem; font-weight: 800; color: var(--text-secondary); transition: 0.3s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);}
+        .pray-pill.active { background: rgba(48, 209, 88, 0.15); color: var(--green); border-color: var(--green); box-shadow: 0 5px 15px rgba(48, 209, 88, 0.2); }
+
+        /* --- KHATMA --- */
+        .khatma-box { background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.1); border-radius: 20px; padding: 15px; margin-top: 15px; text-align: center; }
+        .khatma-stat { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 800;}
+        .k-status { font-weight: 900; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; }
+        .k-ahead { background: rgba(48, 209, 88, 0.15); color: var(--green); border: 1px solid rgba(48, 209, 88, 0.3);}
+        .k-behind { background: rgba(255, 69, 58, 0.15); color: var(--red); border: 1px solid rgba(255, 69, 58, 0.3);}
+        .k-input { width: 80px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: #fff; border-radius: 12px; padding: 10px; text-align: center; font-weight: 900; font-family: monospace; font-size: 1.1rem; transition: 0.3s;}
+        .k-input:focus { border-color: var(--gold); }
+
+        /* --- STEPPERS --- */
+        .control-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .control-item:last-child { border-bottom: none; padding-bottom: 0;}
+        .stepper { background: rgba(0,0,0,0.4); border-radius: 16px; display: flex; align-items: center; padding: 5px; gap: 10px; border: 1px solid var(--border);}
+        .step-btn { width: 38px; height: 38px; background: rgba(255,255,255,0.1); color: #fff; border: none; border-radius: 12px; font-weight: 900; font-size: 1.2rem; cursor: pointer; transition: 0.2s;}
+        .step-btn:active { transform: scale(0.9); background: var(--gold); color: #000;}
+        .step-val { min-width: 35px; text-align: center; font-weight: 900; font-size: 1.2rem; font-family: monospace;}
+
+        /* --- ADHKAR BUTTONS --- */
+        .adhkar-row { display: flex; gap: 10px; margin-top: 15px; }
+        .adhkar-btn { flex: 1; padding: 18px 12px; border-radius: 20px; border: none; font-weight: 900; cursor: pointer; color: #fff; font-family: var(--font); font-size: 1rem; transition: 0.2s;}
+        .adhkar-btn:active { transform: scale(0.95); }
+        .btn-morning { background: linear-gradient(135deg, rgba(255, 159, 10, 0.2), rgba(255, 107, 0, 0.1)); border: 1px solid rgba(255, 159, 10, 0.4); color: var(--orange);}
+        .btn-evening { background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(0, 64, 221, 0.1)); border: 1px solid rgba(10, 132, 255, 0.4); color: var(--cyan);}
+
+        /* --- TASBEEH --- */
+        .tasbeeh-btn { width: 140px; height: 140px; margin: 15px auto; background: rgba(0,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; border: 3px solid var(--cyan); box-shadow: 0 10px 30px rgba(0, 188, 212, 0.2); cursor: pointer; transition: 0.1s; color: #fff;}
+        .tasbeeh-btn:active { transform: scale(0.95); background: rgba(0, 188, 212, 0.1); }
+        .tasbeeh-val { font-size: 3rem; font-weight: 900; line-height: 1; font-family: monospace; color: var(--cyan);}
+        .tasbeeh-lbl { font-size: 0.8rem; color: var(--text-secondary); font-weight: 800; margin-top: 5px;}
+
+        /* --- MODALS --- */
+        #textModal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index:3000; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 15px;}
+        .text-card { background: var(--card-bg); width: 100%; max-width: 450px; max-height: 85vh; display: flex; flex-direction: column; padding: 25px; border-radius: 30px; border: 1px solid var(--border); position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.7); animation: fadeUp 0.3s ease-out;}
+        .text-content-wrapper { overflow-y: auto; padding-right: 5px; margin-bottom: 15px; }
+        .text-content-wrapper::-webkit-scrollbar { width: 4px; } .text-content-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+        
+        .text-content { text-align: right; line-height: 2.2; white-space: pre-wrap; font-size: 1.1rem; color: #fff; font-weight: 700;}
+        .dhikr-section { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 18px; border-radius: 20px; margin-bottom: 15px; }
+        .dhikr-count { display: inline-block; background: rgba(255, 183, 0, 0.1); color: var(--gold); border: 1px solid rgba(255, 183, 0, 0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 900; margin-top: 10px; font-family: monospace;}
+        .dhikr-title { color: var(--cyan); font-weight: 900; margin-bottom: 8px; font-size: 1.1rem;}
+
+        .modal-close { width: 100%; padding: 18px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 20px; color: #fff; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.2s; flex-shrink: 0; font-family: var(--font);}
+        .modal-close:active { background: rgba(255,255,255,0.1); transform: scale(0.98); }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-right"></i></a>
+        <div class="header-info">
+            <h1>الجانب الروحي</h1>
+            <p id="dateDisp">التاريخ</p>
+        </div>
+    </header>
+
+    <div class="bento-grid">
+
+        <div class="bento-card" style="animation-delay: 0.05s; border-top: 2px solid var(--green);">
+            <div class="card-head"><div class="icon-sq" style="background:rgba(48, 209, 88, 0.1); color:var(--green);">🕌</div> الفروض والقرآن</div>
+            
+            <div class="pray-row">
+                <div class="pray-pill" id="p_fajr" onclick="togPray('fajr')">الفجر</div>
+                <div class="pray-pill" id="p_dhuhr" onclick="togPray('dhuhr')">الظهر</div>
+                <div class="pray-pill" id="p_asr" onclick="togPray('asr')">العصر</div>
+                <div class="pray-pill" id="p_maghrib" onclick="togPray('maghrib')">المغرب</div>
+                <div class="pray-pill" id="p_isha" onclick="togPray('isha')">العشاء</div>
+            </div>
+            
+            <div id="khatmaContainer" class="khatma-box"></div>
+            
+            <div class="control-item" style="margin-top:10px;">
+                <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:900; font-size:1.1rem;">سجل قراءة اليوم</span>
+                    <span style="font-size:0.8rem;color:var(--text-secondary)">عدد الصفحات المقروءة</span>
+                </div>
+                <div class="stepper">
+                    <button class="step-btn" onclick="updateKhatmaPage(-1)">-</button>
+                    <span class="step-val" id="v_quran">0</span>
+                    <button class="step-btn" onclick="updateKhatmaPage(1)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bento-card" style="animation-delay: 0.1s; border-top: 2px solid var(--orange);">
+            <div class="card-head"><div class="icon-sq" style="background:rgba(255, 149, 0, 0.1); color:var(--orange);">📿</div> السنن والأذكار</div>
+            
+            <div class="adhkar-row">
+                <button class="adhkar-btn btn-morning" onclick="showAdhkar('morning')"><i class="fas fa-sun"></i> الصباح</button>
+                <button class="adhkar-btn btn-evening" onclick="showAdhkar('evening')"><i class="fas fa-moon"></i> المساء</button>
+            </div>
+
+            <div class="control-item" style="margin-top:15px;">
+                <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:900; font-size:1.1rem;">قيام الليل / السنن</span>
+                    <span style="font-size:0.8rem;color:var(--text-secondary)">عدد الركعات</span>
+                </div>
+                <div class="stepper">
+                    <button class="step-btn" onclick="updateQiyam(-2)">-</button>
+                    <span class="step-val" id="v_qiyam">0</span>
+                    <button class="step-btn" onclick="updateQiyam(2)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bento-card" style="animation-delay: 0.15s; border-top: 2px solid var(--cyan);">
+            <div class="card-head"><div class="icon-sq" style="background:rgba(0, 188, 212, 0.1); color:var(--cyan);">🤲</div> السبحة الإلكترونية</div>
+            <div style="text-align: center; color: var(--text-secondary); font-weight: 800; font-size: 0.85rem;">سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر</div>
+            
+            <div class="tasbeeh-btn" onclick="incTasbeeh()">
+                <div class="tasbeeh-val" id="tasbeehCount">0</div>
+                <div class="tasbeeh-lbl">تسبيحة</div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 10px;">
+                <button onclick="resetTasbeeh()" style="background:rgba(255, 69, 58, 0.1); border:1px solid rgba(255, 69, 58, 0.3); color:var(--red); padding:8px 20px; border-radius:12px; font-weight:900; font-family:var(--font); cursor:pointer; font-size:0.85rem; transition:0.2s;"><i class="fas fa-redo"></i> تصفير العداد</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="textModal">
+        <div class="text-card">
+            <h2 id="modalTitle" style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:15px; font-weight:900; text-align:center;">العنوان</h2>
+            <div class="text-content-wrapper">
+                <div id="modalContent" class="text-content">...</div>
+            </div>
+            <button class="modal-close" onclick="document.getElementById('textModal').style.display='none'">إغلاق وإتمام القراءة ✔️</button>
+        </div>
+    </div>
+
+<script>
+    // --- HELPERS ---
+    function getLocalYMD(dateObj = new Date()) {
+        let y = dateObj.getFullYear(); let m = String(dateObj.getMonth() + 1).padStart(2, '0'); let d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+    const TODAY = getLocalYMD();
+    function getSafeJSON(key, defaultVal) { try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; } }
+
+    const DB_KEY = 'SakrOS_Religion_V1';
+
+    let db = getSafeJSON(DB_KEY, {
+        lastDate: null,
+        prayers: { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false },
+        qiyam: 0,
+        tasbeeh: 0,
+        khatma: { active: false, targetDays: 30, startDate: null, current: 0 }
+    });
+
+    const ADHKAR = {
+        morning: `
+<div class="dhikr-section">
+    <div class="dhikr-title">آية الكرسي</div>
+    أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ<br>
+    ﴿اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title">المعوذات</div>
+    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>
+    (قُلْ هُوَ اللَّهُ أَحَدٌ...) (قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...) (قُلْ أَعُوذُ بِرَبِّ النَّاسِ...)
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title">سيد الاستغفار</div>
+    "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي، فَإِنَّهُ لا يَغْفِرُ الذُّنُوبَ إِلا أَنْتَ".
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ".
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "بِسْمِ اللَّهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ".
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
+<div class="dhikr-section">
+    "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالإِسْلامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا".
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
+        `,
+        evening: `
+<div class="dhikr-section">
+    <div class="dhikr-title">آية الكرسي</div>
+    أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ<br>
+    ﴿اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ ... وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title">المعوذات</div>
+    (الإخلاص، الفلق، الناس)
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title">سيد الاستغفار</div>
+    "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ..."
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إِلَهَ إِلا اللَّهُ..."
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ".
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "بِسْمِ اللَّهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ".
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
+        `
+    };
+
+    window.onload = function() {
+        document.getElementById('dateDisp').innerHTML = new Date().toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+        
+        if (db.lastDate !== TODAY) {
+            db.prayers = { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false };
+            db.qiyam = 0;
+            db.lastDate = TODAY;
+            saveDB();
+        }
+
+        renderPrayers(); renderQiyam(); renderTasbeeh(); renderKhatma();
+    };
+
+    function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+    function togPray(prayer) {
+        db.prayers[prayer] = !db.prayers[prayer];
+        saveDB(); renderPrayers();
+        if(navigator.vibrate) navigator.vibrate(20);
+    }
+
+    function renderPrayers() {
+        const pList = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+        pList.forEach(p => {
+            const el = document.getElementById('p_' + p);
+            if (db.prayers[p]) el.classList.add('active'); else el.classList.remove('active');
+        });
+    }
+
+    function updateQiyam(val) {
+        db.qiyam = Math.max(0, (db.qiyam || 0) + val);
+        saveDB(); renderQiyam();
+    }
+    function renderQiyam() { document.getElementById('v_qiyam').innerText = db.qiyam || 0; }
+
+    function incTasbeeh() {
+        db.tasbeeh = (db.tasbeeh || 0) + 1;
+        saveDB(); renderTasbeeh();
+        if (navigator.vibrate) navigator.vibrate(10);
+    }
+    function resetTasbeeh() {
+        if(confirm("هل تريد تصفير عداد السبحة؟")) { db.tasbeeh = 0; saveDB(); renderTasbeeh(); }
+    }
+    function renderTasbeeh() { document.getElementById('tasbeehCount').innerText = db.tasbeeh || 0; }
+
+    function showAdhkar(type) {
+        let title = type === 'morning' ? "☀️ أذكار الصباح" : "🌙 أذكار المساء";
+        let color = type === 'morning' ? "var(--orange)" : "var(--cyan)";
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalTitle').style.color = color;
+        document.getElementById('modalContent').innerHTML = ADHKAR[type];
+        document.getElementById('textModal').style.display = 'flex';
+    }
+
+    function renderKhatma() {
+        const kBox = document.getElementById('khatmaContainer');
+        document.getElementById('v_quran').innerText = db.khatma.current || 0;
+
+        if (!db.khatma.active) {
+            kBox.innerHTML = `
+                <div style="margin-bottom:10px; font-weight:900; font-size:1.1rem; color:var(--green);">🏁 ابدأ ختمة جديدة</div>
+                <div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:15px; font-weight:700;">حدد هدفك (عدد الأيام لإنهاء 604 صفحة):</div>
+                <div style="display:flex; justify-content:center; align-items:center; gap:10px;">
+                    <input type="number" id="kTargetDays" class="k-input" value="30">
+                    <button onclick="startKhatma()" style="background:var(--green); color:#000; border:none; border-radius:12px; padding:10px 20px; font-weight:900; cursor:pointer; font-family:var(--font);">توكلت على الله</button>
+                </div>
+            `;
+        } else {
+            const totalPages = 604;
+            const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            const start = new Date(db.khatma.startDate);
+            const daysPassed = Math.max(1, Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1);
+            
+            const dailyRate = Math.ceil(totalPages / db.khatma.targetDays);
+            const expectedPage = Math.min(604, dailyRate * daysPassed);
+            const actualPage = db.khatma.current;
+            const diff = actualPage - expectedPage;
+            
+            let statusBadge = ""; let statusMsg = "";
+            if (actualPage >= 604) {
+                statusBadge = `<span class="k-status k-ahead">تمت الختمة 🎉</span>`;
+                statusMsg = "تقبل الله! ابدأ ختمة جديدة.";
+                if(!db.khatma.celebrated) { fireConfetti(); db.khatma.celebrated = true; saveDB(); }
+            } else if (diff >= 0) {
+                statusBadge = `<span class="k-status k-ahead">سابق بـ ${diff} ص 🔥</span>`;
+                statusMsg = `هدف اليوم: صـ ${expectedPage}`;
+            } else {
+                statusBadge = `<span class="k-status k-behind">متأخر بـ ${Math.abs(diff)} ص ⚠️</span>`;
+                statusMsg = `هدف اليوم: صـ ${expectedPage}`;
+            }
+
+            let pct = Math.min(100, (actualPage / 604) * 100).toFixed(1);
+
+            kBox.innerHTML = `
+                <div class="khatma-stat"><span>اليوم ${daysPassed} من ${db.khatma.targetDays}</span> ${statusBadge}</div>
+                <div style="height:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.05); border-radius:5px; margin:12px 0; overflow:hidden;">
+                    <div style="height:100%; width:${pct}%; background:var(--green); transition:0.8s;"></div>
+                </div>
+                <div class="khatma-stat">
+                    <span style="color:var(--text-secondary);">${statusMsg}</span>
+                    <span style="font-weight:900; color:#fff; font-family:monospace; font-size:1rem;">${pct}%</span>
+                </div>
+                ${actualPage >= 604 ? '<button onclick="resetKhatma()" style="margin-top:15px; width:100%; font-size:1rem; padding:12px; border-radius:14px; font-weight:900; border:none; background:var(--green); color:#000; cursor:pointer; font-family:var(--font);">إنهاء الختمة وبدء جديدة 🔄</button>' : ''}
+            `;
+        }
+    }
+
+    function startKhatma() {
+        const d = parseInt(document.getElementById('kTargetDays').value) || 30;
+        let startD = new Date(); startD.setMinutes(startD.getMinutes() - startD.getTimezoneOffset());
+        db.khatma = { active: true, targetDays: d, startDate: startD.toISOString(), current: 0, celebrated: false };
+        saveDB(); renderKhatma();
+    }
+
+    function updateKhatmaPage(n) {
+        if(!db.khatma.active) return alert("الرجاء بدء ختمة أولاً.");
+        let newVal = (db.khatma.current || 0) + n;
+        if (newVal < 0) newVal = 0; if (newVal > 604) newVal = 604;
+        db.khatma.current = newVal;
+        saveDB(); renderKhatma();
+    }
+    
+    function resetKhatma() {
+        if(confirm("هل أنت متأكد من إنهاء هذه الختمة والبدء من جديد؟")) {
+            db.khatma.active = false; saveDB(); renderKhatma();
+        }
+    }
+
+    function fireConfetti() {
+        var duration = 3 * 1000; var animationEnd = Date.now() + duration; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+        function randomInOut(min, max) { return Math.random() * (max - min) + min; }
+        var interval = setInterval(function() {
+            var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) { return clearInterval(interval); }
+            var particleCount = 50 * (timeLeft / duration);
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.1, 0.3), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAKR OS | Creator Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <meta name="theme-color" content="#0B1021">
+    
+    <style>
+        /* ================= DEEP NAVY THEME (STUDIO V4.3) ================= */
+        :root {
+            --bg-main: #060913;      
+            --card-bg: rgba(27, 35, 65, 0.7);      
+            --card-hover: rgba(35, 44, 80, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --accent-blue: #5A75FF;  
+            --gold: #FFB700;
+            --green: #30D158;
+            --cyan: #00bcd4;
+            --purple: #BF5AF2;
+            --red: #ff453a;
+            --orange: #FF9500;
+            --silver: #e5e5e5;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #8A94B5;
+            
+            --radius: 24px;
+            --font: 'Cairo', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; -webkit-tap-highlight-color: transparent;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; padding: 25px 20px 120px; overflow-x: hidden; 
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(255, 69, 58, 0.1), transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(90, 117, 255, 0.1), transparent 50%),
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* --- HEADER --- */
+        .header { display: flex; align-items: center; margin-bottom: 25px; animation: fadeUp 0.5s ease-out forwards; gap: 15px;}
+        .btn-back { background: rgba(255, 69, 58, 0.1); border: 1px solid rgba(255, 69, 58, 0.3); color: var(--red); width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; text-decoration: none;}
+        .btn-back:active { transform: scale(0.9); background: var(--red); color: #000; }
+        
+        .header-info h1 { font-size: 2rem; font-weight: 900; line-height: 1.1; color: #fff; letter-spacing: 1px;}
+        .header-info p { font-size: 0.85rem; color: var(--red); font-weight: 800; margin-top: 4px; text-transform: uppercase; letter-spacing: 2px;}
+
+        /* --- CHANNEL SCROLLER --- */
+        .channel-scroller { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; animation: fadeUp 0.5s ease-out forwards; animation-delay: 0.1s; opacity: 0;}
+        .channel-scroller::-webkit-scrollbar { display: none; }
+        .channel-slot { min-width: 60px; height: 60px; border-radius: 18px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; font-weight: 900; font-size: 1.3rem; flex-shrink: 0; }
+        .channel-slot.active { background: var(--red); color: #fff; border-color: var(--red); box-shadow: 0 5px 15px rgba(255, 69, 58, 0.4); transform: translateY(-2px); }
+        
+        /* --- CONTROLS --- */
+        .ch-actions { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; background: var(--card-bg); padding: 15px; border-radius: 20px; border: 1px solid var(--border); animation: fadeUp 0.5s ease-out forwards; opacity: 0; animation-delay: 0.15s; backdrop-filter: blur(10px);}
+        .ch-name-disp { font-size: 1.1rem; font-weight: 900; color: #fff; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .btn-icon-small { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: 38px; height: 38px; border-radius: 12px; cursor: pointer; font-size: 1rem; color: var(--text-secondary); transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-icon-small:active { transform: scale(0.9); background: var(--red); color: #fff; border-color: var(--red);}
+
+        /* --- PROJECTS GRID --- */
+        .section-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 15px; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; animation: fadeUp 0.5s ease-out forwards; opacity: 0; animation-delay: 0.2s;}
+        .projects-list { display: flex; flex-direction: column; gap: 12px; animation: fadeUp 0.5s ease-out forwards; opacity: 0; animation-delay: 0.25s;}
+        
+        .project-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 20px; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s; position: relative; overflow: hidden; cursor: pointer;}
+        .project-card:active { transform: scale(0.98); border-color: var(--red); }
+        .project-card::before { content: ''; position: absolute; right: 0; top: 0; height: 100%; width: 4px; background: var(--red); }
+
+        .card-info { display: flex; align-items: center; gap: 15px; flex: 1;}
+        .progress-circle { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; }
+        .progress-circle::after { content: attr(data-val) '%'; position: absolute; background: #12182B; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; color: #fff; }
+        
+        .proj-title { font-size: 1rem; font-weight: 800; margin-bottom: 2px; color: #fff; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;}
+        .proj-date { font-size: 0.75rem; color: var(--text-secondary); font-weight: 700;}
+        .proj-status { background: rgba(0,0,0,0.3); padding: 6px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 900; color: var(--gold); border: 1px solid rgba(255, 183, 0, 0.2); white-space: nowrap;}
+
+        /* --- FAB --- */
+        .fab { position: fixed; bottom: 30px; left: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, var(--red), #ff8a65); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 25px rgba(255, 69, 58, 0.5); cursor: pointer; transition: 0.2s; z-index: 100; border: 1px solid rgba(255,255,255,0.2);}
+        .fab:active { transform: scale(0.9); }
+
+        /* --- EDITOR OVERLAY --- */
+        #editorOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 9, 19, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 200; display: none; flex-direction: column; overflow: hidden; }
+        .editor-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); }
+        .editor-title { margin: 0; color: #fff; font-weight: 900; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50%;}
+        
+        .tabs { display: flex; background: rgba(0,0,0,0.3); padding: 10px 20px 0; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none;}
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { padding: 12px 15px; cursor: pointer; color: var(--text-secondary); font-weight: 900; border-bottom: 3px solid transparent; transition: 0.3s; white-space: nowrap; font-size: 0.9rem;}
+        .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+
+        .editor-body { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px;}
+        .tab-page { display: none; animation: slideUp 0.3s ease-out; }
+        .tab-page.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- EDITOR INPUTS --- */
+        .section-box { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 800; font-size: 0.85rem; }
+        input, textarea, select { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 12px; box-sizing: border-box; font-family: var(--font); transition: 0.3s; font-size: 0.95rem; font-weight: 700; margin-bottom: 15px;}
+        input:focus, textarea:focus { border-color: var(--red); background: rgba(255, 69, 58, 0.05); }
+        select { appearance: none; color: #fff; font-weight: 900;}
+        textarea { resize: none; }
+
+        /* --- MEDIA GALLERY --- */
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .gallery-item { aspect-ratio: 1; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); background: #000; }
+        .gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
+        .video-indicator { position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.8); color: var(--red); padding: 2px 6px; border-radius: 6px; font-size: 0.7rem; font-weight:bold;}
+        .del-media-btn { position:absolute; top:5px; right:5px; background:rgba(255, 69, 58, 0.9); color:#fff; border:none; border-radius:50%; width:26px; height:26px; cursor:pointer; font-weight:bold; display:flex; justify-content:center; align-items:center;}
+        .upload-card { border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.2); aspect-ratio: 1;}
+        .upload-card:active { border-color: var(--red); color: var(--red); background: rgba(255, 69, 58, 0.1); }
+
+        .save-btn { background: var(--green); color: #000; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 900; cursor: pointer; font-family: var(--font); box-shadow: 0 5px 15px rgba(48, 209, 88, 0.3);}
+        
+        /* --- MODALS --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(8px); padding: 15px;}
+        .modal-content { background: var(--bg-main); padding: 20px; border-radius: 30px; width: 100%; max-width: 350px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: fadeUp 0.3s ease-out; display: flex; flex-direction: column;}
+        .btn-modal { width: 100%; padding: 14px; border-radius: 14px; border: none; font-weight: 900; cursor: pointer; margin-top: 10px; font-family: var(--font); font-size: 1rem; transition: 0.2s;}
+        .btn-modal:active { transform: scale(0.97); }
+        .btn-confirm { background: var(--red); color: #fff; }
+        .btn-cancel { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-right"></i></a>
+        <div class="header-info">
+            <h1>استوديو الإبداع</h1>
+            <p>إدارة قنوات الإمبراطورية</p>
+        </div>
+    </div>
+
+    <div class="channel-scroller" id="channelScroller">
+        </div>
+
+    <div class="ch-actions">
+        <div class="ch-name-disp" id="currentChannelName">جاري التحميل...</div>
+        <button class="btn-icon-small" onclick="editChannelName()"><i class="fas fa-pen"></i></button>
+        <button class="btn-icon-small" onclick="openCredentials()"><i class="fas fa-lock"></i></button>
+        <button class="btn-icon-small" onclick="exportBackup()"><i class="fas fa-download"></i></button>
+        <button class="btn-icon-small" onclick="document.getElementById('restoreInput').click()"><i class="fas fa-upload"></i></button>
+        <input type="file" id="restoreInput" style="display:none" onchange="importBackup(this)" accept=".json">
+    </div>
+
+    <div>
+        <div class="section-title">
+            <span>سجل المشاريع</span>
+            <span style="color:var(--red); font-family:monospace;"><span id="projCount">0</span> Video</span>
+        </div>
+        <div class="projects-list" id="projectsList">
+            </div>
+    </div>
+
+    <div class="fab" onclick="addNewProject()"><i class="fas fa-plus"></i></div>
+
+    <div id="renameModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--red); margin-bottom:15px; text-align:center;">تسمية القناة</h3>
+            <input type="text" id="newChNameInput" placeholder="اسم القناة الجديد..." style="margin-bottom:5px;">
+            <button class="btn-modal btn-confirm" onclick="saveChannelName()">حفظ الاسم</button>
+            <button class="btn-modal btn-cancel" onclick="document.getElementById('renameModal').style.display='none'">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="credsModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--gold); text-align:center;"><i class="fas fa-shield-alt"></i> الخزنة السرية للقناة</h3>
+            <p style="font-size:0.75rem; color:var(--text-secondary); text-align:center; margin-bottom:15px;">البيانات تحفظ على متصفحك فقط ولن ترفع لأي سيرفر.</p>
+            <input type="text" id="credEmail" placeholder="البريد الإلكتروني (Gmail)">
+            <input type="password" id="credPass" placeholder="كلمة المرور">
+            <button class="btn-modal" style="background:var(--gold); color:#000;" onclick="saveCredentials()">حفظ وتشفير</button>
+            <button class="btn-modal btn-cancel" onclick="document.getElementById('credsModal').style.display='none'">إغلاق</button>
+        </div>
+    </div>
+
+    <div id="editorOverlay">
+        <div class="editor-header">
+            <button onclick="closeEditor()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-secondary);"><i class="fas fa-times"></i></button>
+            <div class="editor-title" id="editorTitleDisplay">مشروع جديد</div>
+            <button class="save-btn" onclick="closeEditor()">حفظ <i class="fas fa-check"></i></button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab-btn active" onclick="openTab('tab-seo', this)">1. التخطيط</div>
+            <div class="tab-btn" onclick="openTab('tab-script', this)">2. السكربت</div>
+            <div class="tab-btn" onclick="openTab('tab-media', this)">3. الميديا <span id="mediaTabCount" style="color:var(--red); font-family:monospace;">(0)</span></div>
+        </div>
+
+        <div class="editor-body">
+            
+            <div id="tab-seo" class="tab-page active">
+                <div class="section-box">
+                    <label style="color:var(--cyan)"><i class="fas fa-tasks"></i> مرحلة الإنتاج الحالية</label>
+                    <select id="statusSelect" onchange="updateStatus()">
+                        <option value="idea">💡 فكرة مبدئية</option>
+                        <option value="writing">📝 جاري كتابة السكربت</option>
+                        <option value="voice">🎙️ جاري التسجيل الصوتي</option>
+                        <option value="media">🖼️ تجميع الميديا والمونتاج</option>
+                        <option value="done">✅ جاهز للرفع والإطلاق</option>
+                    </select>
+
+                    <label><i class="fas fa-heading"></i> العناوين (A/B Testing)</label>
+                    <input type="text" id="inpTitleA" placeholder="العنوان الأساسي (Clickbait)..." oninput="autoSave()">
+                    <input type="text" id="inpTitleB" placeholder="العنوان البديل (SEO)..." oninput="autoSave()" style="margin-bottom:0;">
+                </div>
+                <div class="section-box" style="margin-bottom:0;">
+                    <label><i class="fas fa-align-right"></i> الوصف (Description)</label>
+                    <textarea id="inpDesc" style="height:120px" placeholder="وصف الفيديو، الروابط، والمصادر..." oninput="autoSave()"></textarea>
+                    <label><i class="fas fa-tags"></i> الكلمات المفتاحية (Tags)</label>
+                    <textarea id="inpTags" style="height:80px; color:var(--gold); margin-bottom:0;" placeholder="عمارة, تصميم, حكايات صقر..." oninput="autoSave()"></textarea>
+                </div>
+            </div>
+
+            <div id="tab-script" class="tab-page">
+                <div class="section-box">
+                    <label><i class="fas fa-microphone-alt"></i> التعليق الصوتي (Voiceover)</label>
+                    <input type="file" id="voiceInput" accept="audio/*" style="display:none" onchange="handleVoice(this)">
+                    <button onclick="document.getElementById('voiceInput').click()" style="background:rgba(0,0,0,0.3); border:1px dashed var(--border); padding:15px; border-radius:15px; cursor:pointer; font-weight:900; color:var(--text-secondary); width:100%; font-family:var(--font); transition:0.3s;">
+                        <i class="fas fa-upload"></i> رفع الملف الصوتي النهائي
+                    </button>
+                    <div id="audioBox" style="display:none; background:rgba(0,0,0,0.5); padding:15px; border-radius:15px; margin-top:15px; border:1px solid var(--border);">
+                        <audio id="audioPlayer" controls style="width:100%; height:40px; outline:none;"></audio>
+                        <button style="width:100%; background:rgba(255, 69, 58, 0.1); border:1px solid rgba(255, 69, 58, 0.3); color:var(--red); padding:10px; border-radius:10px; margin-top:10px; cursor:pointer; font-weight:800; font-family:var(--font);" onclick="deleteVoice()"><i class="fas fa-trash"></i> حذف الصوت</button>
+                    </div>
+                </div>
+
+                <div class="section-box" style="margin-bottom:0;">
+                    <label><i class="fas fa-pen-nib"></i> السكربت والسيناريو</label>
+                    <textarea id="inpScript" style="height:350px; font-size:1rem; line-height:1.8; margin-bottom:0;" placeholder="ابدأ كتابة قصة الفيديو هنا..." oninput="autoSave()"></textarea>
+                </div>
+            </div>
+
+            <div id="tab-media" class="tab-page">
+                <div class="section-box">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+                        <label style="margin:0;"><i class="fas fa-images"></i> المعرض (B-roll & Thumbs)</label>
+                        <span id="mediaCount" style="color:var(--red); font-weight:900; font-family:monospace; background:rgba(255, 69, 58, 0.1); padding:2px 8px; border-radius:8px;">0/10</span>
+                    </div>
+                    
+                    <div class="gallery-grid" id="galleryGrid">
+                        </div>
+                    <input type="file" id="galleryInput" accept="image/*,video/*" style="display:none" onchange="handleGallery(this)">
+                </div>
+
+                <div class="section-box">
+                    <label><i class="fas fa-robot"></i> برومبتات توليد الصور (Midjourney)</label>
+                    <textarea id="inpImgPrompts" style="height:100px; direction:ltr; text-align:left; font-family:monospace;" placeholder="Cinematic architectural rendering of..." oninput="autoSave()"></textarea>
+                    
+                    <label><i class="fas fa-video"></i> برومبتات تحريك الفيديو (Runway)</label>
+                    <textarea id="inpAnimPrompts" style="height:100px; direction:ltr; text-align:left; font-family:monospace; margin-bottom:0;" placeholder="Camera panning slowly over..." oninput="autoSave()"></textarea>
+                </div>
+
+                <button onclick="deleteProject()" style="width:100%; padding:18px; background:rgba(255, 69, 58, 0.1); border:1px solid rgba(255, 69, 58, 0.3); color:var(--red); border-radius:16px; cursor:pointer; font-weight:900; font-family:var(--font); margin-top:20px; transition:0.3s;"><i class="fas fa-trash-alt"></i> حذف المشروع نهائياً</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // === SAKR OS SAFE STORAGE ===
+        function getSafeJSON(key, defaultVal) { try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; } }
+
+        let db = getSafeJSON('SakrOS_YT_Studio_V1', {
+            channels: [
+                { name: "حكايات صقر", email: "", pass: "" },
+                { name: "Portfolio & Arch", email: "", pass: "" },
+                { name: "Shorts Channel", email: "", pass: "" },
+                { name: "قناة 4", email: "", pass: "" },
+                { name: "قناة 5", email: "", pass: "" }
+            ],
+            projects: []
+        });
+        
+        let activeCh = 0;
+        let currentId = null;
+
+        window.onload = () => { renderSidebar(); renderHeader(); renderProjects(); };
+
+        function saveDB() { localStorage.setItem('SakrOS_YT_Studio_V1', JSON.stringify(db)); }
+
+        // --- Channels ---
+        function renderSidebar() {
+            const scroller = document.getElementById('channelScroller');
+            scroller.innerHTML = '';
+            db.channels.forEach((ch, idx) => {
+                const btn = document.createElement('div');
+                btn.className = `channel-slot ${idx === activeCh ? 'active' : ''}`;
+                btn.innerText = ch.name.substring(0, 2);
+                btn.onclick = () => switchChannel(idx);
+                scroller.appendChild(btn);
+            });
+        }
+
+        function switchChannel(idx) {
+            activeCh = idx;
+            renderSidebar(); renderHeader(); renderProjects();
+        }
+
+        function renderHeader() { document.getElementById('currentChannelName').innerText = db.channels[activeCh].name; }
+
+        function editChannelName() { document.getElementById('newChNameInput').value = db.channels[activeCh].name; document.getElementById('renameModal').style.display = 'flex'; }
+        function saveChannelName() { const name = document.getElementById('newChNameInput').value.trim(); if(name) { db.channels[activeCh].name = name; saveDB(); renderSidebar(); renderHeader(); document.getElementById('renameModal').style.display = 'none'; } }
+
+        function openCredentials() { const ch = db.channels[activeCh]; document.getElementById('credEmail').value = ch.email || ''; document.getElementById('credPass').value = ch.pass || ''; document.getElementById('credsModal').style.display = 'flex'; }
+        function saveCredentials() { db.channels[activeCh].email = document.getElementById('credEmail').value; db.channels[activeCh].pass = document.getElementById('credPass').value; saveDB(); document.getElementById('credsModal').style.display = 'none'; alert('تم تشفير وحفظ البيانات محلياً 🔒'); }
+
+        // --- Projects ---
+        function addNewProject() {
+            const id = Date.now();
+            db.projects.unshift({
+                id: id, chId: activeCh, status: 'idea',
+                titleA: '', titleB: '', desc: '', tags: '', script: '', imgPrompts: '', animPrompts: '',
+                voice: null, media: [], date: id
+            });
+            saveDB(); openEditor(id);
+        }
+
+        function renderProjects() {
+            const list = document.getElementById('projectsList'); list.innerHTML = '';
+            const filtered = db.projects.filter(p => p.chId === activeCh);
+            document.getElementById('projCount').innerText = filtered.length;
+
+            if(filtered.length === 0) {
+                list.innerHTML = `<div style="text-align:center; color:var(--text-secondary); margin-top:40px; font-weight:800; background:var(--card-bg); padding:20px; border-radius:20px; border:1px dashed var(--border);">لا توجد مشاريع مسجلة في هذه القناة.<br>اضغط (+) لبدء مشروع جديد.</div>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                let s = 0;
+                if(p.titleA) s+=10; if(p.script && p.script.length>20) s+=30;
+                if(p.voice) s+=20; if(p.media && p.media.length>0) s+=20; if(p.tags) s+=20;
+                const progress = Math.min(100, s);
+                
+                const color = progress >= 100 ? '#30d158' : (progress >= 50 ? '#FFB700' : '#ff453a');
+                const statusMap = { 'idea': '💡 فكرة', 'writing': '📝 كتابة', 'voice': '🎙️ صوت', 'media': '🖼️ ميديا', 'done': '✅ تم' };
+
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.onclick = () => openEditor(p.id);
+                card.innerHTML = `
+                    <div class="card-info">
+                        <div class="progress-circle" data-val="${progress}" style="background: conic-gradient(${color} ${progress}%, rgba(255,255,255,0.05) 0%)"></div>
+                        <div>
+                            <div class="proj-title">${p.titleA || 'مشروع بدون عنوان...'}</div>
+                            <div class="proj-date">${new Date(p.date).toLocaleDateString('ar-EG')}</div>
+                        </div>
+                    </div>
+                    <div class="proj-status">${statusMap[p.status] || p.status}</div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // --- Editor ---
+        function openEditor(id) {
+            currentId = id; const p = db.projects.find(x => x.id === id);
+            if(!p.media) p.media = []; // Safety check
+            
+            document.getElementById('editorTitleDisplay').innerText = p.titleA || 'مشروع جديد';
+            document.getElementById('statusSelect').value = p.status || 'idea';
+            document.getElementById('inpTitleA').value = p.titleA || ''; document.getElementById('inpTitleB').value = p.titleB || '';
+            document.getElementById('inpDesc').value = p.desc || ''; document.getElementById('inpTags').value = p.tags || '';
+            document.getElementById('inpScript').value = p.script || ''; document.getElementById('inpImgPrompts').value = p.imgPrompts || ''; document.getElementById('inpAnimPrompts').value = p.animPrompts || '';
+
+            renderVoice(p.voice); renderGallery(p.media);
+            document.getElementById('editorOverlay').style.display = 'flex';
+        }
+
+        function autoSave() {
+            const p = db.projects.find(x => x.id === currentId);
+            p.titleA = document.getElementById('inpTitleA').value; p.titleB = document.getElementById('inpTitleB').value;
+            p.desc = document.getElementById('inpDesc').value; p.tags = document.getElementById('inpTags').value;
+            p.script = document.getElementById('inpScript').value; p.imgPrompts = document.getElementById('inpImgPrompts').value; p.animPrompts = document.getElementById('inpAnimPrompts').value;
+            
+            document.getElementById('editorTitleDisplay').innerText = p.titleA || 'مشروع جديد';
+            saveDB();
+        }
+
+        function updateStatus() { db.projects.find(x => x.id === currentId).status = document.getElementById('statusSelect').value; saveDB(); }
+        function closeEditor() { document.getElementById('editorOverlay').style.display = 'none'; renderProjects(); }
+        function deleteProject() { if(confirm('هل أنت متأكد من مسح هذا المشروع نهائياً؟')) { db.projects = db.projects.filter(x => x.id !== currentId); saveDB(); closeEditor(); } }
+
+        function openTab(id, btnEl) {
+            document.querySelectorAll('.tab-page').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btnEl.classList.add('active');
+        }
+
+        // --- Audio & Media ---
+        function handleVoice(input) {
+            if(input.files[0]) {
+                if(input.files[0].size > 5 * 1024 * 1024) {
+                    if(!confirm('الملف الصوتي كبير وقد يستهلك مساحة التخزين المحلية. هل تريد الاستمرار؟')) { input.value = ''; return; }
+                }
+                const reader = new FileReader();
+                reader.onload = e => { db.projects.find(x => x.id === currentId).voice = e.target.result; saveDB(); renderVoice(e.target.result); };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function renderVoice(data) {
+            const box = document.getElementById('audioBox');
+            if(data) { box.style.display='block'; document.getElementById('audioPlayer').src = data; }
+            else { box.style.display='none'; document.getElementById('audioPlayer').src = "";}
+        }
+        function deleteVoice() { if(confirm('تأكيد حذف التسجيل الصوتي؟')) { db.projects.find(x => x.id === currentId).voice = null; saveDB(); renderVoice(null); document.getElementById('voiceInput').value = ''; } }
+
+        function handleGallery(input) {
+            if(input.files[0]) {
+                const p = db.projects.find(x => x.id === currentId);
+                if(p.media.length >= 10) return alert('الحد الأقصى 10 ملفات كمرجع لكل مشروع للحفاظ على مساحة النظام.');
+                const file = input.files[0]; const type = file.type.startsWith('video') ? 'vid' : 'img';
+                
+                if(file.size > 4 * 1024 * 1024) { 
+                    if(!confirm('هذا الملف كبير (أكبر من 4MB) وسيأخذ مساحة من التخزين المحلي. هل أنت متأكد؟')) { input.value = ''; return; } 
+                }
+
+                const reader = new FileReader();
+                reader.onload = e => { p.media.push({ type: type, data: e.target.result }); saveDB(); renderGallery(p.media); input.value = '';};
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function renderGallery(mediaList) {
+            const grid = document.getElementById('galleryGrid'); grid.innerHTML = '';
+            
+            mediaList.forEach((item, idx) => {
+                const div = document.createElement('div'); div.className = 'gallery-item';
+                let content = item.type === 'vid' ? `<video src="${item.data}"></video><div class="video-indicator"><i class="fas fa-play"></i></div>` : `<img src="${item.data}">`;
+                div.innerHTML = `${content}<button class="del-media-btn" onclick="removeMedia(${idx})"><i class="fas fa-times"></i></button>`;
+                grid.appendChild(div);
+            });
+            
+            if(mediaList.length < 10) {
+                const btn = document.createElement('div'); btn.className = 'upload-card'; btn.onclick = () => document.getElementById('galleryInput').click();
+                btn.innerHTML = '<i class="fas fa-image" style="font-size:1.5rem; margin-bottom:5px;"></i><span style="font-weight:900; font-size:0.8rem;">إضافة</span>';
+                grid.appendChild(btn);
+            }
+
+            document.getElementById('mediaCount').innerText = `${mediaList.length}/10`;
+            document.getElementById('mediaTabCount').innerText = `(${mediaList.length})`;
+        }
+
+        function removeMedia(idx) { if(confirm('هل تريد مسح هذا الملف؟')) { const p = db.projects.find(x => x.id === currentId); p.media.splice(idx, 1); saveDB(); renderGallery(p.media); } }
+
+        // --- Backup ---
+        function exportBackup() { const blob = new Blob([JSON.stringify(db)], {type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='SakrOS_YT_Studio_Backup.json'; a.click(); }
+        function importBackup(inp) { const r=new FileReader(); r.onload=e=>{ try { db=JSON.parse(e.target.result); saveDB(); init(); alert('تم استعادة أرشيف الاستوديو بنجاح! 🎬'); } catch(err) { alert('الملف غير صالح'); } }; if(inp.files[0]) r.readAsText(inp.files[0]); inp.value = ''; }
+    </script>
+</body>
+</html>

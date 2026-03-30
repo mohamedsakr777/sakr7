@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAKR OS | Aesthetic Protocol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <meta name="theme-color" content="#0B1021">
+    
+    <style>
+        /* ================= DEEP NAVY THEME (AESTHETIC V4.3) ================= */
+        :root {
+            --bg-main: #060913;      
+            --card-bg: rgba(27, 35, 65, 0.7);      
+            --card-hover: rgba(35, 44, 80, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --accent-blue: #5A75FF;  
+            --gold: #FFB700;
+            --green: #30D158;
+            --cyan: #00bcd4;
+            --purple: #BF5AF2;
+            --red: #ff453a;
+            --orange: #FF9500;
+            --silver: #e5e5e5;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #8A94B5;
+            
+            --radius: 24px;
+            --font: 'Cairo', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; -webkit-tap-highlight-color: transparent;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; padding: 25px 20px 120px; overflow-x: hidden; 
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(255, 149, 0, 0.1), transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(0, 188, 212, 0.05), transparent 50%),
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* --- HEADER --- */
+        .header { display: flex; align-items: center; margin-bottom: 25px; animation: fadeUp 0.5s ease-out forwards; gap: 15px;}
+        .btn-back { background: rgba(255, 149, 0, 0.1); border: 1px solid rgba(255, 149, 0, 0.3); color: var(--orange); width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.3s; text-decoration: none;}
+        .btn-back:active { transform: scale(0.9); background: var(--orange); color: #000; }
+        
+        .header-info h1 { font-size: 2rem; font-weight: 900; line-height: 1.1; color: #fff; letter-spacing: 1px;}
+        .header-info p { font-size: 0.85rem; color: var(--orange); font-weight: 800; margin-top: 4px; text-transform: uppercase; letter-spacing: 2px;}
+
+        /* --- BENTO GRID --- */
+        .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .span-2 { grid-column: span 2; }
+        
+        .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; animation: fadeUp 0.5s ease-out forwards; opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.3s;}
+        .bento-card.clickable:active { transform: scale(0.96); border-color: var(--orange); }
+
+        .card-title { font-size: 1.05rem; font-weight: 900; margin-bottom: 5px; color: #fff; display: flex; align-items: center; justify-content: space-between; width: 100%;}
+        .card-value { font-size: 2.2rem; font-weight: 900; font-family: monospace; line-height: 1.1; margin-top: 5px;}
+        .card-subtitle { font-size: 0.75rem; color: var(--text-secondary); font-weight: 800;}
+
+        /* --- READINESS BAR --- */
+        .readiness-bar-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; margin-top: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .readiness-bar-fill { height: 100%; background: var(--orange); width: 0%; transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* --- ROUTINE TILES --- */
+        .routine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .routine-tile { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 20px 15px; border-radius: 20px; text-align: center; transition: 0.3s; cursor: pointer; position: relative; }
+        .routine-tile.done { border-color: var(--orange); background: rgba(255, 149, 0, 0.1); box-shadow: 0 5px 15px rgba(255, 149, 0, 0.2);}
+        .routine-tile i.main-icon { font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.6; transition: 0.3s; }
+        .routine-tile.done i.main-icon { opacity: 1; transform: scale(1.1); }
+        .routine-name { font-size: 0.85rem; font-weight: 800; color: #fff; }
+        .check-mark { position: absolute; top: 10px; left: 10px; color: var(--orange); font-size: 0.9rem; opacity: 0; transition: 0.3s; }
+        .routine-tile.done .check-mark { opacity: 1; }
+
+        /* --- PHARMACY LIST --- */
+        .pharma-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px;}
+        .pharma-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-radius: 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); }
+        .p-info { flex: 1; }
+        .p-name { font-weight: 800; font-size: 0.95rem; color: #fff;}
+        .p-price { font-size: 0.8rem; color: var(--gold); font-weight: 800; font-family: monospace; margin-top: 2px; }
+        
+        .status-pill { padding: 6px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 900; cursor: pointer; transition: 0.2s; border: none; font-family: var(--font);}
+        .s-ok { background: rgba(48, 209, 88, 0.1); color: var(--green); border: 1px solid rgba(48, 209, 88, 0.3);}
+        .s-buy { background: rgba(255, 69, 58, 0.1); color: var(--red); border: 1px solid rgba(255, 69, 58, 0.3);}
+        .status-pill:active { transform: scale(0.9); }
+
+        .summary-box { background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(0,0,0,0.3)); border: 1px solid rgba(255, 149, 0, 0.3); color: #fff; padding: 15px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .sum-val { font-size: 1.4rem; font-weight: 900; font-family: monospace; color: var(--orange);}
+
+        /* --- ADD BUTTONS --- */
+        .btn-add { width: 100%; background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px dashed var(--border); padding: 15px; border-radius: 18px; font-weight: 900; margin-top: 15px; cursor: pointer; font-family: var(--font); transition: 0.3s; font-size: 0.9rem;}
+        .btn-add:active { background: rgba(255,255,255,0.1); transform: scale(0.98); }
+
+        /* --- MODALS --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 15px;}
+        .modal-content { background: var(--card-bg); padding: 25px 20px; border-radius: 30px; width: 100%; max-width: 400px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: fadeUp 0.3s ease-out; display: flex; flex-direction: column; gap: 15px;}
+        
+        .modal-header { font-size: 1.2rem; font-weight: 900; color: #fff; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;}
+        
+        .modal-input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 16px; font-family: var(--font); font-size: 0.95rem; font-weight: 700; transition: 0.3s; }
+        .modal-input:focus { border-color: var(--orange); background: rgba(255, 149, 0, 0.05); }
+        .modal-input::placeholder { color: rgba(255,255,255,0.3); }
+
+        .btn-confirm { background: var(--orange); color: #000; border: none; padding: 15px; border-radius: 16px; font-size: 1rem; font-weight: 900; cursor: pointer; font-family: var(--font); box-shadow: 0 5px 20px rgba(255, 149, 0, 0.3); transition: 0.2s;}
+        .btn-confirm:active { transform: scale(0.97); }
+        .btn-close { background: transparent; color: var(--text-secondary); border: none; padding: 10px; font-weight: 800; cursor: pointer; font-family: var(--font); border-radius: 16px; border: 1px solid var(--border);}
+
+        .txt-orange { color: var(--orange); }
+        .txt-cyan { color: var(--cyan); }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-right"></i></a>
+        <div class="header-info">
+            <h1>AESTHETIC</h1>
+            <p>المظهر والكاريزما</p>
+        </div>
+    </header>
+
+    <div class="bento-grid">
+
+        <div class="bento-card" style="animation-delay: 0.05s;">
+            <div class="card-title txt-orange"><i class="fas fa-bolt"></i> الجاهزية</div>
+            <div class="card-value txt-orange" id="readinessNum">0%</div>
+            <div class="card-subtitle">مؤشر الانتشار اليومي</div>
+            <div class="readiness-bar-bg"><div class="readiness-bar-fill" id="readinessBar"></div></div>
+        </div>
+
+        <div class="bento-card clickable" style="animation-delay: 0.1s;" onclick="logHaircut()">
+            <div class="card-title txt-cyan"><i class="fas fa-cut"></i> الحلاقة</div>
+            <div class="card-value txt-cyan" id="barberDays">0</div>
+            <div class="card-subtitle">يوم منذ آخر تجديد (اضغط للتصفير)</div>
+        </div>
+
+        <div class="bento-card span-2" style="animation-delay: 0.15s;">
+            <div class="card-title" style="color:#fff;"><i class="fas fa-sparkles txt-orange"></i> الروتين الأساسي</div>
+            <div class="routine-grid" id="routineContainer">
+                </div>
+            <button class="btn-add" onclick="document.getElementById('routineModal').style.display='flex'">
+                <i class="fas fa-plus"></i> إضافة مهمة للروتين
+            </button>
+        </div>
+
+        <div class="bento-card span-2" style="animation-delay: 0.2s;">
+            <div class="card-title" style="color:#fff;"><i class="fas fa-shopping-basket txt-cyan"></i> النواقص والجرد (الصيدلية)</div>
+            
+            <div class="pharma-list" id="pharmaContainer">
+                </div>
+
+            <button class="btn-add" onclick="document.getElementById('pharmaModal').style.display='flex'">
+                <i class="fas fa-plus"></i> إضافة منتج جديد
+            </button>
+            
+            <div class="summary-box">
+                <div style="font-weight:800; font-size:0.9rem;">ميزانية النواقص الحالية:</div>
+                <div class="sum-val"><span id="totalToBuy">0</span> EGP</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal" id="routineModal">
+        <div class="modal-content">
+            <div class="modal-header txt-orange"><i class="fas fa-star"></i> مهمة روتين جديدة</div>
+            <input type="text" id="newRName" class="modal-input" placeholder="اسم المهمة (مثال: غسول الوجه)">
+            <input type="text" id="newRIcon" class="modal-input" placeholder="إيموجي معبر (مثال: 🧴)">
+            <button class="btn-confirm" onclick="saveRoutine()">إضافة للروتين</button>
+            <button class="btn-close" onclick="document.getElementById('routineModal').style.display='none'">إلغاء</button>
+        </div>
+    </div>
+
+    <div class="modal" id="pharmaModal">
+        <div class="modal-content">
+            <div class="modal-header txt-cyan"><i class="fas fa-pills"></i> منتج صيدلية جديد</div>
+            <input type="text" id="newPName" class="modal-input" placeholder="اسم المنتج (مثال: فيتامينات)">
+            <input type="number" id="newPPrice" class="modal-input" placeholder="السعر التقريبي (EGP)">
+            <button class="btn-confirm" style="background:var(--cyan);" onclick="savePharma()">حفظ في الجرد</button>
+            <button class="btn-close" onclick="document.getElementById('pharmaModal').style.display='none'">إلغاء</button>
+        </div>
+    </div>
+
+    <script>
+        // --- SAFE TIME & DB HELPERS ---
+        function getLocalYMD(dateObj = new Date()) {
+            let y = dateObj.getFullYear();
+            let m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            let d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+        const TODAY = getLocalYMD();
+
+        function getSafeJSON(key, defaultVal) {
+            try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; }
+        }
+
+        const DB_KEY = 'SakrOS_Renewal_V4'; // Bumped version for full stability
+
+        let db = getSafeJSON(DB_KEY, {
+            lastHaircut: null,
+            routineDate: null,
+            routines: [
+                { id: 1, name: 'مينوكسديل', icon: '💧', done: false },
+                { id: 2, name: 'غسيل أسنان', icon: '🦷', done: false },
+                { id: 3, name: 'شاور منعش', icon: '🚿', done: false },
+                { id: 4, name: 'كريم الوجه', icon: '🧴', done: false }
+            ],
+            pharmacy: [
+                { id: 101, name: 'مينوكسديل 5%', price: 150, status: 'ok' },
+                { id: 102, name: 'فيتامينات', price: 200, status: 'buy' }
+            ]
+        });
+
+        window.onload = function() {
+            // Auto Reset Routines if it's a new day
+            if(db.routineDate !== TODAY) {
+                if(db.routines) db.routines.forEach(r => r.done = false);
+                db.routineDate = TODAY;
+                save();
+            }
+            renderAll();
+        };
+
+        function save() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+        function renderAll() {
+            renderRoutines();
+            renderPharma();
+            renderBarber();
+            updateReadiness();
+        }
+
+        // --- ROUTINES ---
+        function renderRoutines() {
+            const container = document.getElementById('routineContainer'); container.innerHTML = '';
+            if(!db.routines) db.routines = [];
+            
+            db.routines.forEach(r => {
+                container.innerHTML += `
+                    <div class="routine-tile ${r.done ? 'done' : ''}" onclick="toggleRoutine(${r.id})">
+                        <span class="check-mark"><i class="fas fa-check-circle"></i></span>
+                        <div style="font-size:2rem; margin-bottom:8px;" class="main-icon">${r.icon || '✨'}</div>
+                        <div class="routine-name">${r.name}</div>
+                        <button onclick="delRoutine(event, ${r.id})" style="position:absolute; top:5px; right:5px; background:none; border:none; color:var(--text-secondary); opacity:0.5; cursor:pointer;"><i class="fas fa-times"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleRoutine(id) {
+            let r = db.routines.find(x => x.id === id);
+            if(r) {
+                r.done = !r.done;
+                save(); renderRoutines(); updateReadiness();
+                if(r.done && navigator.vibrate) navigator.vibrate(20);
+            }
+        }
+
+        function delRoutine(e, id) {
+            e.stopPropagation(); // Prevent triggering toggleRoutine
+            if(confirm('حذف هذه المهمة من الروتين؟')) {
+                db.routines = db.routines.filter(x => x.id !== id);
+                save(); renderRoutines(); updateReadiness();
+            }
+        }
+
+        function updateReadiness() {
+            if(!db.routines || db.routines.length === 0) {
+                document.getElementById('readinessNum').innerText = '0%';
+                document.getElementById('readinessBar').style.width = '0%';
+                return;
+            }
+            let done = db.routines.filter(r => r.done).length;
+            let pct = Math.round((done / db.routines.length) * 100);
+            document.getElementById('readinessNum').innerText = pct + '%';
+            document.getElementById('readinessBar').style.width = pct + '%';
+        }
+
+        function saveRoutine() {
+            let n = document.getElementById('newRName').value.trim();
+            let i = document.getElementById('newRIcon').value.trim() || '✨';
+            if(n) {
+                if(!db.routines) db.routines = [];
+                db.routines.push({id: Date.now(), name: n, icon: i, done: false});
+                save(); renderRoutines(); updateReadiness();
+                document.getElementById('routineModal').style.display = 'none';
+                document.getElementById('newRName').value = '';
+                document.getElementById('newRIcon').value = '';
+            }
+        }
+
+        // --- PHARMACY ---
+        function renderPharma() {
+            const container = document.getElementById('pharmaContainer'); container.innerHTML = '';
+            let total = 0;
+            if(!db.pharmacy) db.pharmacy = [];
+
+            if(db.pharmacy.length === 0) {
+                container.innerHTML = '<div style="text-align:center; font-size:0.8rem; color:var(--text-secondary); padding:10px;">لا توجد منتجات.</div>';
+            }
+
+            db.pharmacy.forEach(p => {
+                if(p.status === 'buy') total += p.price;
+                container.innerHTML += `
+                    <div class="pharma-item">
+                        <div class="p-info">
+                            <div class="p-name">${p.name}</div>
+                            <div class="p-price">${p.price} EGP</div>
+                        </div>
+                        <button class="status-pill ${p.status === 'ok' ? 's-ok' : 's-buy'}" onclick="togglePStatus(${p.id})">
+                            ${p.status === 'ok' ? 'متوفر ✔' : 'نقص 🛒'}
+                        </button>
+                        <i class="fas fa-times" style="margin-right:15px; color:rgba(255,255,255,0.2); cursor:pointer; font-size:1.2rem;" onclick="delP(${p.id})"></i>
+                    </div>
+                `;
+            });
+            document.getElementById('totalToBuy').innerText = total.toLocaleString('en-US');
+        }
+
+        function togglePStatus(id) {
+            let p = db.pharmacy.find(x => x.id === id);
+            if(p) { p.status = (p.status === 'ok') ? 'buy' : 'ok'; save(); renderPharma(); }
+        }
+
+        function savePharma() {
+            let n = document.getElementById('newPName').value.trim();
+            let p = parseInt(document.getElementById('newPPrice').value) || 0;
+            if(n) {
+                if(!db.pharmacy) db.pharmacy = [];
+                db.pharmacy.unshift({id: Date.now(), name: n, price: p, status: 'ok'});
+                save(); renderPharma();
+                document.getElementById('pharmaModal').style.display = 'none';
+                document.getElementById('newPName').value = '';
+                document.getElementById('newPPrice').value = '';
+            }
+        }
+
+        function delP(id) { 
+            if(confirm('حذف هذا المنتج نهائياً من الجرد؟')) { 
+                db.pharmacy = db.pharmacy.filter(x => x.id !== id); 
+                save(); renderPharma(); 
+            } 
+        }
+
+        // --- BARBER ---
+        function renderBarber() {
+            if(!db.lastHaircut) {
+                document.getElementById('barberDays').innerText = "--";
+                return;
+            }
+            let todayDate = new Date(); todayDate.setMinutes(todayDate.getMinutes() - todayDate.getTimezoneOffset());
+            let lastDate = new Date(db.lastHaircut);
+            let diff = Math.floor((todayDate - lastDate) / (1000*60*60*24));
+            document.getElementById('barberDays').innerText = Math.max(0, diff);
+        }
+
+        function logHaircut() { 
+            if(confirm('هل قمت بالذهاب للحلاق وتجديد المظهر للتو؟ ✂️')) { 
+                db.lastHaircut = TODAY; 
+                save(); renderBarber(); 
+            } 
+        }
+    </script>
+</body>
+</html>
