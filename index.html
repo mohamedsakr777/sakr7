@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#0B1021">
     
     <style>
-        /* ================= DEEP NAVY THEME ================= */
+        /* ================= DEEP NAVY THEME (V4.3 ULTIMATE) ================= */
         :root {
             --bg-main: #060913;      
             --card-bg: rgba(27, 35, 65, 0.7);      
@@ -45,46 +45,49 @@
         /* --- HEADER --- */
         .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; animation: fadeUp 0.5s ease-out forwards; }
         .header-info h1 { font-size: 2.2rem; font-weight: 900; line-height: 1.1; color: #fff;}
-        .quote-box { font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; margin-top: 8px; border-right: 2px solid var(--accent-blue); padding-right: 8px; max-width: 250px;}
+        .quote-box { font-size: 0.75rem; color: var(--text-secondary); font-weight: 800; margin-top: 8px; border-right: 2px solid var(--accent-blue); padding-right: 8px; max-width: 250px;}
         
         .header-controls { display: flex; align-items: center; gap: 10px; }
         .btn-action { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-secondary); width: 42px; height: 42px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.1rem; cursor: pointer; transition: 0.3s;}
         .btn-action:active { transform: scale(0.9); }
-        .profile-pic { width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #1B2341, #0B1021); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;}
+        .profile-pic { width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #1B2341, #0B1021); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
 
         /* --- BENTO GRID --- */
         .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
         .span-2 { grid-column: span 2; }
-        .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-decoration: none; color: var(--text-primary); display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: 0.2s; animation: fadeUp 0.5s ease-out forwards; opacity: 0; }
-        .bento-card:active { transform: scale(0.98); }
+        .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-decoration: none; color: var(--text-primary); display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: 0.3s; animation: fadeUp 0.5s ease-out forwards; opacity: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.2);}
+        .bento-card:active { transform: scale(0.96); }
         
         .card-icon { font-size: 1.8rem; margin-bottom: 8px;}
-        .card-title { font-size: 1.05rem; font-weight: 900; margin-bottom: 2px;}
+        .card-title { font-size: 1.05rem; font-weight: 900; margin-bottom: 2px; color: #fff;}
         .card-value { font-size: 2.2rem; font-weight: 900; font-family: monospace; line-height: 1.1;}
         .card-subtitle { font-size: 0.75rem; color: var(--text-secondary); font-weight: 800; display: flex; align-items: center; justify-content: space-between; margin-top: 5px;}
 
-        .mini-progress-bg { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 3px; margin-top: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .mini-progress-bg { width: 100%; height: 6px; background: rgba(0,0,0,0.4); border-radius: 3px; margin-top: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
         .mini-progress-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
 
         .txt-accent { color: var(--accent-blue); } .txt-gold { color: var(--gold); } .txt-cyan { color: var(--cyan); } .txt-green { color: var(--green); } .txt-purple { color: var(--purple); } .txt-orange { color: var(--orange); } .txt-red { color: var(--red); }
 
         /* --- STRICT TO-DO LIST --- */
         .todo-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-        .todo-item { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); }
-        .todo-checkbox { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--accent-blue); appearance: none; outline: none; cursor: pointer; position: relative; transition: 0.2s; flex-shrink: 0; background: transparent;}
+        .todo-item { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); transition: 0.3s;}
+        .todo-checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--accent-blue); appearance: none; outline: none; cursor: pointer; position: relative; transition: 0.2s; flex-shrink: 0; background: transparent;}
         .todo-checkbox:checked { background: var(--accent-blue); border-color: var(--accent-blue); }
         .todo-checkbox:checked::after { content: '✔'; color: #fff; position: absolute; font-size: 12px; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: sans-serif; font-weight: 900;}
-        .todo-text { font-size: 0.9rem; font-weight: 700; color: #fff; line-height: 1.3;}
+        .todo-text { font-size: 0.9rem; font-weight: 800; color: #fff; line-height: 1.3;}
+        
         .todo-input-wrap { display: flex; gap: 8px; }
-        .todo-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 0.9rem; font-weight: 700; padding: 10px; border-radius: 12px; }
+        .todo-input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: #fff; font-size: 0.9rem; font-weight: 700; padding: 12px; border-radius: 12px; transition: 0.3s;}
         .todo-input:focus { border-color: var(--accent-blue); }
-        .todo-add-btn { background: var(--accent-blue); color: #fff; border: none; width: 42px; border-radius: 12px; font-weight: 900; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center;}
+        .todo-add-btn { background: var(--accent-blue); color: #fff; border: none; width: 45px; border-radius: 12px; font-weight: 900; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; box-shadow: 0 5px 15px rgba(90, 117, 255, 0.3);}
         .todo-add-btn:active { transform: scale(0.9); }
 
         /* --- 365 MATRIX & LEGEND --- */
         .matrix-wrapper { display: flex; gap: 5px; overflow-x: auto; padding: 10px 0; direction: ltr; scrollbar-width: none; }
+        .matrix-wrapper::-webkit-scrollbar { display: none; }
         .matrix-col { display: grid; grid-template-rows: repeat(7, 1fr); gap: 5px; }
-        .matrix-cell { width: 12px; height: 12px; border-radius: 3px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.02); }
+        .matrix-cell { width: 14px; height: 14px; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.02); cursor: pointer; transition: 0.2s;}
+        .matrix-cell:hover { transform: scale(1.2); z-index: 10;}
         
         .matrix-legend { display: flex; justify-content: center; gap: 15px; margin-top: 10px; direction: rtl;}
         .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 800;}
@@ -92,40 +95,60 @@
 
         /* --- BIG REPORT BUTTON --- */
         .sleep-container { margin-top: 30px; animation: fadeUp 0.6s ease-out forwards; opacity: 0; animation-delay: 0.3s;}
-        .sleep-btn { width: 100%; background: linear-gradient(135deg, var(--accent-blue), #4055D0); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 20px; border-radius: 24px; font-size: 1.2rem; font-weight: 900; cursor: pointer; text-align: center; box-shadow: 0 10px 25px rgba(90, 117, 255, 0.4); transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;}
+        .sleep-btn { width: 100%; background: linear-gradient(135deg, var(--accent-blue), #4055D0); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 20px; border-radius: 24px; font-size: 1.2rem; font-weight: 900; cursor: pointer; text-align: center; box-shadow: 0 10px 30px rgba(90, 117, 255, 0.5); transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; font-family: var(--font);}
         .sleep-btn:active { transform: scale(0.97); }
 
         /* --- MODALS --- */
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index: 3000; align-items: flex-end; justify-content: center; backdrop-filter: blur(8px); padding: 10px;}
-        .modal-content { background: var(--bg-main); padding: 20px; border-radius: 30px 30px 15px 15px; width: 100%; max-width: 450px; border: 1px solid var(--border); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); animation: fadeUp 0.3s ease-out; display: flex; flex-direction: column; gap: 12px; max-height: 90vh; overflow-y: auto;}
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index: 3000; align-items: flex-end; justify-content: center; backdrop-filter: blur(10px); padding: 10px;}
+        .modal-content { background: var(--bg-main); padding: 25px 20px; border-radius: 30px 30px 15px 15px; width: 100%; max-width: 450px; border: 1px solid var(--border); box-shadow: 0 -10px 50px rgba(0,0,0,0.6); animation: fadeUp 0.3s ease-out; display: flex; flex-direction: column; gap: 12px; max-height: 90vh; overflow-y: auto;}
+        .modal-content::-webkit-scrollbar { width: 4px; } .modal-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
         
         .modal-header { font-size: 1.3rem; font-weight: 900; color: #fff; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; position: sticky; top: 0; background: var(--bg-main); z-index: 10;}
         
-        .report-group { background: var(--card-bg); padding: 15px; border-radius: 20px; border: 1px solid var(--border); }
-        .group-title { font-size: 0.95rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;}
+        .report-group { background: var(--card-bg); padding: 18px; border-radius: 20px; border: 1px solid var(--border); }
+        .group-title { font-size: 0.95rem; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;}
         
-        .flex-input { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
-        .flex-input label { font-size: 0.85rem; color: #fff; font-weight: 700; flex: 1;}
-        .flex-input input[type="number"], .flex-input input[type="time"], .flex-input input[type="text"] { width: 100px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: #fff; padding: 10px; border-radius: 12px; text-align: center; font-family: monospace; font-size: 1rem; font-weight: 900;}
+        .flex-input { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
+        .flex-input label { font-size: 0.85rem; color: #fff; font-weight: 800; flex: 1;}
+        .flex-input input[type="number"], .flex-input input[type="text"] { width: 110px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px; text-align: center; font-family: monospace; font-size: 1rem; font-weight: 900; transition: 0.3s;}
+        .flex-input input:focus { border-color: var(--accent-blue); background: rgba(90, 117, 255, 0.05);}
         
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); border-radius: 24px; transition: 0.3s;}
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: #fff; border-radius: 50%; transition: 0.3s;}
-        input:checked + .slider { background-color: var(--green); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); border-radius: 24px; transition: 0.3s; border: 1px solid var(--border);}
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: var(--text-secondary); border-radius: 50%; transition: 0.3s;}
+        input:checked + .slider { background-color: var(--green); border-color: var(--green); }
         input:checked + .slider:before { transform: translateX(22px); background-color: #000; }
 
-        .prayers-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;}
+        .prayers-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px;}
         .pray-chk { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
         .pray-chk input { display: none; }
-        .pray-box { width: 100%; height: 40px; border-radius: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.2); font-size: 1.1rem; transition: 0.2s;}
-        .pray-chk input:checked + .pray-box { background: var(--gold); border-color: var(--gold); color: #000; font-weight:900;}
-        .pray-chk span { font-size: 0.75rem; color: var(--text-secondary); font-weight: 800; }
+        .pray-box { width: 100%; height: 42px; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.3); font-size: 1.1rem; transition: 0.2s;}
+        .pray-chk input:checked + .pray-box { background: var(--gold); border-color: var(--gold); color: #000; font-weight:900; box-shadow: 0 0 10px rgba(255, 183, 0, 0.3);}
+        .pray-chk span { font-size: 0.75rem; color: var(--text-secondary); font-weight: 900; }
 
-        .btn-confirm { background: var(--accent-blue); color: #fff; border: none; padding: 18px; border-radius: 18px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; margin-top: 10px;}
+        .btn-confirm { background: var(--accent-blue); color: #fff; border: none; padding: 18px; border-radius: 18px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; margin-top: 15px; font-family: var(--font); box-shadow: 0 5px 20px rgba(90, 117, 255, 0.3); transition: 0.2s;}
         .btn-confirm:active { transform: scale(0.97); }
-        .btn-close { background: transparent; color: var(--text-secondary); border: none; padding: 12px; font-weight: 800; cursor: pointer; font-family: var(--font); width: 100%; border-radius: 18px; border: 1px solid var(--border);}
+        .btn-close { background: transparent; color: var(--text-secondary); border: none; padding: 14px; font-weight: 800; cursor: pointer; font-family: var(--font); width: 100%; border-radius: 18px; border: 1px solid var(--border); transition: 0.2s;}
+        .btn-close:active { background: rgba(255,255,255,0.05); }
+
     </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC0eaAz23LDPwI_-zXMOL4U_QOFbLqVTX0",
+            authDomain: "sakr-d12dc.firebaseapp.com",
+            databaseURL: "https://sakr-d12dc-default-rtdb.firebaseio.com",
+            projectId: "sakr-d12dc",
+            storageBucket: "sakr-d12dc.firebasestorage.app",
+            messagingSenderId: "874423050089",
+            appId: "1:874423050089:web:b25dd95e5a1f7c3bd867f8"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const dbCloud = firebase.database();
+    </script>
 </head>
 <body>
 
@@ -142,40 +165,40 @@
     </header>
 
     <div class="bento-grid">
-        <div class="bento-card span-2" style="background: linear-gradient(160deg, rgba(22, 29, 54, 0.6), var(--card-bg)); border-color: rgba(90, 117, 255, 0.3);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div class="bento-card span-2" style="background: linear-gradient(160deg, rgba(22, 29, 54, 0.8), var(--card-bg)); border-color: rgba(90, 117, 255, 0.3);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                 <div class="card-title txt-accent" style="margin:0;"><i class="fas fa-tasks"></i> المهام الصارمة</div>
-                <div style="font-size:0.7rem; color:var(--text-secondary); font-weight:800;">(إنجاز = +5 XP)</div>
+                <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:800; background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:8px;">إنجاز = +5 XP</div>
             </div>
             <div class="todo-container" id="todoContainer"></div>
             <div class="todo-input-wrap">
-                <input type="text" id="todoInput" class="todo-input" placeholder="أضف مهمة جديدة (أقصى 3)..." onkeypress="if(event.key === 'Enter') addTodo()">
+                <input type="text" id="todoInput" class="todo-input" placeholder="أضف مهمة استراتيجية (أقصى 3)..." onkeypress="if(event.key === 'Enter') addTodo()">
                 <button class="todo-add-btn" onclick="addTodo()"><i class="fas fa-plus"></i></button>
             </div>
         </div>
 
         <div class="bento-card span-2" style="animation-delay: 0.05s;">
-            <div class="card-title txt-accent"><i class="fas fa-calendar-alt"></i> أرشيف الإمبراطورية</div>
+            <div class="card-title txt-accent"><i class="fas fa-calendar-alt"></i> أرشيف الإمبراطورية السيبراني</div>
             <div class="matrix-wrapper" id="matrix365"></div>
             <div class="matrix-legend">
                 <div class="legend-item"><div class="legend-box" style="background:rgba(255,255,255,0.05);"></div> لم يسجل</div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--red);"></div> 0-49%</div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--gold);"></div> 50-79%</div>
-                <div class="legend-item"><div class="legend-box" style="background:var(--green);"></div> 80-100%</div>
+                <div class="legend-item"><div class="legend-box" style="background:var(--green); box-shadow: 0 0 5px rgba(48,209,88,0.5);"></div> 80-100%</div>
             </div>
         </div>
 
-        <div class="bento-card span-2" style="flex-direction: row; align-items: center; animation-delay: 0.1s; background: linear-gradient(135deg, rgba(255,183,0,0.1), var(--card-bg));">
-            <div class="card-icon txt-gold" style="margin: 0 0 0 15px; font-size: 2.5rem;"><i class="fas fa-crown"></i></div>
+        <div class="bento-card span-2" style="flex-direction: row; align-items: center; animation-delay: 0.1s; background: linear-gradient(135deg, rgba(255,183,0,0.1), var(--card-bg)); border-color: rgba(255, 183, 0, 0.3);">
+            <div class="card-icon txt-gold" style="margin: 0 0 0 15px; font-size: 2.8rem; text-shadow: 0 5px 15px rgba(255, 183, 0, 0.4);"><i class="fas fa-crown"></i></div>
             <div style="flex: 1;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:5px; align-items:center;">
-                    <div class="card-title" style="margin:0;">المستوى</div>
-                    <div style="background:var(--gold); color:#000; padding:2px 8px; border-radius:8px; font-size:0.75rem; font-weight:900;" id="levelDisp">Lvl 1</div>
+                    <div class="card-title" style="margin:0;">المستوى الحالي</div>
+                    <div style="background:var(--gold); color:#000; padding:2px 10px; border-radius:8px; font-size:0.8rem; font-weight:900; font-family:monospace;" id="levelDisp">Lvl 1</div>
                 </div>
-                <div class="mini-progress-bg"><div class="mini-progress-fill" id="xpBar" style="background: var(--gold); width: 0%;"></div></div>
-                <div class="card-subtitle" style="margin-top:5px; justify-content:space-between;">
-                    <span style="color:var(--gold); font-weight:900;"><span id="xpVal">0</span> XP</span>
-                    <span style="font-size:0.7rem;">Next: <span id="nextXpVal">10</span></span>
+                <div class="mini-progress-bg"><div class="mini-progress-fill" id="xpBar" style="background: var(--gold); width: 0%; box-shadow: 0 0 10px rgba(255, 183, 0, 0.5);"></div></div>
+                <div class="card-subtitle" style="margin-top:8px; justify-content:space-between;">
+                    <span style="color:var(--gold); font-weight:900; font-size:0.9rem;"><span id="xpVal" style="font-family:monospace;">0</span> XP</span>
+                    <span style="font-size:0.75rem; font-family:monospace;">Next: <span id="nextXpVal">10</span></span>
                 </div>
             </div>
         </div>
@@ -188,84 +211,84 @@
         <div class="bento-card" style="animation-delay: 0.15s;">
             <div class="card-icon txt-accent"><i class="fas fa-fire"></i></div>
             <div class="card-value txt-accent" id="streakVal">0</div>
-            <div class="card-subtitle">يوم التزام</div>
+            <div class="card-subtitle">يوم التزام مستمر</div>
         </div>
 
-        <a href="oracle.html" class="bento-card span-2" style="background: linear-gradient(135deg, #0f172a, #020617); text-align: center; border: 1px solid rgba(0, 188, 212, 0.4); animation-delay: 0.18s;">
-            <div class="card-icon txt-cyan" style="font-size: 2rem;"><i class="fas fa-eye"></i></div>
-            <div class="card-title" style="font-size: 1.3rem; letter-spacing: 2px; color: #fff;">THE ORACLE</div>
-            <div class="card-subtitle txt-cyan">غرفة القيادة والتحليلات</div>
+        <a href="oracle.html" class="bento-card span-2" style="background: linear-gradient(135deg, rgba(0, 188, 212, 0.1), var(--card-bg)); text-align: center; border: 1px solid rgba(0, 188, 212, 0.4); animation-delay: 0.18s; text-decoration:none;">
+            <div class="card-icon txt-cyan" style="font-size: 2.2rem;"><i class="fas fa-eye"></i></div>
+            <div class="card-title" style="font-size: 1.4rem; letter-spacing: 2px; color: #fff;">THE ORACLE</div>
+            <div class="card-subtitle txt-cyan" style="justify-content:center;">غرفة القيادة والتحليلات السيبرانية</div>
         </a>
 
         <a href="physical.html" class="bento-card" style="animation-delay: 0.2s;">
-            <div class="card-icon" style="color:#e5e5e5;"><i class="fas fa-dumbbell"></i></div>
-            <div class="card-title">الفورمة</div>
-            <div class="card-subtitle" id="weightDisp" style="font-family:monospace; color:#fff; font-size:1rem;">-- Kg</div>
-            <div class="mini-progress-bg"><div class="mini-progress-fill" id="weightBar" style="background: #e5e5e5; width: 0%;"></div></div>
+            <div class="card-icon" style="color:var(--red);"><i class="fas fa-dumbbell"></i></div>
+            <div class="card-title">IronForge</div>
+            <div class="card-subtitle" id="weightDisp" style="font-family:monospace; color:#fff; font-size:1.1rem; margin-top:8px;">-- Kg</div>
+            <div class="mini-progress-bg"><div class="mini-progress-fill" id="weightBar" style="background: var(--red); width: 0%;"></div></div>
         </a>
 
         <a href="financial.html" class="bento-card" style="animation-delay: 0.22s;">
             <div class="card-icon txt-green"><i class="fas fa-coins"></i></div>
             <div class="card-title">المركز المالي</div>
-            <div class="card-subtitle" id="goldDisp" style="font-family:monospace; color:#fff; font-size:1rem;">-- g</div>
+            <div class="card-subtitle" id="goldDisp" style="font-family:monospace; color:#fff; font-size:1.1rem; margin-top:8px;">-- g</div>
             <div class="mini-progress-bg"><div class="mini-progress-fill" id="wealthBar" style="background: var(--green); width: 0%;"></div></div>
         </a>
 
         <a href="language.html" class="bento-card span-2" style="flex-direction:row; align-items:center; animation-delay: 0.25s;">
             <div>
-                <div class="card-title txt-purple">الجانب اللغوى</div>
-                <div class="card-subtitle" id="eloDisp" style="font-family:monospace; color:#fff; margin-top:5px;">1000 Elo | B2</div>
+                <div class="card-title txt-purple">AlterEgo (اللغات)</div>
+                <div class="card-subtitle" id="eloDisp" style="font-family:monospace; color:#fff; margin-top:5px; font-size:0.9rem;">1000 Elo | B2</div>
             </div>
-            <div class="card-icon txt-purple" style="margin:0;"><i class="fas fa-language"></i> <i class="fas fa-chess-knight" style="margin-right:5px;"></i></div>
+            <div class="card-icon txt-purple" style="margin:0; font-size:2rem;"><i class="fas fa-language"></i></div>
         </a>
 
         <a href="academy.html" class="bento-card" style="animation-delay: 0.28s;">
             <div class="card-icon txt-cyan"><i class="fas fa-drafting-compass"></i></div>
-            <div class="card-title">المذاكرة</div>
-            <div class="card-subtitle" id="studyDisp" style="color:#fff;">-- ساعات</div>
+            <div class="card-title">الأكاديمية</div>
+            <div class="card-subtitle" id="studyDisp" style="color:#fff; font-family:monospace; font-size:1rem; margin-top:5px;">-- H</div>
         </a>
 
         <a href="aesthetic.html" class="bento-card" style="animation-delay: 0.3s;">
             <div class="card-icon txt-orange"><i class="fas fa-sparkles"></i></div>
-            <div class="card-title">المظهر</div>
-            <div class="card-subtitle" style="color:#fff;">العناية الشخصية</div>
+            <div class="card-title">المظهر والكاريزما</div>
+            <div class="card-subtitle" style="color:var(--text-secondary); margin-top:5px;">تتبع الروتين اليومي</div>
         </a>
 
-        <a href="studio.html" class="bento-card" style="animation-delay: 0.32s;">
-            <div class="card-icon txt-red"><i class="fab fa-youtube"></i></div>
-            <div class="card-title">يوتيوب</div>
+        <a href="studio.html" class="bento-card" style="animation-delay: 0.32s; text-align:center;">
+            <div class="card-icon txt-red" style="font-size:2rem;"><i class="fab fa-youtube"></i></div>
+            <div class="card-title">استوديو الإبداع</div>
         </a>
 
-        <a href="religious.html" class="bento-card" style="animation-delay: 0.35s;">
-            <div class="card-icon txt-gold"><i class="fas fa-mosque"></i></div>
-            <div class="card-title">الجانب الدينى</div>
+        <a href="religious.html" class="bento-card" style="animation-delay: 0.35s; text-align:center;">
+            <div class="card-icon txt-gold" style="font-size:2rem;"><i class="fas fa-mosque"></i></div>
+            <div class="card-title">الجانب الديني</div>
         </a>
     </div>
 
     <div class="sleep-container">
-        <button class="sleep-btn" onclick="document.getElementById('dailyCheckinModal').style.display='flex'">
-            <i class="fas fa-bolt"></i> إغلاق وتقييم اليوم
+        <button class="sleep-btn" id="mainSyncBtn" onclick="document.getElementById('dailyCheckinModal').style.display='flex'">
+            <i class="fas fa-cloud-upload-alt"></i> إغلاق وتشفير التقرير اليومي
         </button>
     </div>
 
     <div class="modal" id="wealthModal">
         <div class="modal-content">
             <div class="modal-header txt-green"><i class="fas fa-wallet"></i> الخزنة السريعة</div>
-            <p style="font-size:0.75rem; color:var(--text-secondary); text-align:center; margin-bottom:10px;">قم بكتابة الأرصدة الحالية في يدك ليتحدث النظام.</p>
+            <p style="font-size:0.8rem; color:var(--text-secondary); text-align:center; margin-bottom:15px; font-weight:700;">قم بتحديث الأرصدة في يدك ليتم حساب ثروتك الكلية.</p>
             
             <div class="report-group">
-                <div class="flex-input" style="flex-direction: column; align-items: flex-start; gap: 5px;">
-                    <label style="color:var(--gold);"><i class="fas fa-coins"></i> إجمالي الذهب الحالي (جرام)</label>
+                <div class="flex-input" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <label style="color:var(--gold); font-size:0.9rem;"><i class="fas fa-coins"></i> إجمالي الذهب (جرام عيار 21)</label>
                     <input type="number" step="0.01" id="wTotalGold" style="width:100%; border-color:rgba(255, 183, 0, 0.4); color:var(--gold);">
                 </div>
                 <div style="height:1px; background:rgba(255,255,255,0.05); margin:15px 0;"></div>
-                <div class="flex-input" style="flex-direction: column; align-items: flex-start; gap: 5px;">
-                    <label style="color:var(--green);"><i class="fas fa-money-bill-wave"></i> إجمالي السيولة الحالية (EGP)</label>
+                <div class="flex-input" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <label style="color:var(--green); font-size:0.9rem;"><i class="fas fa-money-bill-wave"></i> إجمالي السيولة النقدية (EGP)</label>
                     <input type="number" id="wTotalCash" style="width:100%; border-color:rgba(48, 209, 88, 0.4); color:var(--green);">
                 </div>
             </div>
             
-            <button class="btn-confirm" style="background:var(--green); color:#000;" onclick="saveQuickWealth()">تأكيد وتحديث الثروة</button>
+            <button class="btn-confirm" style="background:var(--green); color:#000; box-shadow:0 5px 15px rgba(48,209,88,0.3);" onclick="saveQuickWealth()">تحديث الثروة</button>
             <button class="btn-close" onclick="document.getElementById('wealthModal').style.display='none'">إلغاء</button>
         </div>
     </div>
@@ -277,8 +300,8 @@
             <div class="report-group" style="border-color: rgba(48, 209, 88, 0.4);">
                 <div class="group-title txt-green"><i class="fas fa-shield-alt"></i> أمان الإمبراطورية</div>
                 <div style="display:flex; gap:10px;">
-                    <button style="flex:1; background:var(--green); color:#000; border:none; border-radius:12px; padding:10px; font-weight:900; cursor:pointer;" onclick="exportBackup()"><i class="fas fa-download"></i> حفظ</button>
-                    <button style="flex:1; background:transparent; color:var(--text-primary); border:1px solid var(--border); border-radius:12px; padding:10px; font-weight:800; cursor:pointer;" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> استرجاع</button>
+                    <button style="flex:1; background:var(--green); color:#000; border:none; border-radius:14px; padding:12px; font-weight:900; cursor:pointer; font-family:var(--font);" onclick="exportBackup()"><i class="fas fa-download"></i> حفظ Backup</button>
+                    <button style="flex:1; background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--border); border-radius:14px; padding:12px; font-weight:800; cursor:pointer; font-family:var(--font);" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> استرجاع</button>
                     <input type="file" id="importFile" onchange="importBackup(event)" accept=".json" style="display:none">
                 </div>
             </div>
@@ -310,18 +333,18 @@
 
     <div class="modal" id="dailyCheckinModal">
         <div class="modal-content">
-            <div class="modal-header txt-cyan"><i class="fas fa-clipboard-list"></i> التقرير الشامل</div>
+            <div class="modal-header txt-cyan"><i class="fas fa-clipboard-check"></i> التقرير السيبراني الشامل</div>
             
             <div class="report-group">
                 <div class="group-title" style="color:#e5e5e5;"><i class="fas fa-bed"></i> دورة النوم والدايت</div>
                 <div class="flex-input"><label>نمت كام ساعة؟</label><input type="number" step="0.5" id="repSleep" placeholder="6.5"></div>
-                <div class="flex-input"><label>الوزن (Kg)</label><input type="number" step="0.1" id="repWeight"></div>
-                <div class="flex-input"><label>الخطوات اليوم</label><input type="number" id="repSteps"></div>
-                <div class="flex-input"><label>إجمالي السعرات</label><input type="number" id="repCals"></div>
-                <div style="display:flex; gap:5px; margin-top:10px;">
-                    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;"><label style="font-size:0.75rem; color:var(--text-secondary); font-weight:800;">بروتين</label><input type="number" id="repPro" style="width:100%;"></div>
-                    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;"><label style="font-size:0.75rem; color:var(--text-secondary); font-weight:800;">كارب</label><input type="number" id="repCarb" style="width:100%;"></div>
-                    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;"><label style="font-size:0.75rem; color:var(--text-secondary); font-weight:800;">دهون</label><input type="number" id="repFat" style="width:100%;"></div>
+                <div class="flex-input"><label>الوزن (Kg)</label><input type="number" step="0.1" id="repWeight" placeholder="90.0"></div>
+                <div class="flex-input"><label>الخطوات اليوم</label><input type="number" id="repSteps" placeholder="8000"></div>
+                <div class="flex-input"><label>إجمالي السعرات</label><input type="number" id="repCals" placeholder="1800"></div>
+                <div style="display:flex; gap:8px; margin-top:15px; background:rgba(0,0,0,0.3); padding:10px; border-radius:12px; border:1px solid var(--border);">
+                    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;"><label style="font-size:0.75rem; color:var(--cyan); font-weight:900;">Pro</label><input type="number" id="repPro" style="width:100%; border:none; border-bottom:2px solid var(--cyan); border-radius:0; padding:5px;"></div>
+                    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;"><label style="font-size:0.75rem; color:var(--gold); font-weight:900;">Carb</label><input type="number" id="repCarb" style="width:100%; border:none; border-bottom:2px solid var(--gold); border-radius:0; padding:5px;"></div>
+                    <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px;"><label style="font-size:0.75rem; color:var(--red); font-weight:900;">Fat</label><input type="number" id="repFat" style="width:100%; border:none; border-bottom:2px solid var(--red); border-radius:0; padding:5px;"></div>
                 </div>
             </div>
 
@@ -334,38 +357,38 @@
             <div class="report-group">
                 <div class="group-title txt-cyan"><i class="fas fa-briefcase"></i> العمل والتطوير</div>
                 <div class="flex-input"><label>نزلت المطبعة؟</label><label class="switch"><input type="checkbox" id="repWorkDone"><span class="slider"></span></label></div>
-                <div class="flex-input"><label>المذاكرة الصافية (ساعات)</label><input type="number" step="0.5" id="repStudyHours"></div>
-                <div class="flex-input" style="flex-direction:column; align-items:flex-start; margin-top:10px; margin-bottom:0;">
+                <div class="flex-input"><label>المذاكرة الصافية (ساعات)</label><input type="number" step="0.5" id="repStudyHours" placeholder="2"></div>
+                <div class="flex-input" style="flex-direction:column; align-items:flex-start; margin-top:15px; margin-bottom:0;">
                     <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                        <label>اتعلمت مهارة جديدة؟</label>
+                        <label>اتعلمت مهارة / معلومة جديدة؟</label>
                         <label class="switch"><input type="checkbox" id="repLearnedChk" onchange="document.getElementById('repSkillText').style.display=this.checked?'block':'none'"><span class="slider"></span></label>
                     </div>
-                    <input type="text" id="repSkillText" style="width:100%; margin-top:10px; display:none; text-align:right;" placeholder="اكتب اللي اتعلمته...">
+                    <input type="text" id="repSkillText" style="width:100%; margin-top:10px; display:none; text-align:right;" placeholder="اكتب اللي اتعلمته عشان يتسجل...">
                 </div>
             </div>
 
             <div class="report-group">
                 <div class="group-title txt-purple"><i class="fas fa-brain"></i> العقل واللغات</div>
-                <div class="flex-input"><label>الإنجليزي (د)</label><input type="number" id="repEngMins"></div>
-                <div class="flex-input"><label>الإيطالي (د)</label><input type="number" id="repItaMins"></div>
-                <div class="flex-input" style="margin-bottom:0;"><label>إيلو الشطرنج الحالي</label><input type="number" id="repElo"></div>
+                <div class="flex-input"><label>الإنجليزي (دقائق)</label><input type="number" id="repEngMins" placeholder="60"></div>
+                <div class="flex-input"><label>الإيطالي (دقائق)</label><input type="number" id="repItaMins" placeholder="10"></div>
+                <div class="flex-input" style="margin-bottom:0;"><label>إيلو الشطرنج الحالي</label><input type="number" id="repElo" placeholder="1000"></div>
             </div>
 
             <div class="report-group">
                 <div class="group-title txt-gold"><i class="fas fa-mosque"></i> الروح واليوتيوب</div>
                 <div class="prayers-grid">
-                    <label class="pray-chk"><input type="checkbox" id="pFajr"><div class="pray-box">ف</div></label>
-                    <label class="pray-chk"><input type="checkbox" id="pDhuhr"><div class="pray-box">ظ</div></label>
-                    <label class="pray-chk"><input type="checkbox" id="pAsr"><div class="pray-box">ع</div></label>
-                    <label class="pray-chk"><input type="checkbox" id="pMaghrib"><div class="pray-box">م</div></label>
-                    <label class="pray-chk"><input type="checkbox" id="pIsha"><div class="pray-box">ع</div></label>
+                    <label class="pray-chk"><input type="checkbox" id="pFajr"><div class="pray-box">ف</div><span>الفجر</span></label>
+                    <label class="pray-chk"><input type="checkbox" id="pDhuhr"><div class="pray-box">ظ</div><span>الظهر</span></label>
+                    <label class="pray-chk"><input type="checkbox" id="pAsr"><div class="pray-box">ع</div><span>العصر</span></label>
+                    <label class="pray-chk"><input type="checkbox" id="pMaghrib"><div class="pray-box">م</div><span>المغرب</span></label>
+                    <label class="pray-chk"><input type="checkbox" id="pIsha"><div class="pray-box">ع</div><span>العشاء</span></label>
                 </div>
-                <div class="flex-input" style="margin-top:15px;"><label>عدد صفحات الورد</label><input type="number" id="repQuran"></div>
+                <div class="flex-input" style="margin-top:20px;"><label>عدد صفحات الورد القرآني</label><input type="number" id="repQuran" placeholder="2"></div>
                 <div style="height:1px; background:rgba(255,255,255,0.05); margin:15px 0;"></div>
                 <div class="flex-input" style="margin-bottom:0;"><label>نشرت فيديو (يوتيوب)؟</label><label class="switch"><input type="checkbox" id="repVideo"><span class="slider"></span></label></div>
             </div>
 
-            <button class="btn-confirm" onclick="submitMasterReport()">تقييم وإغلاق اليوم <i class="fas fa-fingerprint"></i></button>
+            <button class="btn-confirm" id="btnSubmitReport" onclick="submitMasterReport()">إغلاق وتشفير اليوم (Sync) <i class="fas fa-cloud-upload-alt"></i></button>
             <button class="btn-close" onclick="document.getElementById('dailyCheckinModal').style.display='none'">إلغاء</button>
         </div>
     </div>
@@ -373,13 +396,13 @@
     <div class="modal" id="archiveModal">
         <div class="modal-content">
             <div class="modal-header txt-cyan" id="archTitle">تقرير يوم</div>
-            <div id="archContent" style="display:flex; flex-direction:column; gap:10px; font-size:0.9rem;"></div>
-            <button class="btn-close" onclick="document.getElementById('archiveModal').style.display='none'">إغلاق</button>
+            <div id="archContent" style="display:flex; flex-direction:column; gap:10px; font-size:0.95rem; font-weight:700;"></div>
+            <button class="btn-close" onclick="document.getElementById('archiveModal').style.display='none'">إغلاق الأرشيف</button>
         </div>
     </div>
 
     <script>
-        // 1. TIME FIX: Guaranteed Local Date String (YYYY-MM-DD)
+        // 1. TIME & DATE HELPERS
         function getLocalYMD(dateObj = new Date()) {
             let y = dateObj.getFullYear();
             let m = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -392,24 +415,25 @@
             try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; }
         }
 
+        // Baselines defaults
         let baselines = getSafeJSON('SakrOS_Targets', { sleep: 6.5, steps: 8000, cals: 1800, pro: 140, study: 2, eng: 60, ita: 10, quran: 2 });
 
         // --- INIT ---
         window.onload = () => { 
             try {
-                setDailyQuote(); updateTime(); setInterval(updateTime, 1000); 
+                setDailyQuote(); updateTime(); setInterval(updateTime, 60000); 
                 renderTodos(); fetchData(); renderMatrix365(); updateProgressBars(); calculateStreak();
             } catch (e) { console.error("Boot Error:", e); }
         };
 
         function updateTime() {
             const now = new Date(); const h = now.getHours(); let greet = "مرحباً يا صقر";
-            if(h >= 3 && h < 6) greet = "فجر الإنجاز يا صقر 🌅"; else if(h >= 6 && h < 12) greet = "صباح السيطرة ☀️"; else if(h >= 12 && h < 18) greet = "يومك بطل 🦅"; else greet = "مساء التخطيط 🌙";
+            if(h >= 3 && h < 6) greet = "فجر الإنجاز يا صقر 🌅"; else if(h >= 6 && h < 12) greet = "صباح السيطرة 🦅"; else if(h >= 12 && h < 18) greet = "يومك بطل ⚔️"; else greet = "مساء التخطيط 🌙";
             document.getElementById('greeting').innerText = greet; 
         }
 
         function setDailyQuote() {
-            const quotes = ["الهواة ينتظرون الإلهام، والمحترفون ينهضون للعمل.", "البناء المعماري العظيم يبدأ بخط يقين.", "الوزن لا ينزل بالأمنيات، بل بالرياضيات.", "مستقبلك يُبنى بما تفعله اليوم."];
+            const quotes = ["الهواة ينتظرون الإلهام، والمحترفون ينهضون للعمل.", "البناء المعماري العظيم يبدأ بخط يقين.", "مستقبلك يُبنى بما تفعله اليوم، وليس غداً.", "ألم الانضباط أهون بكثير من ألم الندم."];
             let d = Math.floor(new Date() / (1000 * 60 * 60 * 24)); document.getElementById('dailyQuote').innerText = `"${quotes[d % quotes.length]}"`;
         }
 
@@ -421,14 +445,14 @@
                 c.innerHTML += `<div class="todo-item"><input type="checkbox" class="todo-checkbox" onchange="completeTodo(${i})"><span class="todo-text">${t}</span></div>`;
             });
             let inp = document.getElementById('todoInput');
-            if(todos.length >= 3) { inp.disabled = true; inp.placeholder = "أنجز المهام أولاً (أقصى 3)!"; } 
-            else { inp.disabled = false; inp.placeholder = "أضف مهمة جديدة..."; }
+            if(todos.length >= 3) { inp.disabled = true; inp.placeholder = "أنجز المهام أولاً (الحد الأقصى 3)!"; } 
+            else { inp.disabled = false; inp.placeholder = "أضف مهمة استراتيجية جديدة..."; }
         }
 
         function addTodo() {
             let val = document.getElementById('todoInput').value.trim(); if(!val) return;
             let todos = getSafeJSON('SakrOS_Todos', []);
-            if(todos.length >= 3) return alert("لا يمكنك إضافة أكثر من 3 مهام.");
+            if(todos.length >= 3) return alert("المهام الصارمة لا تتعدى 3 مهام يومياً لضمان التنفيذ.");
             todos.push(val); localStorage.setItem('SakrOS_Todos', JSON.stringify(todos));
             document.getElementById('todoInput').value = ''; renderTodos();
         }
@@ -436,10 +460,12 @@
         function completeTodo(index) {
             let todos = getSafeJSON('SakrOS_Todos', []); todos.splice(index, 1);
             localStorage.setItem('SakrOS_Todos', JSON.stringify(todos));
+            
             let curXp = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0;
             localStorage.setItem('SakrOS_TotalXP', curXp + 5); fetchData(); 
-            if(typeof confetti !== 'undefined') confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 }, colors: ['#5A75FF'] });
-            setTimeout(renderTodos, 250); 
+            
+            if(typeof confetti !== 'undefined') confetti({ particleCount: 50, spread: 70, origin: { y: 0.8 }, colors: ['#5A75FF', '#FFB700'] });
+            setTimeout(renderTodos, 300); 
         }
 
         // --- SETTINGS ---
@@ -458,39 +484,34 @@
                 study: parseFloat(document.getElementById('cfgStudy').value)||2, eng: parseInt(document.getElementById('cfgEng').value)||60,
                 ita: parseInt(document.getElementById('cfgIta').value)||10, quran: parseInt(document.getElementById('cfgQuran').value)||2
             };
-            localStorage.setItem('SakrOS_Targets', JSON.stringify(baselines)); document.getElementById('settingsModal').style.display = 'none'; alert("تم التحديث!");
+            localStorage.setItem('SakrOS_Targets', JSON.stringify(baselines)); document.getElementById('settingsModal').style.display = 'none'; alert("تم تحديث خط الأساس للإمبراطورية!");
         }
 
         // --- WEALTH MODAL ---
-        function openWealthModal() {
-            let fin = getSafeJSON('Falcon_Final_V29_Pro', { goldGrams: 19.8, cash: 30000 });
-            document.getElementById('wTotalGold').value = fin.goldGrams; document.getElementById('wTotalCash').value = fin.cash;
-            document.getElementById('wealthModal').style.display = 'flex';
-        }
-
         function saveQuickWealth() {
             let ng = parseFloat(document.getElementById('wTotalGold').value); let nc = parseFloat(document.getElementById('wTotalCash').value);
             if(isNaN(ng) || isNaN(nc)) return alert("يرجى إدخال أرقام صحيحة");
-            let fin = getSafeJSON('Falcon_Final_V29_Pro', { goldGrams: 19.8, cash: 30000 });
+            let fin = getSafeJSON('Falcon_Final_V29_Pro', { goldGrams: 0, cash: 0 });
             fin.goldGrams = ng.toFixed(2); fin.cash = nc;
             localStorage.setItem('Falcon_Final_V29_Pro', JSON.stringify(fin)); document.getElementById('wealthModal').style.display = 'none'; updateProgressBars(); 
         }
 
         // --- BACKUP ---
-        function exportBackup() { let mData = {}; for (let i = 0; i < localStorage.length; i++) { let k = localStorage.key(i); if(k.startsWith('SakrOS') || k.startsWith('IronForge') || k.startsWith('Falcon') || k.startsWith('الجانب اللغوى')) mData[k] = localStorage.getItem(k); } const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(mData)); a.download = `SakrOS_Backup_${TODAY}.json`; document.body.appendChild(a); a.click(); a.remove(); }
-        function importBackup(event) { const f = event.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(e) { try { const c = JSON.parse(e.target.result); if(!confirm('سيتم الاستبدال. متأكد؟')) return; for (let k in c) localStorage.setItem(k, c[k]); alert('تم الاسترجاع!'); location.reload(); } catch (err) { alert("الملف غير صالح."); } }; r.readAsText(f); }
+        function exportBackup() { let mData = {}; for (let i = 0; i < localStorage.length; i++) { let k = localStorage.key(i); if(k.startsWith('SakrOS') || k.startsWith('IronForge') || k.startsWith('Falcon') || k.startsWith('الجانب הלغوى')) mData[k] = localStorage.getItem(k); } const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(mData)); a.download = `SakrOS_FullBackup_${TODAY}.json`; document.body.appendChild(a); a.click(); a.remove(); }
+        function importBackup(event) { const f = event.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(e) { try { const c = JSON.parse(e.target.result); if(!confirm('سيتم مسح البيانات الحالية واسترجاع النسخة. متأكد؟')) return; for (let k in c) localStorage.setItem(k, c[k]); alert('تم استرجاع الإمبراطورية! 🦅'); location.reload(); } catch (err) { alert("الملف غير صالح."); } }; r.readAsText(f); }
 
-        // --- 365 ARCHIVE (BUG-FREE) ---
+        // --- 365 ARCHIVE ---
         function renderMatrix365() {
             const container = document.getElementById('matrix365'); if(!container) return;
             container.innerHTML = '';
             let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {});
             
             let html = '';
-            let todayObj = new Date();
+            let todayObj = new Date(); todayObj.setMinutes(todayObj.getMinutes() - todayObj.getTimezoneOffset());
             let days = [];
+            // Generate last 365 days
             for(let i = 364; i >= 0; i--) { 
-                let d = new Date(); d.setDate(todayObj.getDate() - i); days.push(d); 
+                let d = new Date(todayObj); d.setDate(d.getDate() - i); days.push(d); 
             }
             
             for(let i=0; i<days.length; i+=7) {
@@ -504,32 +525,36 @@
                         if(rep && rep.score !== undefined) { 
                             if(rep.score >= 80) bg = 'var(--green)'; else if(rep.score >= 50) bg = 'var(--gold)'; else bg = 'var(--red)'; 
                         }
-                        html += `<div class="matrix-cell" style="background:${bg};" onclick="openArchiveDay('${ds}')"></div>`;
+                        html += `<div class="matrix-cell" style="background:${bg};" onclick="openArchiveDay('${ds}')" title="${ds}"></div>`;
                     }
                 }
                 html += '</div>';
             }
-            container.innerHTML = html; setTimeout(() => { container.scrollLeft = container.scrollWidth; }, 100);
+            container.innerHTML = html; setTimeout(() => { container.scrollLeft = container.scrollWidth; }, 200);
         }
 
         function openArchiveDay(dateStr) {
             let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); let rep = masterDB[dateStr];
-            if(!rep) return alert("لا توجد بيانات مسجلة لهذا اليوم.");
-            document.getElementById('archTitle').innerText = `تقرير: ${dateStr}`;
+            if(!rep) return alert("لا توجد بيانات مسجلة في هذا التاريخ.");
+            document.getElementById('archTitle').innerText = `تقرير يوم: ${dateStr}`;
             document.getElementById('archContent').innerHTML = `
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:5px;">
-                    <span style="color:var(--text-secondary);">الكفاءة الكلية:</span><span style="color:var(--cyan); font-weight:900; font-size:1.2rem;">${rep.score}%</span>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px; margin-bottom:10px;">
+                    <span style="color:var(--text-secondary);">الكفاءة الكلية:</span><span style="color:var(--cyan); font-weight:900; font-size:1.3rem; font-family:monospace;">${rep.score}%</span>
                 </div>
-                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; margin-bottom:5px; font-weight:700;">النوم: ${rep.sleepHours||'--'} س | المظهر: ${rep.aesthetic?.minox?'✔️':'❌'}</div>
-                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; margin-bottom:5px; font-weight:700;">الوزن: ${rep.weight||'--'} Kg | الخطوات: ${rep.steps||0}</div>
-                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; margin-bottom:5px; font-weight:700;">المطبعة: ${rep.workDone?'✔️':'❌'} | المذاكرة: ${rep.study||0} س</div>
-                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; margin-bottom:5px; font-weight:700;">إنجليزي: ${rep.english||0} د | إيطالي: ${rep.italian||0} د</div>
+                <div style="background:rgba(0,0,0,0.3); padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid var(--border);">النوم: <span class="txt-accent">${rep.sleepHours||'--'} س</span> | المظهر: ${rep.aesthetic?.minox?'✔️':'❌'}</div>
+                <div style="background:rgba(0,0,0,0.3); padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid var(--border);">الوزن: <span class="txt-red">${rep.weight||'--'} Kg</span> | الخطوات: ${rep.steps||0}</div>
+                <div style="background:rgba(0,0,0,0.3); padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid var(--border);">المطبعة: ${rep.workDone?'✔️':'❌'} | المذاكرة: <span class="txt-cyan">${rep.study||0} س</span></div>
+                <div style="background:rgba(0,0,0,0.3); padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid var(--border);">إنجليزي: <span class="txt-purple">${rep.english||0} د</span> | إيطالي: <span class="txt-purple">${rep.italian||0} د</span></div>
             `;
             document.getElementById('archiveModal').style.display = 'flex';
         }
 
-        // --- SUBMIT DAILY REPORT ---
+        // --- SUBMIT DAILY REPORT (WITH CLOUD SYNC) ---
         function submitMasterReport() {
+            let btn = document.getElementById('btnSubmitReport');
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> جاري التشفير والرفع للسحاب...";
+            btn.disabled = true;
+
             try {
                 const val = (id) => { const el = document.getElementById(id); return el ? (parseFloat(el.value) || 0) : 0; };
                 const chk = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
@@ -566,30 +591,61 @@
                     english: eng, italian: ita, chessElo: elo>0?elo:"", youtube: vid, prayers: {fajr: pF, dhuhr: pD, asr: pA, maghrib: pM, isha: pI}, quranPages: val('repQuran') 
                 };
 
-                let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); masterDB[TODAY] = dailyLog; localStorage.setItem('SakrOS_MasterReport_V1', JSON.stringify(masterDB));
+                // 1. Save Locally
+                let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); 
+                masterDB[TODAY] = dailyLog; 
+                localStorage.setItem('SakrOS_MasterReport_V1', JSON.stringify(masterDB));
 
                 let totalXpAdded = Math.round(tScore * 0.35); 
                 let curXp = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0;
-                localStorage.setItem('SakrOS_TotalXP', curXp + totalXpAdded);
+                let newXp = curXp + totalXpAdded;
+                localStorage.setItem('SakrOS_TotalXP', newXp);
 
+                // Streak Logic
                 if(tScore >= 30) { 
                     let logins = getSafeJSON('SakrOS_Logins_Dia', []); 
                     if(!Array.isArray(logins)) logins = [];
                     if(!logins.includes(TODAY)) { logins.push(TODAY); localStorage.setItem('SakrOS_Logins_Dia', JSON.stringify(logins)); } 
                 }
 
-                if(w > 0) { let phys = getSafeJSON('IronForge_V13_ORANGE', { history: {} }); phys.history[TODAY] = { weight: parseFloat(w) }; localStorage.setItem('IronForge_V13_ORANGE', JSON.stringify(phys)); }
-                if(elo > 0 || eng > 0 || ita > 0) { let alt = getSafeJSON('الجانب اللغوى', { log: {} }); alt.log[TODAY] = { eng: eng, ita: ita, elo: elo }; localStorage.setItem('الجانب اللغوى', JSON.stringify(alt)); }
+                // Sync to other local apps if needed
+                if(w > 0) { let phys = getSafeJSON('IronForge_V13_ORANGE', { history: {} }); if(!phys.history[TODAY]) phys.history[TODAY] = {}; phys.history[TODAY].weight = parseFloat(w); localStorage.setItem('IronForge_V13_ORANGE', JSON.stringify(phys)); }
 
-                document.getElementById('dailyCheckinModal').style.display = 'none'; 
-                fetchData(); calculateStreak(); renderMatrix365(); updateProgressBars();
-                if(typeof confetti !== 'undefined') { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#5A75FF', '#FFB700', '#30D158'] }); }
-                if(navigator.vibrate) navigator.vibrate([150, 50, 150]); 
-                alert(`تم التقييم!\nكفاءة اليوم: ${tScore}%\nاكتسبت: ${totalXpAdded} XP ⚡`);
-            } catch(e) { alert("حدث خطأ."); console.error(e); }
+                // 2. ☁️ Firebase Cloud Sync
+                if(typeof dbCloud !== 'undefined') {
+                    dbCloud.ref('SakrOS_MasterReport_V1').set(masterDB).then(() => {
+                        dbCloud.ref('SakrOS_TotalXP').set(newXp).then(() => {
+                            finishSubmission(tScore, totalXpAdded);
+                        });
+                    }).catch(err => {
+                        alert("⚠️ تم الحفظ محلياً. تعذر الاتصال بالسيرفر السحابي.");
+                        finishSubmission(tScore, totalXpAdded);
+                    });
+                } else {
+                    finishSubmission(tScore, totalXpAdded);
+                }
+
+            } catch(e) { 
+                alert("حدث خطأ أثناء التشفير."); console.error(e); 
+                btn.innerHTML = "إغلاق وتشفير اليوم (Sync) <i class='fas fa-cloud-upload-alt'></i>"; btn.disabled = false;
+            }
         }
 
-        // --- STREAK & UI (BUG-FREE) ---
+        function finishSubmission(tScore, totalXpAdded) {
+            document.getElementById('dailyCheckinModal').style.display = 'none'; 
+            let btn = document.getElementById('btnSubmitReport');
+            btn.innerHTML = "إغلاق وتشفير اليوم (Sync) <i class='fas fa-cloud-upload-alt'></i>"; btn.disabled = false;
+
+            fetchData(); calculateStreak(); renderMatrix365(); updateProgressBars();
+            if(typeof confetti !== 'undefined') { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#00bcd4', '#FFB700', '#30D158'] }); }
+            if(navigator.vibrate) navigator.vibrate([150, 50, 150]); 
+            
+            setTimeout(() => {
+                alert(`تم الإغلاق بنجاح والرفع للسحاب! ☁️🦅\n\nكفاءة اليوم: ${tScore}%\nاكتسبت: ${totalXpAdded} XP ⚡`);
+            }, 500);
+        }
+
+        // --- STREAK & UI STATS ---
         function fetchData() {
             let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); let dates = Object.keys(masterDB);
             if(dates.length > 0) { 
@@ -603,7 +659,7 @@
                 let latest = masterDB[TODAY] || masterDB[dates[dates.length-1]]; 
                 let wDisp = document.getElementById('weightDisp'); if(wDisp && latest.weight) wDisp.innerText = latest.weight + " Kg"; 
                 let eloDisp = document.getElementById('eloDisp'); if(eloDisp && latest.chessElo) eloDisp.innerText = latest.chessElo + " Elo | B2"; 
-                let sDisp = document.getElementById('studyDisp'); if(sDisp && latest.study !== undefined) sDisp.innerText = latest.study + " ساعات";
+                let sDisp = document.getElementById('studyDisp'); if(sDisp && latest.study !== undefined) sDisp.innerText = latest.study + " H";
             }
             
             let curXp = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0;
@@ -612,7 +668,7 @@
             let nextLevelXpStart = Math.pow(level, 2) * 10;
             let progressToNext = ((curXp - currentLevelXpStart) / (nextLevelXpStart - currentLevelXpStart)) * 100;
             
-            let xpV = document.getElementById('xpVal'); if(xpV) xpV.innerText = curXp.toLocaleString();
+            let xpV = document.getElementById('xpVal'); if(xpV) xpV.innerText = curXp.toLocaleString('en-US');
             let lDisp = document.getElementById('levelDisp'); if(lDisp) lDisp.innerText = "Lvl " + level;
             let nXp = document.getElementById('nextXpVal'); if(nXp) nXp.innerText = nextLevelXpStart;
             let xBar = document.getElementById('xpBar'); if(xBar) xBar.style.width = Math.min(100, Math.max(0, progressToNext)) + "%";
@@ -625,7 +681,7 @@
                 let wBar = document.getElementById('weightBar');
                 if(currentW && currentW <= 135 && wBar) { wBar.style.width = Math.min(100, Math.max(0, ((135 - currentW) / (135 - 88)) * 100)) + "%"; }
             }
-            let fin = getSafeJSON('Falcon_Final_V29_Pro', { goldGrams: 19.8, cash: 30000 });
+            let fin = getSafeJSON('Falcon_Final_V29_Pro', { goldGrams: 0, cash: 0 });
             let gDisp = document.getElementById('goldDisp'); if(gDisp) gDisp.innerText = fin.goldGrams + " g";
             let totalWealth = parseFloat(fin.cash || 0) + (parseFloat(fin.goldGrams || 0) * 4000); 
             let wlBar = document.getElementById('wealthBar'); if(wlBar) wlBar.style.width = Math.min(100, Math.max(0, (totalWealth / 500000) * 100)) + "%";
@@ -636,7 +692,7 @@
             if(!Array.isArray(logins)) logins = [];
             let streak = 0; 
             
-            let d = new Date();
+            let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
             let todayStr = getLocalYMD(d);
             
             if(!logins.includes(todayStr)) { d.setDate(d.getDate() - 1); }
