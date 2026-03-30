@@ -154,7 +154,7 @@
 
     <header class="header">
         <div class="header-info">
-            <h1 id="greeting">صباح السيطرة</h1>
+            <h1 id="greeting">جاري المزامنة السحابية... <i class="fas fa-sync fa-spin" style="font-size: 1.2rem;"></i></h1>
             <div class="quote-box" id="dailyQuote">"مستقبلك يُبنى بما تفعله اليوم."</div>
         </div>
         <div class="header-controls">
@@ -415,16 +415,44 @@
             try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; }
         }
 
-        // Baselines defaults
         let baselines = getSafeJSON('SakrOS_Targets', { sleep: 6.5, steps: 8000, cals: 1800, pro: 140, study: 2, eng: 60, ita: 10, quran: 2 });
 
-        // --- INIT ---
+        // --- INIT & CLOUD FETCH ---
         window.onload = () => { 
             try {
                 setDailyQuote(); updateTime(); setInterval(updateTime, 60000); 
-                renderTodos(); fetchData(); renderMatrix365(); updateProgressBars(); calculateStreak();
+                renderTodos(); 
+                
+                // ☁️ سحب البيانات من السيرفر عند الفتح
+                fetchFromCloudAndRender();
+
             } catch (e) { console.error("Boot Error:", e); }
         };
+
+        function fetchFromCloudAndRender() {
+            // محاولة السحب من فايربيز
+            if(typeof dbCloud !== 'undefined') {
+                dbCloud.ref('/').once('value').then((snapshot) => {
+                    if(snapshot.exists()) {
+                        let cloudData = snapshot.val();
+                        if(cloudData.SakrOS_MasterReport_V1) localStorage.setItem('SakrOS_MasterReport_V1', JSON.stringify(cloudData.SakrOS_MasterReport_V1));
+                        if(cloudData.SakrOS_TotalXP) localStorage.setItem('SakrOS_TotalXP', cloudData.SakrOS_TotalXP);
+                        if(cloudData.SakrOS_Logins_Dia) localStorage.setItem('SakrOS_Logins_Dia', JSON.stringify(cloudData.SakrOS_Logins_Dia));
+                    }
+                    finalizeRender();
+                }).catch((err) => {
+                    console.error("Cloud fetch failed", err);
+                    finalizeRender(); // لو مفيش نت، كمل بالداتا اللوكال
+                });
+            } else {
+                finalizeRender();
+            }
+        }
+
+        function finalizeRender() {
+            fetchData(); renderMatrix365(); updateProgressBars(); calculateStreak();
+            updateTime(); // Restore the normal greeting
+        }
 
         function updateTime() {
             const now = new Date(); const h = now.getHours(); let greet = "مرحباً يا صقر";
@@ -464,6 +492,9 @@
             let curXp = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0;
             localStorage.setItem('SakrOS_TotalXP', curXp + 5); fetchData(); 
             
+            // Push XP change to cloud immediately so other apps know
+            if(typeof dbCloud !== 'undefined') dbCloud.ref('SakrOS_TotalXP').set(curXp + 5);
+
             if(typeof confetti !== 'undefined') confetti({ particleCount: 50, spread: 70, origin: { y: 0.8 }, colors: ['#5A75FF', '#FFB700'] });
             setTimeout(renderTodos, 300); 
         }
@@ -602,8 +633,8 @@
                 localStorage.setItem('SakrOS_TotalXP', newXp);
 
                 // Streak Logic
+                let logins = getSafeJSON('SakrOS_Logins_Dia', []); 
                 if(tScore >= 30) { 
-                    let logins = getSafeJSON('SakrOS_Logins_Dia', []); 
                     if(!Array.isArray(logins)) logins = [];
                     if(!logins.includes(TODAY)) { logins.push(TODAY); localStorage.setItem('SakrOS_Logins_Dia', JSON.stringify(logins)); } 
                 }
@@ -615,7 +646,9 @@
                 if(typeof dbCloud !== 'undefined') {
                     dbCloud.ref('SakrOS_MasterReport_V1').set(masterDB).then(() => {
                         dbCloud.ref('SakrOS_TotalXP').set(newXp).then(() => {
-                            finishSubmission(tScore, totalXpAdded);
+                            dbCloud.ref('SakrOS_Logins_Dia').set(logins).then(() => {
+                                finishSubmission(tScore, totalXpAdded);
+                            });
                         });
                     }).catch(err => {
                         alert("⚠️ تم الحفظ محلياً. تعذر الاتصال بالسيرفر السحابي.");
