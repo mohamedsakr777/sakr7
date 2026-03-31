@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAKR OS | AlterEgo V11 (The Apex)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <meta name="theme-color" content="#050505">
+    
+    <style>
+        /* ================= ALTEREGO V11 (THE APEX EDITION) ================= */
+        :root {
+            --bg-main: #050505;      
+            --card-bg: rgba(20, 20, 20, 0.65);      
+            --border: rgba(191, 90, 242, 0.3); 
+            
+            --accent-purple: #BF5AF2;  
+            --accent-blue: #5A75FF;
+            --cyan: #00bcd4;
+            --gold: #FFD700;
+            --green: #32d74b;
+            --red: #ff453a;
+            --orange: #ff9f0a;
+            
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            
+            --radius: 24px;
+            --font: 'Cairo', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; -webkit-tap-highlight-color: transparent;}
+        
+        body { 
+            background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; padding: 20px 20px 100px; overflow-x: hidden; 
+            background-image: 
+                radial-gradient(circle at 10% 0%, rgba(191, 90, 242, 0.15), transparent 45%),
+                radial-gradient(circle at 90% 100%, rgba(90, 117, 255, 0.15), transparent 45%);
+            background-attachment: fixed;
+            transition: 0.5s ease;
+        }
+
+        /* Zen Mode Classes */
+        body.zen-mode .header-title span, body.zen-mode .dashboard, body.zen-mode .filters, body.zen-mode .floating-menu, body.zen-mode .pomodoro-widget { opacity: 0; pointer-events: none; transform: translateY(-20px); transition: 0.5s; position: absolute; z-index: -1;}
+        body.zen-mode .header { justify-content: flex-end; }
+        body.zen-mode .header-title { display: none; }
+
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); } 50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); } 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); } }
+        @keyframes pulseMic { 0% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 69, 58, 0.5); } 50% { transform: scale(1.1); box-shadow: 0 0 25px rgba(255, 69, 58, 0.8); } 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 69, 58, 0.5); } }
+
+        /* --- HEADER & DASHBOARD --- */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; animation: fadeUp 0.4s ease-out forwards; transition: 0.5s;}
+        .btn-circle { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 45px; height: 45px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.2s; text-decoration: none; backdrop-filter: blur(5px);}
+        .btn-circle:active { transform: scale(0.9); background: #fff; color: #000; }
+        
+        .header-title { font-size: 2.2rem; font-weight: 900; color: #fff; line-height: 1; display: flex; flex-direction: column; align-items: center; text-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: 0.5s;}
+        .header-title span { font-size: 0.75rem; color: var(--accent-purple); font-weight: 700; letter-spacing: 3px; text-transform: uppercase;}
+
+        /* Pomodoro Widget */
+        .pomodoro-widget { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; backdrop-filter: blur(10px); animation: fadeUp 0.5s ease-out forwards;}
+        .pomo-time { font-size: 1.8rem; font-weight: 900; font-family: monospace; color: var(--gold); letter-spacing: 2px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);}
+        .pomo-btn { background: rgba(255, 215, 0, 0.15); color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.3); padding: 8px 15px; border-radius: 10px; font-weight: 900; cursor: pointer; transition: 0.2s;}
+        .pomo-btn:active { transform: scale(0.9); }
+
+        /* The Rank Dashboard */
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 15px 10px; border-radius: 20px; margin-bottom: 25px; animation: fadeUp 0.6s ease-out forwards; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.5s;}
+        .dash-stat { display: flex; flex-direction: column; align-items: center;}
+        .dash-val { font-size: 1.5rem; font-weight: 900; color: var(--accent-blue); font-family: monospace; line-height: 1.2;}
+        .dash-lbl { font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase;}
+        
+        .xp-badge { padding: 10px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;}
+        .xp-val { font-size: 1.3rem; font-weight: 900; color: #fff; font-family: monospace; line-height: 1.1; z-index: 2; display:flex; align-items:center; gap:5px;}
+        .xp-lbl { font-size: 0.7rem; font-weight: 900; color: rgba(255,255,255,0.8); z-index: 2; margin-top: 2px;}
+        
+        .rank-novice { background: linear-gradient(135deg, #333, #111); border-color: #555;}
+        .rank-bronze { background: linear-gradient(135deg, #a67c00, #bf953f); box-shadow: 0 5px 15px rgba(205, 127, 50, 0.3);}
+        .rank-silver { background: linear-gradient(135deg, #e6e6e6, #999999); box-shadow: 0 5px 15px rgba(192, 192, 192, 0.3); color: #000 !important;}
+        .rank-gold { background: linear-gradient(135deg, #FFD700, #ff8c00); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); animation: pulseGlow 3s infinite;}
+        .rank-maestro { background: linear-gradient(135deg, #ff007f, #7f00ff); box-shadow: 0 0 25px rgba(191, 90, 242, 0.6); animation: pulseGlow 2s infinite;}
+
+        /* --- FLOATING MENU --- */
+        .floating-menu { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 30px; display: flex; gap: 20px; z-index: 2000; box-shadow: 0 15px 40px rgba(0,0,0,0.9); transition: 0.5s;}
+        .f-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.4rem; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s;}
+        .f-btn:active { transform: scale(0.9); }
+        .f-btn.primary { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color: #fff; box-shadow: 0 5px 20px rgba(191, 90, 242, 0.5);}
+
+        /* --- FILTERS & GRID --- */
+        .filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; margin-bottom: 15px;}
+        .filters::-webkit-scrollbar { display: none; }
+        .chip { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); color: var(--text-secondary); padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.3s; backdrop-filter: blur(5px);}
+        .chip.active { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color: #fff; border-color: transparent;}
+
+        .grid { display: grid; grid-template-columns: 1fr; gap: 15px; animation: fadeUp 0.7s ease-out forwards;}
+        .story-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03); border-radius: var(--radius); padding: 18px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; backdrop-filter: blur(10px); box-shadow: 0 10px 20px rgba(0,0,0,0.3);}
+        .story-card:active { transform: scale(0.96); border-color: var(--accent-purple);}
+        .story-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: linear-gradient(to bottom, var(--accent-purple), var(--accent-blue));}
+        
+        .s-icon { width: 55px; height: 55px; border-radius: 14px; background: rgba(191, 90, 242, 0.1); color: var(--accent-purple); display: flex; justify-content: center; align-items: center; font-size: 1.6rem; flex-shrink: 0;}
+        .s-content { flex: 1;}
+        .s-title { font-size: 1.15rem; font-weight: 900; color: #fff; margin-bottom: 6px; line-height: 1.3;}
+        .s-meta { display: flex; gap: 8px; font-size: 0.75rem; font-weight: 800; color: var(--text-secondary);}
+        .badge { background: rgba(255,255,255,0.08); padding: 4px 8px; border-radius: 8px; font-family: monospace;}
+
+        /* --- MODALS --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 3000; align-items: flex-end; justify-content: center; backdrop-filter: blur(15px); padding: 10px;}
+        .modal-content { background: #080808; padding: 25px 20px; border-radius: 30px 30px 15px 15px; width: 100%; max-width: 500px; border: 1px solid var(--border); box-shadow: 0 -10px 50px rgba(191, 90, 242, 0.2); display: flex; flex-direction: column; gap: 15px; max-height: 92vh; overflow-y: auto;}
+        .modal-content::-webkit-scrollbar { display: none; }
+        .m-header { font-size: 1.4rem; font-weight: 900; color: #fff; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #080808; z-index: 10; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);}
+        
+        /* --- STORY VIEW UI (THE APEX PLAYER) --- */
+        .v-hero { background: linear-gradient(135deg, rgba(191, 90, 242, 0.1), rgba(90, 117, 255, 0.1)); border: 1px solid var(--border); padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 10px;}
+        .v-title { font-size: 1.6rem; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 15px;}
+        
+        .speed-panel { display: flex; justify-content: space-between; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 14px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);}
+        .speed-btn { flex: 1; text-align: center; padding: 10px 0; border-radius: 10px; font-size: 0.9rem; font-weight: 900; color: var(--text-secondary); cursor: pointer; transition: 0.3s;}
+        .speed-btn.active { background: rgba(191, 90, 242, 0.3); color: #fff;}
+        
+        .v-controls-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 10px;}
+        .btn-text-action { background: transparent; color: var(--text-primary); border: none; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
+        .btn-text-action.hidden { color: var(--text-secondary); opacity: 0.5;}
+        .btn-text-action.active-challenge { color: var(--gold); text-shadow: 0 0 10px rgba(255, 183, 0, 0.4);}
+
+        .btn-play-master { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color: #fff; border: none; padding: 16px; border-radius: 16px; font-size: 1.2rem; font-weight: 900; cursor: pointer; width: 100%; margin-top: 15px; box-shadow: 0 5px 20px rgba(191, 90, 242, 0.4); display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;}
+        .btn-play-master:active { transform: scale(0.97); }
+        .btn-play-master.playing { background: linear-gradient(135deg, var(--red), var(--orange)); box-shadow: 0 5px 20px rgba(255, 59, 48, 0.4);}
+
+        /* DIALOGUE BUBBLES */
+        .dialogue-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; padding-top: 10px;}
+        .d-bubble { display: flex; flex-direction: column; gap: 5px; max-width: 95%; transition: 0.3s; padding: 10px; border-radius: 18px; border: 1px solid transparent;}
+        .d-bubble.playing-bubble { background: rgba(191, 90, 242, 0.08); border-color: var(--accent-purple); box-shadow: 0 0 20px rgba(191, 90, 242, 0.15);}
+        .d-bubble.left { align-self: flex-start; }
+        .d-bubble.right { align-self: flex-end; align-items: flex-end;}
+        
+        .speaker-header { display: flex; align-items: center; gap: 8px; margin: 0 5px;}
+        .speaker-name { font-size: 0.85rem; font-weight: 900; color: var(--text-secondary);}
+        
+        .btn-play-line, .btn-mic-line { width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.85rem; cursor: pointer; transition: 0.3s; border: none;}
+        .btn-play-line { background: rgba(191, 90, 242, 0.15); color: var(--accent-purple); border: 1px solid rgba(191, 90, 242, 0.3);}
+        .btn-play-line:active { transform: scale(0.9); background: var(--accent-purple); color: #fff;}
+        .d-bubble.playing-bubble .btn-play-line { background: var(--accent-purple); color: #fff; box-shadow: 0 0 10px rgba(191, 90, 242, 0.5);}
+
+        /* 🎙️ NEW MIC BUTTON */
+        .btn-mic-line { background: rgba(255, 255, 255, 0.05); color: var(--text-secondary); border: 1px solid rgba(255, 255, 255, 0.1);}
+        .btn-mic-line.listening { background: var(--red); color: #fff; animation: pulseMic 1.5s infinite; border-color: var(--red);}
+        .btn-mic-line.success { background: var(--green); color: #000; border-color: var(--green); box-shadow: 0 0 15px rgba(50, 215, 75, 0.5);}
+        .btn-mic-line.fail { background: var(--orange); color: #000; border-color: var(--orange);}
+
+        .text-box { background: rgba(255,255,255,0.05); padding: 15px 18px; border-radius: 18px; font-size: 1.2rem; font-weight: 700; line-height: 1.6; direction: ltr; text-align: left; color: #fff; border: 1px solid rgba(255,255,255,0.02); transition: 0.3s;}
+        .d-bubble.left .text-box { border-top-left-radius: 4px; border-left: 3px solid var(--accent-blue);}
+        .d-bubble.right .text-box { border-top-right-radius: 4px; background: rgba(90, 117, 255, 0.1); border-right: 3px solid var(--accent-purple);}
+        
+        .score-box { font-size: 0.8rem; font-weight: 900; margin: 0 10px; display: none; transition: 0.3s;}
+        .score-box.success { color: var(--green); display: block;}
+        .score-box.fail { color: var(--orange); display: block;}
+
+        /* 🔥 WORD HIGHLIGHTING & CLICKING */
+        .w-click { display: inline-block; cursor: pointer; transition: 0.2s; border-radius: 6px; padding: 0 2px;}
+        .w-click.word-active { background: var(--gold); color: #000; transform: scale(1.1); font-weight: 900; box-shadow: 0 2px 15px rgba(255, 215, 0, 0.6); border-radius: 6px;}
+        .ar-trans { font-size: 0.95rem; color: var(--text-secondary); font-weight: 600; margin: 8px 10px 0; direction: rtl; text-align: right; transition: 0.3s;}
+        
+        /* 🎧 BLIND CHALLENGE MODE */
+        .blur-mode .w-click { color: transparent !important; text-shadow: 0 0 15px rgba(255,255,255,0.9); cursor: pointer;}
+        .blur-mode .ar-trans { color: transparent !important; text-shadow: 0 0 12px rgba(255,255,255,0.6);}
+        .blur-mode .d-bubble:hover .w-click, .blur-mode .d-bubble:hover .ar-trans,
+        .blur-mode .d-bubble:active .w-click, .blur-mode .d-bubble:active .ar-trans { color: #fff !important; text-shadow: none;}
+
+        /* --- DOUBLE CLICK TRANSLATION TOAST --- */
+        .trans-toast { display: none; flex-direction: column; gap: 10px; background: rgba(10, 10, 10, 0.95); border: 1px solid var(--accent-blue); padding: 20px; border-radius: 24px; box-shadow: 0 10px 40px rgba(90, 117, 255, 0.4); position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 4000; width: 90%; max-width: 400px; backdrop-filter: blur(15px); animation: fadeUp 0.3s ease-out forwards;}
+        .tt-word { font-size: 2rem; font-weight: 900; color: var(--accent-blue); text-align: center; direction: ltr;}
+        .tt-ar { font-size: 1.4rem; font-weight: 700; color: #fff; text-align: center;}
+        .tt-btn { background: var(--green); color: #000; border: none; padding: 14px; border-radius: 14px; font-weight: 900; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;}
+
+        /* --- FLASHCARD DOJO (SRS SYSTEM) --- */
+        .flashcard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 10px;}
+        .flashcard { background: transparent; perspective: 1000px; height: 160px; cursor: pointer;}
+        .flashcard-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d;}
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 18px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
+        .flashcard-front { background: linear-gradient(135deg, rgba(30,30,30,0.9), rgba(10,10,10,0.9)); color: #fff;}
+        .flashcard-back { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color: #fff; transform: rotateY(180deg); border: none;}
+        .fc-word { font-size: 1.4rem; font-weight: 900; direction: ltr; margin-bottom: 5px;}
+        .fc-meaning { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px;}
+        
+        /* SRS Buttons */
+        .srs-row { display: flex; gap: 8px; width: 100%; justify-content: center;}
+        .srs-btn { flex: 1; border: none; padding: 8px 0; border-radius: 8px; font-size: 0.8rem; font-weight: 900; cursor: pointer; color: #fff;}
+        .srs-hard { background: rgba(255, 69, 58, 0.8); }
+        .srs-good { background: rgba(255, 159, 10, 0.8); }
+        .srs-easy { background: rgba(50, 215, 75, 0.8); color: #000;}
+
+        /* --- SHARED UI --- */
+        .input-group { display: flex; flex-direction: column; gap: 6px; width: 100%;}
+        .input-group label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 800;}
+        .input-group textarea, .input-group input, .input-group select { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 15px; border-radius: 14px; font-family: var(--font); font-size: 1rem;}
+        .input-group textarea:focus, .input-group input:focus { border-color: var(--accent-purple); background: rgba(191, 90, 242, 0.05);}
+        .input-group textarea { min-height: 200px; direction: ltr; font-family: monospace; line-height: 1.6;}
+        
+        .btn-submit { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color: #fff; border: none; padding: 16px; border-radius: 14px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; margin-top: 5px; box-shadow: 0 5px 20px rgba(191, 90, 242, 0.3); transition: 0.2s;}
+        .btn-submit:active { transform: scale(0.97); }
+
+        #toastOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:3999; backdrop-filter:blur(5px);}
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="btn-circle"><i class="fas fa-arrow-right"></i></a>
+        <div class="header-title">
+            <span>AlterEgo</span>
+            مُحاكي اللغات
+        </div>
+        <button class="btn-circle btn-zen" onclick="document.body.classList.toggle('zen-mode')" title="وضع التركيز العميق"><i class="fas fa-om"></i></button>
+    </header>
+
+    <div class="pomodoro-widget" id="pomoWidget">
+        <div>
+            <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:800;">العمل العميق (Focus)</div>
+            <div class="pomo-time" id="pomoTime">25:00</div>
+        </div>
+        <button class="pomo-btn" id="pomoBtn" onclick="togglePomodoro()"><i class="fas fa-play"></i> بدء</button>
+    </div>
+
+    <div class="dashboard">
+        <div class="dash-stat">
+            <div class="dash-val" id="statStories">0</div>
+            <div class="dash-lbl">القصص</div>
+        </div>
+        
+        <div class="xp-badge" id="rankBadge">
+            <div class="xp-val"><i class="fas fa-bolt"></i> <span id="statXP">0</span></div>
+            <div class="xp-lbl" id="rankName">نقاط الخبرة</div>
+        </div>
+
+        <div class="dash-stat">
+            <div class="dash-val" id="statVocab">0</div>
+            <div class="dash-lbl">الكلمات</div>
+        </div>
+    </div>
+
+    <div class="filters">
+        <div class="chip active" onclick="filterData('All', this)">الكتالوج</div>
+        <div class="chip" onclick="filterData('it-IT', this)">إيطالي 🇮🇹</div>
+        <div class="chip" onclick="filterData('en-US', this)">إنجليزي 🇬🇧</div>
+    </div>
+
+    <div class="grid" id="mainGrid"></div>
+
+    <div class="floating-menu">
+        <button class="f-btn" onclick="openModal('vocabModal')" title="ساحة الذاكرة"><i class="fas fa-layer-group"></i></button>
+        <button class="f-btn primary" onclick="openModal('smartPasteModal')" title="إضافة قصة ذكية"><i class="fas fa-paste"></i></button>
+    </div>
+
+    <div class="modal" id="viewModal">
+        <div class="modal-content" style="padding: 10px; border-radius: 24px 24px 0 0;">
+            <div class="m-header" style="border:none; padding-bottom:5px;">
+                <span id="vLangBadge" style="font-size:0.8rem; background:rgba(255,255,255,0.1); padding:4px 10px; border-radius:8px; font-family: monospace;">🇮🇹 Italian A1</span>
+                <i class="fas fa-times-circle" style="font-size:1.8rem; color:var(--text-secondary); cursor:pointer;" onclick="closeStory()"></i>
+            </div>
+
+            <div class="v-hero">
+                <h2 class="v-title" id="vTitle">عنوان القصة</h2>
+                
+                <div class="speed-panel">
+                    <div class="speed-btn" id="sp05" onclick="setSpeed(0.5, this)">🐢 بطيء</div>
+                    <div class="speed-btn active" id="sp08" onclick="setSpeed(0.8, this)">🚶 متوسط</div>
+                    <div class="speed-btn" id="sp10" onclick="setSpeed(1.0, this)">🏃 عادي</div>
+                </div>
+
+                <div class="v-controls-bar">
+                    <button class="btn-text-action" id="btnChallenge" onclick="toggleChallengeMode()">
+                        <i class="fas fa-headphones"></i> التحدي السماعي
+                    </button>
+                    <button class="btn-text-action" id="btnTrans" onclick="toggleTranslations()">
+                        <i class="fas fa-language"></i> الترجمة
+                    </button>
+                </div>
+                
+                <button class="btn-play-master" id="btnPlayAll" onclick="playSequence()">
+                    <i class="fas fa-play"></i> استمع للقصة كاملة
+                </button>
+                <p style="font-size:0.7rem; color:var(--text-secondary); margin-top:10px;">اضغط مرتين على أي كلمة للترجمة. استخدم الميكروفون لتقييم نطقك.</p>
+            </div>
+
+            <div class="dialogue-list" id="dialogueContainer"></div>
+
+            <button style="background:rgba(255,69,58,0.1); color:var(--red); border:1px solid rgba(255,69,58,0.2); padding:15px; font-weight:800; cursor:pointer; margin-top:5px; border-radius: 14px;" onclick="deleteStory()">حذف هذه القصة <i class="fas fa-trash"></i></button>
+        </div>
+    </div>
+
+    <div id="toastOverlay" onclick="closeTranslationToast()"></div>
+    <div class="trans-toast" id="translationToast">
+        <div class="tt-word" id="transWord">Word</div>
+        <div class="tt-ar" id="transResult"><i class="fas fa-spinner fa-spin"></i> جاري البحث السريع...</div>
+        <input type="hidden" id="transLangHidden">
+        <button class="tt-btn" onclick="saveTranslatedVocab()"><i class="fas fa-save"></i> تخزين في الذاكرة (+10 XP)</button>
+    </div>
+
+    <div class="modal" id="vocabModal">
+        <div class="modal-content">
+            <div class="m-header">
+                <span style="color:var(--gold);"><i class="fas fa-layer-group"></i> ساحة التكرار المتباعد (SRS)</span>
+                <i class="fas fa-times" style="font-size:1.5rem; color:var(--text-secondary); cursor:pointer;" onclick="closeAll()"></i>
+            </div>
+            <p style="text-align:center; font-size:0.85rem; color:var(--text-secondary); margin-top:5px; margin-bottom:5px;">اضغط للقلب، ثم قيم صعوبة الكلمة لبرمجة مراجعتها.</p>
+            <div class="flashcard-grid" id="vocabListContainer"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="smartPasteModal">
+        <div class="modal-content">
+            <div class="m-header">
+                <span style="color:var(--cyan);"><i class="fas fa-paste"></i> اللصق الذكي </span>
+                <i class="fas fa-times" style="font-size:1.5rem; color:var(--text-secondary); cursor:pointer;" onclick="closeAll()"></i>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-secondary); font-weight:700; margin-top:-10px; line-height:1.6;">
+                انسخ المحادثة من أي مكان وألصقها. تأكد من وجود <b style="color:var(--gold)">|</b> قبل الترجمة.
+            </p>
+            
+            <div class="input-group" style="margin-top: 5px;">
+                <textarea id="smartPasteInput" placeholder="العنوان: في المطار ✈️
+اللغة: en-US
+المستوى: A2
+---
+Ali: Hello, where is my flight? | مرحباً، أين رحلتي؟
+Staff: It is delayed. | إنها متأخرة."></textarea>
+            </div>
+            
+            <button class="btn-submit" style="background:var(--cyan); color:#000; box-shadow: 0 5px 20px rgba(0, 188, 212, 0.3);" onclick="processSmartPaste()">
+                <i class="fas fa-bolt"></i> تحويل وبدء التدريب
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const DB_KEY = 'SakrOS_Lingua_Apex';
+        const VOCAB_KEY = 'SakrOS_Vocab_Apex';
+        const XP_KEY = 'SakrOS_Lingua_XP_Apex';
+        
+        let stories = [];
+        let vocabBank = [];
+        let filter = 'All';
+        let activeStory = null;
+        let currentXP = parseInt(localStorage.getItem(XP_KEY)) || 0;
+        
+        let isTransVisible = true;
+        let isChallengeMode = false;
+        let globalSpeed = 0.8;
+        
+        let synth = window.speechSynthesis;
+        let currentSequenceIndex = -1;
+        let isSequencePlaying = false;
+
+        // --- POMODORO ENGINE ---
+        let pomoInterval;
+        let pomoTimeLeft = 25 * 60; // 25 mins
+        let isPomoRunning = false;
+
+        function togglePomodoro() {
+            const btn = document.getElementById('pomoBtn');
+            if(isPomoRunning) {
+                clearInterval(pomoInterval);
+                isPomoRunning = false;
+                btn.innerHTML = '<i class="fas fa-play"></i> استكمال';
+                btn.style.background = 'rgba(255, 215, 0, 0.15)';
+                btn.style.color = 'var(--gold)';
+            } else {
+                isPomoRunning = true;
+                btn.innerHTML = '<i class="fas fa-pause"></i> إيقاف';
+                btn.style.background = 'rgba(255, 69, 58, 0.2)';
+                btn.style.color = 'var(--red)';
+                
+                pomoInterval = setInterval(() => {
+                    pomoTimeLeft--;
+                    let m = Math.floor(pomoTimeLeft / 60);
+                    let s = pomoTimeLeft % 60;
+                    document.getElementById('pomoTime').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+                    
+                    if(pomoTimeLeft <= 0) {
+                        clearInterval(pomoInterval);
+                        isPomoRunning = false;
+                        document.getElementById('pomoTime').innerText = "DONE!";
+                        addXP(100); // Huge reward for deep focus
+                        alert("عاش يا بطل! أنهيت جلسة تركيز عميق (+100 XP) 🍅🔥");
+                        pomoTimeLeft = 25 * 60;
+                        btn.innerHTML = '<i class="fas fa-play"></i> جلسة جديدة';
+                        if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                    }
+                }, 1000);
+            }
+        }
+
+        // --- INIT & DASHBOARD ---
+        window.onload = () => {
+            loadStories();
+            loadVocab();
+            updateDashboardStats();
+        };
+
+        function getSafeJSON(k, d) { try { let v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){return d;} }
+        
+        function updateDashboardStats() {
+            document.getElementById('statStories').innerText = stories.length;
+            
+            // Vocab stat: Show total words to learn
+            let dueCards = vocabBank.filter(v => !v.nextReview || v.nextReview <= Date.now()).length;
+            document.getElementById('statVocab').innerText = `${dueCards}/${vocabBank.length}`;
+
+            document.getElementById('statXP').innerText = currentXP;
+            
+            // Rank System
+            let badge = document.getElementById('rankBadge');
+            let rName = document.getElementById('rankName');
+            
+            badge.className = 'xp-badge'; // reset
+            if(currentXP < 100) { badge.classList.add('rank-novice'); rName.innerText = "مبتدئ"; }
+            else if(currentXP < 500) { badge.classList.add('rank-bronze'); rName.innerText = "متدرب"; }
+            else if(currentXP < 1500) { badge.classList.add('rank-silver'); rName.innerText = "متمكن"; }
+            else if(currentXP < 3000) { badge.classList.add('rank-gold'); rName.innerText = "خبير"; }
+            else { badge.classList.add('rank-maestro'); rName.innerText = "MAESTRO 👑"; }
+        }
+
+        function addXP(amount) {
+            currentXP += amount;
+            localStorage.setItem(XP_KEY, currentXP);
+            updateDashboardStats();
+        }
+
+        function loadStories() { stories = getSafeJSON(DB_KEY, []); render(); }
+        function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(stories)); updateDashboardStats(); }
+
+        // --- FLASHCARD DOJO (SRS ENGINE) ---
+        function loadVocab() { vocabBank = getSafeJSON(VOCAB_KEY, []); renderVocab(); }
+        function saveVocabDB() { localStorage.setItem(VOCAB_KEY, JSON.stringify(vocabBank)); renderVocab(); updateDashboardStats(); }
+
+        function renderVocab() {
+            const cont = document.getElementById('vocabListContainer'); cont.innerHTML = '';
+            
+            // Filter only due cards for active learning
+            let now = Date.now();
+            let dueVocab = vocabBank.filter(v => !v.nextReview || v.nextReview <= now);
+
+            if(dueVocab.length === 0 && vocabBank.length > 0) { 
+                cont.innerHTML = '<div style="grid-column: span 2; text-align:center; color:var(--green); font-size:1rem; font-weight:bold; padding:20px;">أنهيت مراجعاتك اليوم! عُد غداً 🚀</div>'; 
+                return; 
+            }
+            if(vocabBank.length === 0) {
+                cont.innerHTML = '<div style="grid-column: span 2; text-align:center; color:gray; font-size:0.85rem; padding:20px;">الساحة فارغة. انقر مرتين على أي كلمة في القصص لترجمتها وإضافتها!</div>'; return;
+            }
+            
+            dueVocab.forEach(v => {
+                let flag = v.lang.includes('it') ? '🇮🇹' : '🇬🇧';
+                cont.innerHTML += `
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="fc-word">${v.word}</div>
+                                <div style="font-size:0.7rem; color:var(--text-secondary);">${flag} Tap to flip</div>
+                            </div>
+                            <div class="flashcard-back">
+                                <div class="fc-meaning">${v.meaning}</div>
+                                <div style="font-size:0.6rem; margin-bottom:5px; color:rgba(255,255,255,0.5);">تقييم الصعوبة:</div>
+                                <div class="srs-row">
+                                    <button class="srs-btn srs-hard" onclick="event.stopPropagation(); processSRS(${v.id}, 'hard')">صعب</button>
+                                    <button class="srs-btn srs-good" onclick="event.stopPropagation(); processSRS(${v.id}, 'good')">جيد</button>
+                                    <button class="srs-btn srs-easy" onclick="event.stopPropagation(); processSRS(${v.id}, 'easy')">سهل</button>
+                                </div>
+                                <button style="background:transparent; border:none; color:#ff3b30; margin-top:5px; font-size:0.7rem; cursor:pointer;" onclick="event.stopPropagation(); deleteVocab(${v.id})">حذف الكارت</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Extremely Simplified Leitner/SRS Logic
+        function processSRS(id, quality) {
+            let word = vocabBank.find(v => v.id === id);
+            if(!word) return;
+            
+            let now = Date.now();
+            let dayMs = 24 * 60 * 60 * 1000;
+            
+            if(!word.interval) word.interval = 1;
+
+            if(quality === 'hard') {
+                word.interval = 1; // Review tomorrow
+                word.nextReview = now + dayMs;
+            } else if(quality === 'good') {
+                word.interval = word.interval * 2; // Double interval
+                word.nextReview = now + (word.interval * dayMs);
+                addXP(2);
+            } else if(quality === 'easy') {
+                word.interval = word.interval * 4; // Max jump
+                word.nextReview = now + (word.interval * dayMs);
+                addXP(5);
+            }
+
+            saveVocabDB();
+        }
+
+        function deleteVocab(id) { if(confirm("مسح الكارت؟")) { vocabBank = vocabBank.filter(v => v.id !== id); saveVocabDB(); } }
+
+        // --- DOUBLE CLICK TRANSLATION API (FREE) ---
+        async function fetchTranslation(word, lang) {
+            document.getElementById('toastOverlay').style.display = 'block';
+            const toast = document.getElementById('translationToast');
+            toast.style.display = 'flex';
+            
+            document.getElementById('transWord').innerText = word;
+            document.getElementById('transLangHidden').value = lang;
+            const resBox = document.getElementById('transResult');
+            resBox.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري البحث...';
+            
+            try {
+                let langPair = lang.includes('it') ? 'it|ar' : 'en|ar';
+                let url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=${langPair}`;
+                let response = await fetch(url);
+                let data = await response.json();
+                
+                if(data && data.responseData && data.responseData.translatedText) {
+                    resBox.innerText = data.responseData.translatedText;
+                } else { resBox.innerText = "لم أتمكن من إيجاد الترجمة."; }
+            } catch(e) { resBox.innerText = "خطأ في الاتصال بالإنترنت."; }
+        }
+
+        function closeTranslationToast() { document.getElementById('translationToast').style.display = 'none'; document.getElementById('toastOverlay').style.display = 'none'; }
+
+        function saveTranslatedVocab() {
+            let word = document.getElementById('transWord').innerText;
+            let meaning = document.getElementById('transResult').innerText;
+            let lang = document.getElementById('transLangHidden').value;
+            
+            if(meaning.includes("جاري") || meaning.includes("خطأ")) return alert("انتظر الترجمة الصحيحة.");
+            
+            if(!vocabBank.find(v => v.word.toLowerCase() === word.toLowerCase())) {
+                // Initialize SRS data
+                vocabBank.unshift({ id: Date.now(), word, meaning, lang, interval: 0, nextReview: 0 });
+                saveVocabDB(); addXP(10); 
+                alert("تم إيداعها في الساحة! +10 XP");
+            } else { alert("هذه الكلمة موجودة بالفعل في الساحة."); }
+            closeTranslationToast();
+        }
+
+        // --- SMART WORD CLICK HANDLER ---
+        let lastWordClickTime = 0;
+        let lastClickedWord = "";
+
+        function handleWordInteraction(word, lang) {
+            let now = Date.now();
+            let timeDiff = now - lastWordClickTime;
+            
+            if (timeDiff > 400 || lastClickedWord !== word) { speakDirect(word, lang); }
+            if (timeDiff < 400 && timeDiff > 0 && lastClickedWord === word) {
+                fetchTranslation(word, lang);
+                if(navigator.vibrate) navigator.vibrate(50);
+            }
+            lastWordClickTime = now;
+            lastClickedWord = word;
+        }
+
+        // --- THE MAGIC: SMART PASTE V3 ---
+        function processSmartPaste() {
+            let rawText = document.getElementById('smartPasteInput').value.trim();
+            if(!rawText) return alert("لم يتم إدخال أي نص!");
+
+            let lines = rawText.split('\n');
+            let title = "محادثة جديدة", lang = "it-IT", level = "A2";
+            let dialogue = [];
+
+            try {
+                lines.forEach(line => {
+                    line = line.trim();
+                    if(!line || line.startsWith('---')) return; 
+
+                    if(line.startsWith('العنوان:')) title = line.replace('العنوان:', '').trim();
+                    else if(line.startsWith('اللغة:')) lang = line.replace('اللغة:', '').trim();
+                    else if(line.startsWith('المستوى:')) level = line.replace('المستوى:', '').trim();
+                    else {
+                        let colonIndex = line.indexOf(':');
+                        let pipeIndex = line.lastIndexOf('|'); 
+                        
+                        if(colonIndex !== -1 && pipeIndex !== -1 && colonIndex < pipeIndex) {
+                            let speaker = line.substring(0, colonIndex).trim();
+                            let foreignText = line.substring(colonIndex + 1, pipeIndex).trim();
+                            let arabicText = line.substring(pipeIndex + 1).trim();
+                            dialogue.push({ speaker: speaker, text: foreignText, ar: arabicText });
+                        }
+                    }
+                });
+
+                if(dialogue.length === 0) throw new Error("تأكد أن النص يحتوي على (:) بعد الاسم، و (|) قبل الترجمة.");
+
+                let newStory = { id: 's_' + Date.now(), title: title, lang: lang, level: level, dialogue: dialogue };
+                stories.push(newStory); saveDB(); addXP(20); 
+                
+                document.getElementById('smartPasteInput').value = ""; closeAll(); render(); openStory(newStory.id);
+            } catch(e) { alert("خطأ في التحليل: " + e.message); }
+        }
+
+        // --- RENDER MAIN GRID ---
+        function render() {
+            const grid = document.getElementById('mainGrid'); grid.innerHTML = '';
+            let data = filter === 'All' ? stories : stories.filter(s => s.lang === filter);
+            if(data.length === 0) { grid.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-secondary); font-weight:700; border:1px dashed var(--border); border-radius:20px;">الكتالوج فارغ. اضغط على (+) لإضافة قصة!</div>`; return; }
+            
+            [...data].reverse().forEach(s => {
+                let isIt = s.lang.includes('it');
+                let flag = isIt ? '🇮🇹' : '🇬🇧';
+                let color = isIt ? 'var(--cyan)' : 'var(--accent-blue)';
+                grid.innerHTML += `
+                    <div class="story-card" onclick="openStory('${s.id}')">
+                        <div class="s-icon" style="color:${color};"><i class="fas fa-headphones"></i></div>
+                        <div class="s-content">
+                            <div class="s-title">${s.title}</div>
+                            <div class="s-meta"><span class="badge">${flag} ${isIt ? 'Italian' : 'English'}</span><span class="badge" style="color:var(--accent-purple);">${s.level || 'Custom'}</span></div>
+                        </div>
+                        <i class="fas fa-play-circle" style="color:var(--text-secondary); font-size:1.4rem;"></i>
+                    </div>
+                `;
+            });
+        }
+        function filterData(f, el) { filter = f; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); render(); }
+
+        // --- STORY INTERFACE & LOGIC ---
+        function setSpeed(val, el) {
+            globalSpeed = val;
+            document.querySelectorAll('.speed-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function openStory(id) {
+            activeStory = stories.find(x => x.id === id); if(!activeStory) return;
+            let isIt = activeStory.lang.includes('it');
+            document.getElementById('vLangBadge').innerText = `${isIt?'🇮🇹':'🇬🇧'} ${activeStory.lang} • ${activeStory.level}`;
+            document.getElementById('vTitle').innerText = activeStory.title;
+            
+            isTransVisible = true; isChallengeMode = false;
+            updateTransBtn(); updateChallengeBtn(); 
+            renderDialogue();
+            
+            stopSpeech(); document.getElementById('btnPlayAll').innerHTML = '<i class="fas fa-play"></i> استمع للقصة كاملة';
+            document.getElementById('btnPlayAll').classList.remove('playing');
+            document.getElementById('viewModal').style.display = 'flex';
+        }
+
+        // --- 🎤 AI PRONUNCIATION COACH (WEB SPEECH API) ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        function checkPronunciation(index, expectedTextRaw) {
+            if(!SpeechRecognition) return alert("المتصفح لا يدعم تقييم النطق. استخدم Google Chrome للحصول على أفضل تجربة.");
+            
+            let micBtn = document.getElementById(`mic-btn-${index}`);
+            let scoreBox = document.getElementById(`score-box-${index}`);
+            
+            if(micBtn.classList.contains('listening')) return; // Already listening
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = activeStory.lang;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            micBtn.classList.add('listening');
+            scoreBox.style.display = 'none';
+            scoreBox.className = 'score-box';
+
+            // Clean string for comparison
+            let expectedClean = expectedTextRaw.toLowerCase().replace(/['",.!?¿¡]/g, '').trim();
+
+            recognition.start();
+
+            recognition.onresult = (event) => {
+                let speechResult = event.results[0][0].transcript.toLowerCase().replace(/['",.!?¿¡]/g, '').trim();
+                
+                // Very simple accuracy check (includes expected string)
+                // In a real production app, you'd use Levenshtein distance here.
+                let isGood = speechResult.includes(expectedClean) || expectedClean.includes(speechResult) || event.results[0][0].confidence > 0.8;
+                
+                micBtn.classList.remove('listening');
+                
+                if(isGood) {
+                    micBtn.classList.add('success');
+                    scoreBox.innerText = `رائع! دقة النطق: ${Math.round(event.results[0][0].confidence * 100)}%`;
+                    scoreBox.classList.add('success');
+                    addXP(15); // Reward for speaking correctly!
+                    setTimeout(() => micBtn.classList.remove('success'), 2000);
+                } else {
+                    micBtn.classList.add('fail');
+                    scoreBox.innerText = `سمعت: "${speechResult}". حاول مرة أخرى!`;
+                    scoreBox.classList.add('fail');
+                    setTimeout(() => micBtn.classList.remove('fail'), 4000);
+                }
+            };
+
+            recognition.onspeechend = () => { recognition.stop(); };
+            recognition.onerror = (event) => { 
+                micBtn.classList.remove('listening');
+                scoreBox.innerText = "لم أتمكن من سماعك بوضوح.";
+                scoreBox.classList.add('fail');
+            };
+        }
+
+        function renderDialogue() {
+            const cont = document.getElementById('dialogueContainer'); cont.innerHTML = '';
+            cont.className = 'dialogue-list';
+            if(isChallengeMode) cont.classList.add('blur-mode');
+
+            activeStory.dialogue.forEach((line, index) => {
+                let alignClass = index % 2 === 0 ? 'right' : 'left';
+                let words = line.text.split(' ');
+                
+                let clickableText = words.map((w, wIndex) => {
+                    let cleanWord = w.replace(/['",.!?]/g, '');
+                    return `<span class="w-click" id="word-${index}-${wIndex}" onclick="handleWordInteraction('${cleanWord}', '${activeStory.lang}')">${w}</span>`;
+                }).join(' ');
+
+                cont.innerHTML += `
+                    <div class="d-bubble ${alignClass}" id="bubble-${index}">
+                        <div class="speaker-header">
+                            <div style="display:flex; gap:5px;">
+                                <button class="btn-play-line" onclick="playSingleSentence(${index})" title="استمع"><i class="fas fa-volume-up"></i></button>
+                                <button class="btn-mic-line" id="mic-btn-${index}" onclick="checkPronunciation(${index}, '${line.text.replace(/'/g, "\\'")}')" title="قيّم نطقك"><i class="fas fa-microphone"></i></button>
+                            </div>
+                            <span class="speaker-name">${line.speaker}</span>
+                        </div>
+                        <div class="text-box">${clickableText}</div>
+                        <div class="score-box" id="score-box-${index}"></div>
+                        <div class="ar-trans" style="display: ${isTransVisible ? 'block' : 'none'};">${line.ar}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleTranslations() { isTransVisible = !isTransVisible; updateTransBtn(); document.querySelectorAll('.ar-trans').forEach(el => { el.style.display = isTransVisible ? 'block' : 'none'; }); }
+        function updateTransBtn() { const btn = document.getElementById('btnTrans'); btn.innerHTML = isTransVisible ? '<i class="fas fa-language"></i> الترجمة' : '<i class="fas fa-language"></i> إظهار الترجمة'; if(!isTransVisible) btn.classList.add('hidden'); else btn.classList.remove('hidden'); }
+        
+        function toggleChallengeMode() { isChallengeMode = !isChallengeMode; updateChallengeBtn(); renderDialogue(); }
+        function updateChallengeBtn() { const btn = document.getElementById('btnChallenge'); if(isChallengeMode) { btn.classList.add('active-challenge'); btn.innerHTML = '<i class="fas fa-eye"></i> كشف النص'; } else { btn.classList.remove('active-challenge'); btn.innerHTML = '<i class="fas fa-eye-slash"></i> إخفاء النص'; } }
+
+        // --- ADVANCED SPEECH ENGINE (GOLD HIGHLIGHT) ---
+        function stopSpeech() { 
+            if(synth.speaking) synth.cancel(); 
+            isSequencePlaying = false; 
+            currentSequenceIndex = -1; 
+            document.querySelectorAll('.d-bubble').forEach(b => b.classList.remove('playing-bubble')); 
+            document.querySelectorAll('.w-click').forEach(w => w.classList.remove('word-active'));
+        }
+        
+        function speakDirect(text, lang) { 
+            stopSpeech(); 
+            let utterance = new SpeechSynthesisUtterance(text); 
+            utterance.lang = lang; 
+            utterance.rate = globalSpeed; 
+            synth.speak(utterance); 
+        }
+
+        function playSingleSentence(index) { stopSpeech(); playSentenceLogic(index); }
+        
+        function playSentenceLogic(index, onEndCallback = null) {
+            if(!activeStory || !activeStory.dialogue[index]) return;
+            let line = activeStory.dialogue[index];
+            let utterance = new SpeechSynthesisUtterance(line.text); 
+            utterance.lang = activeStory.lang; 
+            utterance.rate = globalSpeed;
+
+            let currentBubble = document.getElementById('bubble-' + index);
+
+            utterance.onboundary = (e) => {
+                if(e.name === 'word') {
+                    document.querySelectorAll(`#bubble-${index} .w-click`).forEach(s => s.classList.remove('word-active'));
+                    let textUpToBoundary = line.text.substring(0, e.charIndex);
+                    let wordIndex = textUpToBoundary.split(' ').length - 1;
+                    
+                    let targetSpan = document.getElementById(`word-${index}-${wordIndex}`);
+                    if(targetSpan) targetSpan.classList.add('word-active');
+                }
+            };
+
+            document.querySelectorAll('.d-bubble').forEach(b => b.classList.remove('playing-bubble'));
+            if(currentBubble) { 
+                currentBubble.classList.add('playing-bubble'); 
+                currentBubble.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+            }
+
+            utterance.onend = () => { 
+                if(currentBubble) currentBubble.classList.remove('playing-bubble'); 
+                document.querySelectorAll(`#bubble-${index} .w-click`).forEach(s => s.classList.remove('word-active'));
+                if(onEndCallback) onEndCallback(); 
+            };
+            
+            utterance.onerror = () => { 
+                if(currentBubble) currentBubble.classList.remove('playing-bubble'); 
+                document.querySelectorAll(`#bubble-${index} .w-click`).forEach(s => s.classList.remove('word-active'));
+            }
+            synth.speak(utterance);
+        }
+
+        function playSequence() {
+            let btn = document.getElementById('btnPlayAll');
+            if(isSequencePlaying) { 
+                stopSpeech(); 
+                btn.innerHTML = '<i class="fas fa-play"></i> استمع للقصة كاملة'; 
+                btn.classList.remove('playing');
+                return; 
+            }
+
+            isSequencePlaying = true; 
+            btn.innerHTML = '<i class="fas fa-stop"></i> إيقاف الاستماع'; 
+            btn.classList.add('playing');
+            currentSequenceIndex = 0;
+            
+            function nextSentence() {
+                if(!isSequencePlaying) return; 
+                if(currentSequenceIndex < activeStory.dialogue.length) {
+                    playSentenceLogic(currentSequenceIndex, () => { currentSequenceIndex++; setTimeout(nextSentence, 400); });
+                } else { 
+                    isSequencePlaying = false; 
+                    btn.innerHTML = '<i class="fas fa-redo"></i> إعادة تشغيل القصة'; 
+                    btn.classList.remove('playing');
+                    addXP(50); 
+                    if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                }
+            }
+            nextSentence();
+        }
+
+        function closeStory() { stopSpeech(); activeStory = null; document.getElementById('viewModal').style.display = 'none'; }
+        function deleteStory() { if(!confirm("حذف هذه القصة نهائياً؟")) return; stories = stories.filter(s => s.id !== activeStory.id); saveDB(); closeStory(); render(); }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function closeAll() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+    </script>
+</body>
+</html>
