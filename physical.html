@@ -32,7 +32,7 @@
         
         /* --- HEADER --- */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 16px 10px; }
-        .back-btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #fff; font-weight: 800; background: rgba(255, 94, 0, 0.15); border: 1px solid rgba(255, 94, 0, 0.4); padding: 10px 18px; border-radius: 12px; transition: 0.2s; font-size: 0.95rem; }
+        .back-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: #fff; font-weight: 800; background: rgba(255, 94, 0, 0.15); border: 1px solid rgba(255, 94, 0, 0.4); padding: 10px 18px; border-radius: 12px; transition: 0.2s; font-size: 0.95rem; }
         .back-btn:active { transform: scale(0.95); background: var(--apple-blue); color:#000;}
         .lock-badge { background: rgba(48, 209, 88, 0.15); color: var(--apple-green); border: 1px solid rgba(48, 209, 88, 0.3); padding: 6px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 800; }
         
@@ -125,7 +125,11 @@
 <body>
 
     <div class="header">
-        <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+        <div style="display: flex; gap: 8px;">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+            <a href="kitchen.html" class="back-btn" style="background: rgba(229, 57, 53, 0.15); border-color: rgba(229, 57, 53, 0.4); color: #E53935; padding: 10px 14px;" title="المطبخ"><i class="fas fa-utensils"></i></a>
+        </div>
+
         <div style="flex:1; text-align:center;">
             <h1>IronForge</h1>
             <div class="text-sub" id="sysDate">V14.1 Stable</div>
@@ -170,6 +174,11 @@
                 <button class="ios-btn btn-gray" style="margin: 0;" onclick="openModal('modalFood')">+ طعام فردي</button>
                 <button class="ios-btn btn-blue" style="margin: 0;" onclick="renderGroupModal('food')"><i class="fas fa-box"></i> + وجبة جاهزة</button>
             </div>
+            
+            <a href="kitchen.html" class="ios-btn" style="background: rgba(229, 57, 53, 0.15); color: #E53935; border: 1px solid rgba(229, 57, 53, 0.3); text-decoration: none; margin-top: 12px; margin-bottom: 0;">
+                <i class="fas fa-fire-burner"></i> فتح مطبخ الإمبراطورية
+            </a>
+
         </div>
 
         <button class="ios-btn btn-danger" id="btnLock" onclick="toggleDayLock()"><i class="fas fa-lock"></i> قفل وتشفير اليوم</button>
@@ -630,7 +639,7 @@
         function renderDBLists() {
             const fList = document.getElementById('dbFoodListUI'); const eList = document.getElementById('dbExListUI'); fList.innerHTML = ''; eList.innerHTML = '';
             DB.foodDB.forEach(f => { fList.innerHTML += `<div class="mini-db-item"><div><div style="font-weight:800; color:#fff;">${f.name}</div><div class="text-sub">${f.kcal} kcal</div></div><button style="background:rgba(255,59,48,0.1); border:none; color:var(--apple-red); width:30px; height:30px; border-radius:8px; cursor:pointer;" onclick="deleteFromDB('food', ${f.id})"><i class="fas fa-trash"></i></button></div>`; });
-            DB.exDB.forEach(e => { eList.innerHTML += `<div class="mini-db-item"><div style="font-weight:800; color:#fff;">${e.name}</div><button style="background:rgba(255,59,48,0.1); border:none; color:var(--apple-red); width:30px; height:30px; border-radius:8px; cursor:pointer;" onclick="deleteFromDB('ex', ${e.id})"><i class="fas fa-trash"></i></button></div>`; });
+            DB.exDB.forEach(e => { eList.innerHTML += `<div class="mini-db-item"><div style="font-weight:800; color:#fff;">${e.name}</div><button style="background:rgba(255,59,48,0.1); border:none; color:var(--apple-red); width:30px; height:30px; border-radius:8px; cursor:pointer;" onclick="deleteFromDB('ex', ${e.id})"><i class="fas fa-trash"></i></button></div></div>`; });
         }
         function deleteFromDB(type, id) { if(!confirm("حذف العنصر نهائياً؟")) return; if(type === 'food') DB.foodDB = DB.foodDB.filter(x => x.id !== id); else DB.exDB = DB.exDB.filter(x => x.id !== id); saveDB(); renderDBLists(); }
 
