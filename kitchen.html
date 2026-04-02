@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAKR OS | Crimson Kitchen</title>
+    <title>SAKR OS | Crimson Kitchen (Macro Edition)</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <meta name="theme-color" content="#050505">
     
     <style>
-        /* ================= DEEP BLACK & CRIMSON (CLEAN EDITION) ================= */
+        /* ================= DEEP BLACK & CRIMSON (MACRO EDITION) ================= */
         :root {
             --bg-main: #050505;      
             --card-bg: #111111;      
@@ -18,9 +18,10 @@
             --border: rgba(229, 57, 53, 0.2); 
             
             --accent-red: #E53935;  
-            --dark-red: #b71c1c;
-            --cyan: #00bcd4;
-            --gold: #FFB700;
+            --cyan: #00bcd4; /* Protein */
+            --gold: #FFB700; /* Carbs */
+            --purple: #BF5AF2; /* Fats */
+            --green: #30D158; /* Export */
             
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.6);
@@ -73,7 +74,7 @@
         .c-title { font-size: 0.95rem; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
         
         .c-stats { display: flex; justify-content: space-between; margin-top: auto;}
-        .stat { font-size: 0.8rem; font-weight: 900; font-family: monospace; display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px;}
+        .stat { font-size: 0.75rem; font-weight: 900; font-family: monospace; display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 6px; border-radius: 6px;}
         .s-cal { color: var(--accent-red); }
         .s-pro { color: var(--cyan); }
 
@@ -96,11 +97,12 @@
         .upload-box.has-img { border: none; }
 
         .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
+        .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;}
 
         .btn-submit { background: var(--accent-red); color: #fff; border: none; padding: 18px; border-radius: 16px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 5px 20px rgba(229, 57, 53, 0.3); transition: 0.2s;}
         .btn-submit:active { transform: scale(0.97); }
 
-        /* --- VIEW MODAL (WITH SCALER) --- */
+        /* --- VIEW MODAL (WITH SCALER & EXPORT) --- */
         .v-hero { width: 100%; height: 240px; border-radius: 20px; background-size: cover; background-position: center; position: relative; border: 1px solid rgba(255,255,255,0.05);}
         .v-hero::after { content: ''; position: absolute; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.9)); border-radius: 20px;}
         .v-title-wrap { position: absolute; bottom: 20px; right: 20px; z-index: 2; left: 20px;}
@@ -112,16 +114,20 @@
         .scaler-val { font-size: 1rem; font-weight: 900; color: var(--accent-red); font-family: monospace; background: rgba(229, 57, 53, 0.1); padding: 2px 8px; border-radius: 8px;}
         .scaler-slider { width: 100%; accent-color: var(--accent-red); height: 6px; background: rgba(255,255,255,0.1); outline: none; border-radius: 3px;}
 
-        .v-stats-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .v-stat-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03); padding: 12px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;}
-        .v-val { font-size: 1.2rem; font-weight: 900; font-family: monospace; color: #fff;}
-        .v-lbl { font-size: 0.65rem; color: var(--text-secondary); font-weight: 800;}
+        /* 🔥 MACROS BAR UPDATE 🔥 */
+        .v-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .v-stat-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03); padding: 10px 5px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;}
+        .v-val { font-size: 1.1rem; font-weight: 900; font-family: monospace; color: #fff;}
+        .v-lbl { font-size: 0.6rem; color: var(--text-secondary); font-weight: 900; letter-spacing: 0.5px;}
 
         .v-section { background: var(--card-bg); padding: 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.03);}
         .s-head { font-size: 1rem; font-weight: 900; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;}
         
         .steps-txt { font-size: 0.95rem; color: #fff; line-height: 1.8; font-weight: 600; white-space: pre-wrap;}
         
+        .btn-export { background: linear-gradient(135deg, var(--gold), #ff8c00); color: #000; border: none; padding: 16px; border-radius: 16px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; margin-top: 5px; box-shadow: 0 5px 20px rgba(255, 183, 0, 0.3); transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .btn-export:active { transform: scale(0.97); }
+
         .btn-delete { background: transparent; color: var(--text-secondary); border: none; padding: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 5px;}
         .btn-delete:active { color: var(--accent-red); }
 
@@ -174,13 +180,13 @@
     <div class="modal" id="addModal">
         <div class="modal-content">
             <div class="m-header">
-                إضافة لوحة جديدة
+                إضافة لوحة غذائية كاملة
                 <div class="m-close" onclick="closeAll()"><i class="fas fa-times"></i></div>
             </div>
             
             <div class="input-group">
                 <label>اسم الوجبة</label>
-                <input type="text" id="iTitle" placeholder="مثال: باستا أو شوفان...">
+                <input type="text" id="iTitle" placeholder="مثال: دجاج بالرز...">
             </div>
             
             <div class="input-group">
@@ -195,8 +201,8 @@
             <div class="input-group">
                 <label>التصنيف</label>
                 <select id="iCat">
-                    <option value="Italian">إيطالي 🇮🇹</option>
                     <option value="Protein">عضلات 💪</option>
+                    <option value="Italian">إيطالي 🇮🇹</option>
                     <option value="Fast">سريع ⚡</option>
                     <option value="Dessert">حلويات 🍰</option>
                 </select>
@@ -212,23 +218,33 @@
                     <input type="number" id="iPro" placeholder="مثال: 30">
                 </div>
             </div>
+            <div class="row-2" style="margin-top: 5px;">
+                <div class="input-group">
+                    <label style="color:var(--gold);">الكارب (g)</label>
+                    <input type="number" id="iCarbs" placeholder="مثال: 45">
+                </div>
+                <div class="input-group">
+                    <label style="color:var(--purple);">الدهون (g)</label>
+                    <input type="number" id="iFats" placeholder="مثال: 12">
+                </div>
+            </div>
 
             <div class="input-group" style="margin-top: 5px;">
-                <label style="color:var(--gold);">التكلفة التقريبية (ج.م)</label>
+                <label>التكلفة التقريبية (ج.م)</label>
                 <input type="number" id="iCost" placeholder="مثال: 45">
             </div>
 
             <div class="input-group">
                 <label>المكونات (الكميات بالأرقام)</label>
-                <textarea id="iIng" placeholder="100 جرام مكرونة..."></textarea>
+                <textarea id="iIng" placeholder="100 جرام دجاج..."></textarea>
             </div>
 
             <div class="input-group">
                 <label>خطوات الطبخ</label>
-                <textarea id="iSteps" placeholder="1. اسلق المكرونة..."></textarea>
+                <textarea id="iSteps" placeholder="1. اشوي الدجاج..."></textarea>
             </div>
 
-            <button class="btn-submit" id="btnSave" onclick="saveRecipe()">حفظ الوصفة</button>
+            <button class="btn-submit" id="btnSave" onclick="saveRecipe()">حفظ الوصفة الشاملة</button>
         </div>
     </div>
 
@@ -252,16 +268,26 @@
             <div class="v-stats-bar">
                 <div class="v-stat-card">
                     <div class="v-val" style="color:var(--accent-red);" id="vCals">0</div>
-                    <div class="v-lbl">KCAL</div>
+                    <div class="v-lbl">CALS</div>
                 </div>
                 <div class="v-stat-card">
                     <div class="v-val" style="color:var(--cyan);" id="vPro">0g</div>
-                    <div class="v-lbl">PROTEIN</div>
+                    <div class="v-lbl">PRO</div>
                 </div>
                 <div class="v-stat-card">
-                    <div class="v-val" style="color:var(--gold);" id="vCost">0</div>
-                    <div class="v-lbl">EGP</div>
+                    <div class="v-val" style="color:var(--gold);" id="vCarbs">0g</div>
+                    <div class="v-lbl">CARB</div>
                 </div>
+                <div class="v-stat-card">
+                    <div class="v-val" style="color:var(--purple);" id="vFats">0g</div>
+                    <div class="v-lbl">FAT</div>
+                </div>
+            </div>
+
+            <button class="btn-export" onclick="exportToPhysical()"><i class="fas fa-rocket"></i> إرسال لليومي الغذائي</button>
+
+            <div class="v-section" style="margin-top: 5px;">
+                <div class="s-head"><i class="fas fa-wallet" style="color:#aaa;"></i> التكلفة المقدرة: <span id="vCost" style="font-family:monospace; margin-right:5px; color:#fff;">0</span> ج.م</div>
             </div>
 
             <div class="v-section">
@@ -281,7 +307,7 @@
     <div class="modal" id="dataModal">
         <div class="modal-content">
             <div class="m-header">
-                مركز البيانات والذكاء
+                مركز البيانات
                 <div class="m-close" onclick="closeAll()"><i class="fas fa-times"></i></div>
             </div>
             
@@ -291,7 +317,7 @@
             
             <div style="height:1px; background:var(--border); margin: 10px 0;"></div>
             
-            <button class="btn-data gemini-paste" onclick="openGeminiModal()"><i class="fas fa-robot"></i> استيراد وصفة من Gemini</button>
+            <button class="btn-data gemini-paste" onclick="openGeminiModal()"><i class="fas fa-robot"></i> استيراد وصفة (مدمجة بالماكروز)</button>
         </div>
     </div>
 
@@ -303,14 +329,15 @@
             </div>
             <div class="input-group">
                 <label>الصق الكود البرمجي (JSON) هنا:</label>
-                <textarea id="geminiInput" style="min-height: 150px; font-family: monospace; font-size:0.8rem;" placeholder='{"title": "...", "cat": "...", ...}'></textarea>
+                <textarea id="geminiInput" style="min-height: 180px; font-family: monospace; font-size:0.8rem;" placeholder='{"title": "...", "cat": "...", "cals": 400, "pro": 30, "carbs": 40, "fats": 10, ...}'></textarea>
             </div>
-            <button class="btn-submit" style="background:var(--cyan); box-shadow: 0 5px 20px rgba(0, 188, 212, 0.3);" onclick="processGeminiImport()">توليد الوصفة السحرية</button>
+            <button class="btn-submit" style="background:var(--cyan); box-shadow: 0 5px 20px rgba(0, 188, 212, 0.3);" onclick="processGeminiImport()">توليد الوصفة</button>
         </div>
     </div>
 
     <script>
-        const DB_KEY = 'SakrOS_Kitchen_V6';
+        const DB_KEY = 'SakrOS_Kitchen_V7_Macro'; // تغيير المفتاح ليتوافق مع الهيكل الجديد
+        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; // مفتاح الطابور لصفحة Physical
         let recipes = [];
         let filter = 'All';
         let baseRecipe = null; 
@@ -336,15 +363,42 @@
             if(typeof dbCloud !== 'undefined') dbCloud.ref(DB_KEY).set(recipes);
         }
 
+        // --- EXPORT TO PHYSICAL (SUPERCHARGED BRIDGE) ---
+        function exportToPhysical() {
+            if(!baseRecipe) return;
+            
+            let scaleVal = parseFloat(document.getElementById('scaleInput').value) || 1;
+            
+            // تجهيز بيانات الوجبة للتصدير بجميع الماكروز
+            let exportedData = {
+                id: 'food_' + Date.now(),
+                title: baseRecipe.title,
+                cals: Math.round(baseRecipe.cals * scaleVal),
+                pro: Math.round(baseRecipe.pro * scaleVal),
+                carbs: Math.round((baseRecipe.carbs || 0) * scaleVal),
+                fats: Math.round((baseRecipe.fats || 0) * scaleVal),
+                scale: scaleVal,
+                dateAdded: new Date().toISOString()
+            };
+
+            // سحب طابور الانتظار الحالي وإضافة الوجبة
+            let pendingQueue = getSafeJSON(EXPORT_QUEUE_KEY, []);
+            pendingQueue.push(exportedData);
+            
+            // حفظ في الـ LocalStorage ليراها Physical
+            localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
+
+            closeAll();
+            alert(`تم إرسال (${exportedData.title}) لليومي الغذائي! 🚀\n\nالسعرات: ${exportedData.cals}\nبروتين: ${exportedData.pro}g | كارب: ${exportedData.carbs}g | دهون: ${exportedData.fats}g\n\nافتح Physical لاستلامها.`);
+        }
+
         // --- Data Center (Backup/Restore) ---
         function exportDB() {
             let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recipes));
             let dl = document.createElement('a');
             dl.setAttribute("href", dataStr);
             dl.setAttribute("download", "SakrOS_Kitchen_Backup.json");
-            document.body.appendChild(dl);
-            dl.click();
-            dl.remove();
+            document.body.appendChild(dl); dl.click(); dl.remove();
         }
 
         function importDB(event) {
@@ -356,9 +410,7 @@
                     let imported = JSON.parse(e.target.result);
                     if(Array.isArray(imported)) {
                         recipes = imported;
-                        saveDB();
-                        render();
-                        closeAll();
+                        saveDB(); render(); closeAll();
                         alert("تم استرجاع كتالوج الإمبراطورية بنجاح! 🦅");
                     }
                 } catch(err) { alert("ملف غير صالح."); }
@@ -377,23 +429,23 @@
             try {
                 let data = JSON.parse(val);
                 
-                // Populate Add Modal
                 document.getElementById('iTitle').value = data.title || "";
-                document.getElementById('iCat').value = data.cat || "Italian";
+                document.getElementById('iCat').value = data.cat || "Protein";
                 document.getElementById('iCals').value = data.cals || 0;
                 document.getElementById('iPro').value = data.pro || 0;
+                document.getElementById('iCarbs').value = data.carbs || 0;
+                document.getElementById('iFats').value = data.fats || 0;
                 document.getElementById('iCost').value = data.cost || 0;
                 document.getElementById('iIng').value = data.ing || "";
                 document.getElementById('iSteps').value = data.steps || "";
                 
-                document.getElementById('geminiInput').value = ""; // clear
+                document.getElementById('geminiInput').value = ""; 
                 closeAll();
                 
-                // Open Add Modal so user can add image and save
                 document.getElementById('addModal').style.display = 'flex';
                 
             } catch(e) {
-                alert("الكود غير صالح! تأكد من نسخ الكود (JSON) بالكامل من جيميناي.");
+                alert("الكود غير صالح! تأكد من نسخ كود الـ JSON بالكامل.");
             }
         }
 
@@ -403,8 +455,7 @@
             if(!file) return;
 
             const btn = document.getElementById('btnSave');
-            btn.innerText = "جاري معالجة الصورة...";
-            btn.disabled = true;
+            btn.innerText = "جاري معالجة الصورة..."; btn.disabled = true;
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -426,8 +477,7 @@
                     preview.style.display = 'block';
                     document.getElementById('uploadBox').classList.add('has-img');
                     
-                    btn.innerText = "حفظ الوصفة";
-                    btn.disabled = false;
+                    btn.innerText = "حفظ الوصفة الشاملة"; btn.disabled = false;
                 }
                 img.src = e.target.result;
             }
@@ -440,7 +490,7 @@
             let data = filter === 'All' ? recipes : recipes.filter(r => r.cat === filter);
 
             if(data.length === 0) {
-                grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:var(--text-secondary); font-weight:700; border:1px dashed var(--border); border-radius:20px;">لا توجد وصفات. أبدع أو استورد من الذكاء الاصطناعي!</div>`;
+                grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:var(--text-secondary); font-weight:700; border:1px dashed var(--border); border-radius:20px;">لا توجد وصفات.</div>`;
                 return;
             }
 
@@ -466,13 +516,7 @@
             });
         }
 
-        function filterData(f, el) {
-            filter = f;
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            render();
-        }
-
+        function filterData(f, el) { filter = f; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); render(); }
         function openAdd() { document.getElementById('addModal').style.display = 'flex'; }
         function closeAll() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
@@ -489,6 +533,8 @@
                 img: compressedImgData,
                 cals: parseInt(document.getElementById('iCals').value) || 0,
                 pro: parseInt(document.getElementById('iPro').value) || 0,
+                carbs: parseInt(document.getElementById('iCarbs').value) || 0, // أضيف حديثاً
+                fats: parseInt(document.getElementById('iFats').value) || 0,   // أضيف حديثاً
                 cost: parseInt(document.getElementById('iCost').value) || 0,
                 ing: document.getElementById('iIng').value,
                 steps: document.getElementById('iSteps').value
@@ -497,8 +543,7 @@
             saveDB();
             closeAll(); render();
 
-            // Clear form
-            ['iTitle','iCals','iPro','iCost','iIng','iSteps','fileInp'].forEach(id => document.getElementById(id).value='');
+            ['iTitle','iCals','iPro','iCarbs','iFats','iCost','iIng','iSteps','fileInp'].forEach(id => document.getElementById(id).value='');
             document.getElementById('imgPreview').style.display = 'none';
             document.getElementById('uploadBox').classList.remove('has-img');
             compressedImgData = "";
@@ -523,8 +568,12 @@
             
             document.getElementById('sVal').innerText = `x${val}`;
             
+            // تحديث قيم الماكروز
             document.getElementById('vCals').innerText = Math.round(baseRecipe.cals * val);
             document.getElementById('vPro').innerText = Math.round(baseRecipe.pro * val) + 'g';
+            document.getElementById('vCarbs').innerText = Math.round((baseRecipe.carbs || 0) * val) + 'g';
+            document.getElementById('vFats').innerText = Math.round((baseRecipe.fats || 0) * val) + 'g';
+            
             document.getElementById('vCost').innerText = Math.round((baseRecipe.cost || 0) * val);
 
             let ul = document.getElementById('vIngList'); 
