@@ -137,6 +137,10 @@
         .matrix-col { display: grid; grid-template-rows: repeat(7, 1fr); gap: 5px; }
         .matrix-cell { width: 12px; height: 12px; border-radius: 3px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.02); transition: all 0.2s; cursor: pointer;}
         .matrix-cell:hover { transform: scale(1.4); border-color: #fff; z-index: 10; }
+        /* خلايا قبل بداية الاستريك */
+        .matrix-cell.locked { opacity: 0.15; cursor: not-allowed; }
+        .matrix-cell.locked:hover { transform: none; border-color: rgba(255,255,255,0.02); }
+
         .matrix-legend { display: flex; justify-content: center; gap: 15px; margin-top: 10px; direction: rtl;}
         .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 800;}
         .legend-box { width: 10px; height: 10px; border-radius: 2px; }
@@ -180,8 +184,8 @@
         
         <a href="report.html" class="bento-card span-2 report-hero-card" style="animation-delay: 0.05s; text-decoration: none;">
             <div class="card-icon" style="color: #fff; margin-bottom: 0; font-size: 2.8rem; transition: 0.3s;"><i class="fas fa-fingerprint"></i></div>
-            <div class="card-title" style="font-size: 1.5rem; letter-spacing: 1px; color: #fff; margin-top: 5px;">إغلاق وتقييم اليوم</div>
-            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8); font-weight: 700;">اضغط هنا لتسجيل بياناتك ورفع مستواك</div>
+            <div class="card-title" style="font-size: 1.5rem; letter-spacing: 1px; color: #fff; margin-top: 5px;">التقرير الشامل</div>
+            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8); font-weight: 700;">اضغط لتسجيل كفاءة اليوم وحفظ الإمبراطورية</div>
         </a>
 
         <div class="bento-card span-2" style="background: linear-gradient(160deg, rgba(22, 29, 54, 0.8), var(--card-bg)); border-color: rgba(90, 117, 255, 0.3); animation-delay: 0.1s;">
@@ -197,10 +201,12 @@
         </div>
 
         <div class="bento-card span-2" style="animation-delay: 0.15s;">
-            <div class="card-title txt-accent"><i class="fas fa-calendar-alt"></i> أرشيف الإمبراطورية</div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 10px;">
+                <div class="card-title txt-accent"><i class="fas fa-calendar-alt"></i> أرشيف الإمبراطورية</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700;"><i class="fas fa-exclamation-triangle txt-red"></i> كسر الاستريك يمسح الأرشيف</div>
+            </div>
             <div class="matrix-wrapper" id="matrix365"></div>
             <div class="matrix-legend">
-                <div class="legend-item"><div class="legend-box" style="background:rgba(255,255,255,0.05);"></div> لم يسجل</div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--red);"></div> 0-49%</div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--gold);"></div> 50-79%</div>
                 <div class="legend-item"><div class="legend-box" style="background:var(--green);"></div> 80-100%</div>
@@ -230,16 +236,16 @@
         <div class="bento-card" style="animation-delay: 0.24s;">
             <div class="card-icon txt-orange"><i class="fas fa-fire"></i></div>
             <div class="card-value txt-orange" id="streakVal" style="text-shadow: 0 0 10px rgba(255,149,0,0.3);">0</div>
-            <div class="card-subtitle" style="margin-top: 4px;">يوم التزام متصل</div>
+            <div class="card-subtitle" style="margin-top: 4px;">أيام الصمود (الاستريك)</div>
         </div>
 
-        <a href="oracle.html" class="bento-card span-2" style="background: linear-gradient(135deg, #0f172a, #04060d); border: 1px solid rgba(0, 188, 212, 0.4); animation-delay: 0.26s; text-align: center; align-items: center;">
+        <a href="oracle.html" class="bento-card span-2" style="background: linear-gradient(135deg, #0f172a, #04060d); border: 1px solid rgba(0, 188, 212, 0.4); animation-delay: 0.26s; text-align: center; align-items: center; text-decoration: none;">
             <div class="card-icon txt-cyan" style="font-size: 2.2rem; margin-bottom: 5px;"><i class="fas fa-eye"></i></div>
             <div class="card-title" style="letter-spacing: 2px;">THE ORACLE</div>
             <div class="card-subtitle" style="font-weight: 700; font-size: 0.8rem;">غرفة القيادة والتحليلات العميقة</div>
         </a>
 
-        <a href="physical.html" class="bento-card" style="animation-delay: 0.28s; border-color: rgba(255, 255, 255, 0.15); background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), var(--card-bg));">
+        <a href="physical.html" class="bento-card" style="animation-delay: 0.28s; border-color: rgba(255, 255, 255, 0.15); background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), var(--card-bg)); text-decoration: none;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                 <div class="card-icon" style="color:#e5e5e5;"><i class="fas fa-dumbbell"></i></div>
                 <span class="card-top-label" style="background: rgba(255,255,255, 0.08); color: #fff; border-color: rgba(255,255,255, 0.15);" id="weightDisp">-- Kg</span>
@@ -250,7 +256,7 @@
             </div>
         </a>
 
-        <a href="financial.html" class="bento-card" style="animation-delay: 0.3s; border-color: rgba(48, 209, 88, 0.25); background: linear-gradient(135deg, rgba(48, 209, 88, 0.03), var(--card-bg));">
+        <a href="financial.html" class="bento-card" style="animation-delay: 0.3s; border-color: rgba(48, 209, 88, 0.25); background: linear-gradient(135deg, rgba(48, 209, 88, 0.03), var(--card-bg)); text-decoration: none;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                 <div class="card-icon txt-green"><i class="fas fa-coins"></i></div>
                 <span class="card-top-label" style="background: rgba(48, 209, 88, 0.1); color: var(--green); border-color: rgba(48, 209, 88, 0.2);" id="goldDisp">-- g</span>
@@ -261,7 +267,7 @@
             </div>
         </a>
 
-        <a href="language.html" class="bento-card span-2" style="animation-delay: 0.32s; border-color: rgba(191, 90, 242, 0.25); background: linear-gradient(135deg, rgba(191, 90, 242, 0.03), var(--card-bg)); flex-direction: row; align-items: center;">
+        <a href="language.html" class="bento-card span-2" style="animation-delay: 0.32s; border-color: rgba(191, 90, 242, 0.25); background: linear-gradient(135deg, rgba(191, 90, 242, 0.03), var(--card-bg)); flex-direction: row; align-items: center; text-decoration: none;">
             <div style="flex: 1;">
                 <div class="card-title txt-purple">الجانب اللغوى والعقلي</div>
                 <div class="card-top-label" style="background: rgba(191, 90, 242, 0.1); color: var(--purple); border-color: rgba(191, 90, 242, 0.2); display: inline-block; margin-top: 5px;" id="eloDisp">1000 Elo | B2</div>
@@ -269,7 +275,7 @@
             <div class="card-icon txt-purple" style="margin:0; font-size: 2.5rem;"><i class="fas fa-language"></i> <i class="fas fa-chess-knight" style="margin-right: 8px;"></i></div>
         </a>
 
-        <a href="academy.html" class="bento-card" style="animation-delay: 0.34s; border-color: rgba(90, 117, 255, 0.25); background: linear-gradient(135deg, rgba(90, 117, 255, 0.03), var(--card-bg));">
+        <a href="academy.html" class="bento-card" style="animation-delay: 0.34s; border-color: rgba(90, 117, 255, 0.25); background: linear-gradient(135deg, rgba(90, 117, 255, 0.03), var(--card-bg)); text-decoration: none;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                 <div class="card-icon txt-accent"><i class="fas fa-drafting-compass"></i></div>
                 <span class="card-top-label" style="background: rgba(90, 117, 255, 0.1); color: var(--accent-blue); border-color: rgba(90, 117, 255, 0.2);" id="studyDisp">-- ساعات</span>
@@ -277,7 +283,7 @@
             <div class="card-title" style="margin-bottom: 0;">المذاكرة والعمارة</div>
         </a>
 
-        <a href="aesthetic.html" class="bento-card" style="animation-delay: 0.36s; border-color: rgba(255, 149, 0, 0.25); background: linear-gradient(135deg, rgba(255, 149, 0, 0.03), var(--card-bg));">
+        <a href="aesthetic.html" class="bento-card" style="animation-delay: 0.36s; border-color: rgba(255, 149, 0, 0.25); background: linear-gradient(135deg, rgba(255, 149, 0, 0.03), var(--card-bg)); text-decoration: none;">
             <div class="card-icon txt-orange"><i class="fas fa-user-tie"></i></div>
             <div>
                 <div class="card-title">المظهر والكاريزما</div>
@@ -285,7 +291,7 @@
             </div>
         </a>
 
-        <a href="studio.html" class="bento-card" style="animation-delay: 0.38s; border-color: rgba(255, 69, 58, 0.25); background: linear-gradient(135deg, rgba(255, 69, 58, 0.03), var(--card-bg));">
+        <a href="studio.html" class="bento-card" style="animation-delay: 0.38s; border-color: rgba(255, 69, 58, 0.25); background: linear-gradient(135deg, rgba(255, 69, 58, 0.03), var(--card-bg)); text-decoration: none;">
             <div class="card-icon txt-red"><i class="fab fa-youtube"></i></div>
             <div>
                 <div class="card-title">ستوديو الإنتاج</div>
@@ -293,7 +299,7 @@
             </div>
         </a>
 
-        <a href="religious.html" class="bento-card" style="animation-delay: 0.4s; border-color: rgba(255, 215, 0, 0.25); background: linear-gradient(135deg, rgba(255, 215, 0, 0.03), var(--card-bg));">
+        <a href="religious.html" class="bento-card" style="animation-delay: 0.4s; border-color: rgba(255, 215, 0, 0.25); background: linear-gradient(135deg, rgba(255, 215, 0, 0.03), var(--card-bg)); text-decoration: none;">
             <div class="card-icon txt-gold"><i class="fas fa-mosque"></i></div>
             <div>
                 <div class="card-title">الجانب الديني</div>
@@ -301,7 +307,7 @@
             </div>
         </a>
 
-        <a href="lingua.html" class="bento-card span-2" style="animation-delay: 0.42s; border-color: rgba(0, 188, 212, 0.25); background: linear-gradient(135deg, rgba(0, 188, 212, 0.03), var(--card-bg)); flex-direction: row; align-items: center;">
+        <a href="lingua.html" class="bento-card span-2" style="animation-delay: 0.42s; border-color: rgba(0, 188, 212, 0.25); background: linear-gradient(135deg, rgba(0, 188, 212, 0.03), var(--card-bg)); flex-direction: row; align-items: center; text-decoration: none;">
             <div>
                 <div class="card-title txt-cyan">مكتبة القصص</div>
                 <div class="card-subtitle" style="margin-top: 2px; color: #fff;">إنجليزي وإيطالي</div>
@@ -373,13 +379,13 @@
     <div class="modal" id="archiveModal">
         <div class="modal-content">
             <div class="modal-header txt-cyan" id="archTitle">تقرير يوم</div>
-            <div id="archContent" style="display:flex; flex-direction:column; gap:10px; font-size:0.95rem;"></div>
-            <button class="btn-close" onclick="closeModal('archiveModal')">إغلاق</button>
+            <div id="archContent" style="display:flex; flex-direction:column; gap:12px; font-size:0.95rem; margin-top: 10px;"></div>
+            <button class="btn-close" onclick="closeModal('archiveModal')" style="margin-top: 15px;">إغلاق</button>
         </div>
     </div>
 
     <script>
-        // --- MODAL UTILS (ANIMATED) ---
+        // --- MODAL UTILS ---
         function openModal(id) { const m = document.getElementById(id); m.style.display = 'flex'; setTimeout(() => m.classList.add('active'), 10); }
         function closeModal(id) { const m = document.getElementById(id); m.classList.remove('active'); setTimeout(() => m.style.display = 'none', 300); }
 
@@ -389,7 +395,22 @@
         function getSafeJSON(key, defaultVal) { try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; } }
         let baselines = getSafeJSON('SakrOS_Targets', { sleep: 6.5, steps: 8000, cals: 1800, pro: 140, study: 2, eng: 60, ita: 10, quran: 2 });
 
-        window.onload = () => { try { setDailyQuote(); updateTime(); setInterval(updateTime, 1000); renderTodos(); fetchData(); renderMatrix365(); updateProgressBars(); calculateStreak(); } catch (e) { console.error("Boot Error:", e); } };
+        window.onload = () => { initSystem(); };
+        window.addEventListener('focus', () => { initSystem(); }); // تحديث البيانات فور العودة من التقرير الشامل
+
+        function initSystem() {
+            try { 
+                setDailyQuote(); 
+                updateTime(); 
+                renderTodos(); 
+                fetchData(); 
+                let streakInfo = calculateStreakAndStart();
+                renderMatrix365(streakInfo); 
+                updateProgressBars(); 
+            } catch (e) { console.error("Boot Error:", e); }
+        }
+
+        setInterval(updateTime, 1000);
 
         function updateTime() {
             const now = new Date(); const h = now.getHours(); let greet = "مرحباً يا صقر";
@@ -402,6 +423,122 @@
             let d = Math.floor(new Date() / (1000 * 60 * 60 * 24)); document.getElementById('dailyQuote').innerText = `"${quotes[d % quotes.length]}"`;
         }
 
+        // --- STREAK & MATRIX LOGIC (STRICT EMPIRE RULE) ---
+        function calculateStreakAndStart() {
+            let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {});
+            let d = new Date();
+            d.setHours(0, 0, 0, 0); // تصفير الوقت للعمل بالأيام فقط
+            let todayStr = getLocalYMD(d);
+            let streak = 0;
+
+            // هل سجلت تقرير اليوم؟
+            if (masterDB[todayStr] && masterDB[todayStr].score !== undefined) {
+                streak++;
+                d.setDate(d.getDate() - 1);
+            } else {
+                // لم تسجل اليوم بعد، هل سجلت الأمس؟
+                let y = new Date(d);
+                y.setDate(y.getDate() - 1);
+                let yStr = getLocalYMD(y);
+                if (masterDB[yStr] && masterDB[yStr].score !== undefined) {
+                    // الاستريك لم ينكسر، نبدأ العد من الأمس
+                    d.setDate(d.getDate() - 1);
+                } else {
+                    // الاستريك 0 (انكسر)
+                    document.getElementById('streakVal').innerText = 0;
+                    return { streak: 0, startDate: todayStr };
+                }
+            }
+
+            // عد الأيام السابقة المتصلة
+            while(true) {
+                let ds = getLocalYMD(d);
+                if (masterDB[ds] && masterDB[ds].score !== undefined) {
+                    streak++;
+                    d.setDate(d.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+
+            // تحديد تاريخ بداية الاستريك (لبداية الأرشيف)
+            d.setDate(d.getDate() + 1);
+            let sDate = getLocalYMD(d);
+            
+            document.getElementById('streakVal').innerText = streak;
+            return { streak: streak, startDate: sDate };
+        }
+
+        function renderMatrix365(streakInfo) {
+            const container = document.getElementById('matrix365'); if(!container) return; container.innerHTML = '';
+            let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); 
+            let html = ''; let todayObj = new Date(); let days = [];
+            
+            for(let i = 364; i >= 0; i--) { 
+                let d = new Date(); d.setDate(todayObj.getDate() - i); days.push(d); 
+            }
+            
+            for(let i=0; i<days.length; i+=7) {
+                html += '<div class="matrix-col">';
+                for(let j=0; j<7; j++) {
+                    if(i+j < days.length) {
+                        let dObj = days[i+j]; 
+                        let ds = getLocalYMD(dObj); 
+                        let rep = masterDB[ds]; 
+                        let bg = 'rgba(255,255,255,0.05)'; 
+                        
+                        // لو اليوم أقدم من تاريخ بداية الاستريك، يعتبر مغلق/ممسوح
+                        let isLocked = ds < streakInfo.startDate;
+                        
+                        if(!isLocked && rep && rep.score !== undefined) { 
+                            if(rep.score >= 80) bg = 'var(--green)';
+                            else if(rep.score >= 50) bg = 'var(--gold)';
+                            else bg = 'var(--red)';
+                        }
+                        
+                        let classNames = isLocked ? "matrix-cell locked" : "matrix-cell";
+                        html += `<div class="${classNames}" style="background:${bg};" onclick="openArchiveDay('${ds}', ${isLocked})" title="${ds}"></div>`;
+                    }
+                }
+                html += '</div>';
+            }
+            container.innerHTML = html; setTimeout(() => { container.scrollLeft = container.scrollWidth; }, 100);
+        }
+
+        function openArchiveDay(dateStr, isLocked) {
+            if (isLocked) {
+                alert("تم مسح بيانات هذا اليوم من الأرشيف بصرياً بسبب كسر الاستريك (سقوط الإمبراطورية السابقة). ابدأ من جديد!");
+                return;
+            }
+
+            let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); let rep = masterDB[dateStr];
+            if(!rep || rep.score === undefined) return alert("لم يتم تسجيل التقرير الشامل لهذا اليوم.");
+            
+            document.getElementById('archTitle').innerText = `تقرير يوم: ${dateStr}`;
+            
+            let color = rep.score >= 80 ? 'var(--green)' : (rep.score >= 50 ? 'var(--gold)' : 'var(--red)');
+
+            document.getElementById('archContent').innerHTML = `
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:5px;">
+                    <span style="color:var(--text-secondary); font-size: 1.1rem; font-weight:800;">الكفاءة الكلية (العلامة):</span>
+                    <span style="color:${color}; font-weight:900; font-size:1.5rem;">${rep.score}%</span>
+                </div>
+                <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:12px; border: 1px solid var(--border);">
+                    <div style="margin-bottom:8px;"><i class="fas fa-bed txt-cyan"></i> <strong>النوم:</strong> ${rep.sleepHours||'--'} ساعات</div>
+                    <div><i class="fas fa-dumbbell txt-accent"></i> <strong>الوزن:</strong> ${rep.weight||'--'} Kg | <strong>الخطوات:</strong> ${rep.steps||0}</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:12px; border: 1px solid var(--border);">
+                    <div style="margin-bottom:8px;"><i class="fas fa-drafting-compass txt-orange"></i> <strong>المذاكرة:</strong> ${rep.study||0} ساعات</div>
+                    <div><i class="fas fa-briefcase txt-gold"></i> <strong>العمل/المطبعة:</strong> ${rep.workDone?'تم الإنجاز ✔️':'لم ينجز ❌'}</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:12px; border: 1px solid var(--border);">
+                    <i class="fas fa-language txt-purple"></i> <strong>إنجليزي:</strong> ${rep.english||0} د | <strong>إيطالي:</strong> ${rep.italian||0} د
+                </div>
+            `;
+            openModal('archiveModal');
+        }
+
+        // --- TODOS LOGIC ---
         function renderTodos() {
             let todos = getSafeJSON('SakrOS_Todos', []); let c = document.getElementById('todoContainer'); c.innerHTML = '';
             todos.forEach((t, i) => { c.innerHTML += `<div class="todo-item" id="todo-${i}"><input type="checkbox" class="todo-checkbox" onchange="completeTodo(${i}, this)"><span class="todo-text">${t}</span></div>`; });
@@ -423,66 +560,7 @@
             setTimeout(() => { let todos = getSafeJSON('SakrOS_Todos', []); todos.splice(index, 1); localStorage.setItem('SakrOS_Todos', JSON.stringify(todos)); let curXp = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0; localStorage.setItem('SakrOS_TotalXP', curXp + 5); fetchData(); renderTodos(); }, 600);
         }
 
-        function openSettingsModal() {
-            document.getElementById('cfgSleep').value = baselines.sleep || 6.5; document.getElementById('cfgSteps').value = baselines.steps || 8000; document.getElementById('cfgCals').value = baselines.cals || 1800; document.getElementById('cfgPro').value = baselines.pro || 140; 
-            document.getElementById('cfgStudy').value = baselines.study || 2; document.getElementById('cfgEng').value = baselines.eng || 60; document.getElementById('cfgIta').value = baselines.ita || 10; document.getElementById('cfgQuran').value = baselines.quran || 2;
-            openModal('settingsModal');
-        }
-
-        function saveSettings() {
-            baselines = { sleep: parseFloat(document.getElementById('cfgSleep').value)||6.5, steps: parseInt(document.getElementById('cfgSteps').value)||8000, cals: parseInt(document.getElementById('cfgCals').value)||1800, pro: parseInt(document.getElementById('cfgPro').value)||140, study: parseFloat(document.getElementById('cfgStudy').value)||2, eng: parseInt(document.getElementById('cfgEng').value)||60, ita: parseInt(document.getElementById('cfgIta').value)||10, quran: parseInt(document.getElementById('cfgQuran').value)||2 };
-            localStorage.setItem('SakrOS_Targets', JSON.stringify(baselines)); closeModal('settingsModal'); alert("تم حفظ المعايرة بنجاح!");
-        }
-
-        function saveQuickWealth() {
-            let ng = parseFloat(document.getElementById('wTotalGold').value); let nc = parseFloat(document.getElementById('wTotalCash').value);
-            if(isNaN(ng) || isNaN(nc)) return alert("يرجى إدخال أرقام صحيحة");
-            let fin = getSafeJSON('Falcon_Final_V29_Pro', { goldGrams: 19.8, cash: 30000 });
-            fin.goldGrams = ng.toFixed(2); fin.cash = nc; localStorage.setItem('Falcon_Final_V29_Pro', JSON.stringify(fin)); closeModal('wealthModal'); updateProgressBars(); 
-        }
-
-        function exportBackup() { let mData = {}; for (let i = 0; i < localStorage.length; i++) { let k = localStorage.key(i); if(k.startsWith('SakrOS') || k.startsWith('IronForge') || k.startsWith('Falcon') || k.startsWith('الجانب اللغوى')) mData[k] = localStorage.getItem(k); } const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(mData)); a.download = `SakrOS_Backup_${TODAY}.json`; document.body.appendChild(a); a.click(); a.remove(); }
-        function importBackup(event) { const f = event.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(e) { try { const c = JSON.parse(e.target.result); if(!confirm('سيتم الاستبدال. متأكد؟')) return; for (let k in c) localStorage.setItem(k, c[k]); alert('تم الاسترجاع!'); location.reload(); } catch (err) { alert("الملف غير صالح."); } }; r.readAsText(f); }
-
-        function renderMatrix365() {
-            const container = document.getElementById('matrix365'); if(!container) return; container.innerHTML = '';
-            let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); let html = ''; let todayObj = new Date(); let days = [];
-            for(let i = 364; i >= 0; i--) { let d = new Date(); d.setDate(todayObj.getDate() - i); days.push(d); }
-            for(let i=0; i<days.length; i+=7) {
-                html += '<div class="matrix-col">';
-                for(let j=0; j<7; j++) {
-                    if(i+j < days.length) {
-                        let dObj = days[i+j]; let ds = getLocalYMD(dObj); let rep = masterDB[ds]; 
-                        let bg = 'rgba(255,255,255,0.05)'; 
-                        if(rep && rep.score !== undefined) { 
-                            if(rep.score >= 80) { bg = 'var(--green)'; }
-                            else if(rep.score >= 50) { bg = 'var(--gold)'; }
-                            else { bg = 'var(--red)'; }
-                        }
-                        html += `<div class="matrix-cell" style="background:${bg};" onclick="openArchiveDay('${ds}')" title="${ds}"></div>`;
-                    }
-                }
-                html += '</div>';
-            }
-            container.innerHTML = html; setTimeout(() => { container.scrollLeft = container.scrollWidth; }, 100);
-        }
-
-        function openArchiveDay(dateStr) {
-            let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); let rep = masterDB[dateStr];
-            if(!rep) return alert("لا توجد بيانات مسجلة لهذا اليوم.");
-            document.getElementById('archTitle').innerText = `تقرير: ${dateStr}`;
-            document.getElementById('archContent').innerHTML = `
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px; margin-bottom:6px;">
-                    <span style="color:var(--text-secondary);">الكفاءة الكلية:</span><span style="color:var(--cyan); font-weight:900; font-size:1.3rem;">${rep.score}%</span>
-                </div>
-                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; font-weight:700;">النوم: ${rep.sleepHours||'--'} س | المظهر: ${rep.aesthetic?.minox?'✔️':'❌'}</div>
-                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; font-weight:700;">الوزن: ${rep.weight||'--'} Kg | الخطوات: ${rep.steps||0}</div>
-                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; font-weight:700;">المطبعة: ${rep.workDone?'✔️':'❌'} | المذاكرة: ${rep.study||0} س</div>
-                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; font-weight:700;">إنجليزي: ${rep.english||0} د | إيطالي: ${rep.italian||0} د</div>
-            `;
-            openModal('archiveModal');
-        }
-
+        // --- FETCH GENERAL DATA ---
         function fetchData() {
             let masterDB = getSafeJSON('SakrOS_MasterReport_V1', {}); let dates = Object.keys(masterDB);
             if(dates.length > 0) { 
@@ -514,13 +592,27 @@
             let wlBar = document.getElementById('wealthBar'); if(wlBar) wlBar.style.width = Math.min(100, Math.max(0, (totalWealth / 500000) * 100)) + "%";
         }
 
-        function calculateStreak() {
-            let logins = getSafeJSON('SakrOS_Logins_Dia', []); if(!Array.isArray(logins)) logins = [];
-            let streak = 0; let d = new Date(); let todayStr = getLocalYMD(d);
-            if(!logins.includes(todayStr)) { d.setDate(d.getDate() - 1); }
-            while(true) { let ds = getLocalYMD(d); if(logins.includes(ds)) { streak++; d.setDate(d.getDate() - 1); } else break; }
-            let sVal = document.getElementById('streakVal'); if(sVal) { sVal.innerText = streak; }
+        // --- SETTINGS & BACKUP ---
+        function openSettingsModal() {
+            document.getElementById('cfgSleep').value = baselines.sleep || 6.5; document.getElementById('cfgSteps').value = baselines.steps || 8000; document.getElementById('cfgCals').value = baselines.cals || 1800; document.getElementById('cfgPro').value = baselines.pro || 140; 
+            document.getElementById('cfgStudy').value = baselines.study || 2; document.getElementById('cfgEng').value = baselines.eng || 60; document.getElementById('cfgIta').value = baselines.ita || 10; document.getElementById('cfgQuran').value = baselines.quran || 2;
+            openModal('settingsModal');
         }
+
+        function saveSettings() {
+            baselines = { sleep: parseFloat(document.getElementById('cfgSleep').value)||6.5, steps: parseInt(document.getElementById('cfgSteps').value)||8000, cals: parseInt(document.getElementById('cfgCals').value)||1800, pro: parseInt(document.getElementById('cfgPro').value)||140, study: parseFloat(document.getElementById('cfgStudy').value)||2, eng: parseInt(document.getElementById('cfgEng').value)||60, ita: parseInt(document.getElementById('cfgIta').value)||10, quran: parseInt(document.getElementById('cfgQuran').value)||2 };
+            localStorage.setItem('SakrOS_Targets', JSON.stringify(baselines)); closeModal('settingsModal'); alert("تم حفظ المعايرة بنجاح!");
+        }
+
+        function saveQuickWealth() {
+            let ng = parseFloat(document.getElementById('wTotalGold').value); let nc = parseFloat(document.getElementById('wTotalCash').value);
+            if(isNaN(ng) || isNaN(nc)) return alert("يرجى إدخال أرقام صحيحة");
+            let fin = getSafeJSON('Falcon_Final_V29_Pro', { goldGrams: 19.8, cash: 30000 });
+            fin.goldGrams = ng.toFixed(2); fin.cash = nc; localStorage.setItem('Falcon_Final_V29_Pro', JSON.stringify(fin)); closeModal('wealthModal'); updateProgressBars(); 
+        }
+
+        function exportBackup() { let mData = {}; for (let i = 0; i < localStorage.length; i++) { let k = localStorage.key(i); if(k.startsWith('SakrOS') || k.startsWith('IronForge') || k.startsWith('Falcon') || k.startsWith('الجانب اللغوى')) mData[k] = localStorage.getItem(k); } const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(mData)); a.download = `SakrOS_Backup_${TODAY}.json`; document.body.appendChild(a); a.click(); a.remove(); }
+        function importBackup(event) { const f = event.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(e) { try { const c = JSON.parse(e.target.result); if(!confirm('سيتم الاستبدال. متأكد؟')) return; for (let k in c) localStorage.setItem(k, c[k]); alert('تم الاسترجاع!'); location.reload(); } catch (err) { alert("الملف غير صالح."); } }; r.readAsText(f); }
     </script>
 </body>
 </html>
