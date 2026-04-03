@@ -6,16 +6,18 @@
     <title>SAKR OS | بروتوكول الإغلاق</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#0f172a',
-                        cardBg: '#1e293b',
-                        accent: '#3b82f6',
-                        gold: '#f59e0b',
-                        success: '#10b981'
+                        darkBg: '#04060d', /* متناسق مع لون الصفحة الرئيسية */
+                        cardBg: '#12182b',
+                        accent: '#5A75FF',
+                        gold: '#FFD700',
+                        success: '#30D158',
+                        danger: '#ff453a'
                     }
                 }
             }
@@ -23,216 +25,242 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        body { font-family: 'Cairo', sans-serif; background-color: #04060d; color: #f8fafc; overflow-x: hidden;}
         
         .step-content { display: none; opacity: 0; }
         .step-content.active { display: block; opacity: 1; animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
         /* تصميم الأزرار الكبيرة والمريحة */
-        .big-toggle:checked + div { background-color: #3b82f6; border-color: #3b82f6; color: white; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3); }
-        .sunnah-toggle:checked + div { background-color: #10b981; border-color: #10b981; color: white; }
+        .big-toggle:checked + div { background-color: #5A75FF; border-color: #5A75FF; color: white; transform: translateY(-2px); box-shadow: 0 10px 20px -3px rgba(90, 117, 255, 0.4); }
+        .sunnah-toggle:checked + div { background-color: #30D158; border-color: #30D158; color: black; box-shadow: 0 5px 15px rgba(48, 209, 88, 0.3);}
+        
+        input[type="number"] { -moz-appearance: textfield; }
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        /* تأثير التقييم النهائي */
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto; border: 8px solid #333; font-size: 2.5rem; font-weight: 900; transition: 1s ease-out; }
     </style>
 </head>
 <body class="bg-darkBg min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-lg bg-cardBg rounded-[2rem] border border-slate-700 shadow-2xl overflow-hidden">
+    <div id="mainCard" class="w-full max-w-lg bg-cardBg rounded-[2rem] border border-slate-700 shadow-2xl overflow-hidden transition-all duration-500">
         
-        <div class="bg-slate-800 p-6 border-b border-slate-700 text-center">
-            <h1 class="font-black text-white text-2xl mb-2 tracking-wide">بروتوكول الإغلاق</h1>
+        <div class="bg-slate-800/50 p-6 border-b border-slate-700/50 text-center backdrop-blur-md">
+            <h1 class="font-black text-white text-2xl mb-2 tracking-wide">التقرير الشامل (الإغلاق)</h1>
             <div class="flex justify-center items-center gap-4">
                 <span id="stepIndicator" class="text-sm font-bold text-accent">الخطوة 1 من 6</span>
             </div>
             <div class="w-full bg-slate-900 rounded-full h-2 mt-4">
-                <div id="stepProgressBar" class="bg-accent h-full rounded-full transition-all duration-500" style="width: 16.6%"></div>
+                <div id="stepProgressBar" class="bg-accent h-full rounded-full transition-all duration-500 shadow-[0_0_10px_#5A75FF]" style="width: 16.6%"></div>
             </div>
         </div>
 
-        <form id="dailyReportForm" class="p-8">
+        <form id="dailyReportForm" class="p-6 sm:p-8">
             
             <div id="step1" class="step-content active space-y-8">
                 <div class="text-center mb-6">
-                    <i class="fa-solid fa-mosque text-4xl text-indigo-400 mb-4"></i>
+                    <i class="fa-solid fa-mosque text-5xl text-gold mb-4" style="filter: drop-shadow(0 0 10px rgba(255,215,0,0.5));"></i>
                     <h2 class="text-2xl font-black text-white">الفرائض الخمس</h2>
                 </div>
                 
                 <div class="grid grid-cols-1 gap-4">
                     <label class="cursor-pointer block">
-                        <input type="checkbox" class="big-toggle hidden">
-                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800 text-lg font-bold text-slate-300 text-center transition-all">صلاة الفجر</div>
+                        <input type="checkbox" id="fajr" class="big-toggle hidden">
+                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-lg font-bold text-slate-300 text-center transition-all">صلاة الفجر</div>
                     </label>
                     <label class="cursor-pointer block">
-                        <input type="checkbox" class="big-toggle hidden">
-                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800 text-lg font-bold text-slate-300 text-center transition-all">صلاة الظهر</div>
+                        <input type="checkbox" id="dhuhr" class="big-toggle hidden">
+                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-lg font-bold text-slate-300 text-center transition-all">صلاة الظهر</div>
                     </label>
                     <label class="cursor-pointer block">
-                        <input type="checkbox" class="big-toggle hidden">
-                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800 text-lg font-bold text-slate-300 text-center transition-all">صلاة العصر</div>
+                        <input type="checkbox" id="asr" class="big-toggle hidden">
+                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-lg font-bold text-slate-300 text-center transition-all">صلاة العصر</div>
                     </label>
                     <label class="cursor-pointer block">
-                        <input type="checkbox" class="big-toggle hidden">
-                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800 text-lg font-bold text-slate-300 text-center transition-all">صلاة المغرب</div>
+                        <input type="checkbox" id="maghrib" class="big-toggle hidden">
+                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-lg font-bold text-slate-300 text-center transition-all">صلاة المغرب</div>
                     </label>
                     <label class="cursor-pointer block">
-                        <input type="checkbox" class="big-toggle hidden">
-                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800 text-lg font-bold text-slate-300 text-center transition-all">صلاة العشاء</div>
+                        <input type="checkbox" id="isha" class="big-toggle hidden">
+                        <div class="py-4 rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-lg font-bold text-slate-300 text-center transition-all">صلاة العشاء</div>
                     </label>
                 </div>
             </div>
 
             <div id="step2" class="step-content space-y-8">
                 <div class="text-center mb-6">
-                    <i class="fa-solid fa-hands-praying text-4xl text-emerald-400 mb-4"></i>
+                    <i class="fa-solid fa-hands-praying text-5xl text-success mb-4" style="filter: drop-shadow(0 0 10px rgba(48,209,88,0.5));"></i>
                     <h2 class="text-2xl font-black text-white">النوافل والورد</h2>
                 </div>
 
                 <div>
                     <label class="block text-lg font-bold text-slate-300 mb-3 text-center">السنن الرواتب</label>
                     <div class="grid grid-cols-2 gap-4">
-                        <label class="cursor-pointer block"><input type="checkbox" class="sunnah-toggle hidden"><div class="py-3 rounded-xl border-2 border-slate-600 bg-slate-800 text-base font-bold text-slate-400 text-center transition-all">الفجر (2)</div></label>
-                        <label class="cursor-pointer block"><input type="checkbox" class="sunnah-toggle hidden"><div class="py-3 rounded-xl border-2 border-slate-600 bg-slate-800 text-base font-bold text-slate-400 text-center transition-all">الظهر (4+2)</div></label>
-                        <label class="cursor-pointer block"><input type="checkbox" class="sunnah-toggle hidden"><div class="py-3 rounded-xl border-2 border-slate-600 bg-slate-800 text-base font-bold text-slate-400 text-center transition-all">المغرب (2)</div></label>
-                        <label class="cursor-pointer block"><input type="checkbox" class="sunnah-toggle hidden"><div class="py-3 rounded-xl border-2 border-slate-600 bg-slate-800 text-base font-bold text-slate-400 text-center transition-all">العشاء (2)</div></label>
+                        <label class="cursor-pointer block"><input type="checkbox" id="sunnahFajr" class="sunnah-toggle hidden"><div class="py-3 rounded-xl border-2 border-slate-600 bg-slate-800/80 text-base font-bold text-slate-400 text-center transition-all">الفجر (2)</div></label>
+                        <label class="cursor-pointer block"><input type="checkbox" id="sunnahDhuhr" class="sunnah-toggle hidden"><div class="py-3 rounded-xl border-2 border-slate-600 bg-slate-800/80 text-base font-bold text-slate-400 text-center transition-all">الظهر (4+2)</div></label>
+                        <label class="cursor-pointer block"><input type="checkbox" id="sunnahMaghrib" class="sunnah-toggle hidden"><div class="py-3 rounded-xl border-2 border-slate-600 bg-slate-800/80 text-base font-bold text-slate-400 text-center transition-all">المغرب (2)</div></label>
+                        <label class="cursor-pointer block"><input type="checkbox" id="sunnahIsha" class="sunnah-toggle hidden"><div class="py-3 rounded-xl border-2 border-slate-600 bg-slate-800/80 text-base font-bold text-slate-400 text-center transition-all">العشاء (2)</div></label>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-800 p-4 rounded-2xl text-center border-2 border-slate-700">
+                    <div class="bg-slate-800/80 p-4 rounded-2xl text-center border-2 border-slate-700">
                         <label class="block text-base font-bold text-slate-300 mb-2">قيام الليل</label>
-                        <input type="number" placeholder="كم ركعة؟" class="w-full bg-transparent text-2xl font-black text-center text-white focus:outline-none">
+                        <input type="number" id="qiyamRakas" placeholder="الركعات" class="w-full bg-transparent text-2xl font-black text-center text-white focus:outline-none placeholder-slate-600">
                     </div>
                     <label class="cursor-pointer block h-full">
-                        <input type="checkbox" class="big-toggle hidden">
-                        <div class="h-full flex items-center justify-center rounded-2xl border-2 border-slate-600 bg-slate-800 text-lg font-bold text-slate-300 transition-all">الوتر</div>
+                        <input type="checkbox" id="witr" class="sunnah-toggle hidden">
+                        <div class="h-full flex items-center justify-center rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-lg font-bold text-slate-300 transition-all">الوتر</div>
                     </label>
                 </div>
 
-                <div class="bg-slate-800 p-5 rounded-2xl border-2 border-slate-700 flex items-center gap-4">
-                    <i class="fa-solid fa-book-open text-3xl text-indigo-400"></i>
+                <div class="bg-slate-800/80 p-5 rounded-2xl border-2 border-slate-700 flex items-center gap-4">
+                    <i class="fa-solid fa-book-open text-3xl text-accent"></i>
                     <div class="flex-1">
                         <label class="block text-base font-bold text-slate-300 mb-1">الورد القرآني</label>
-                        <input type="number" placeholder="عدد الصفحات" class="w-full bg-transparent text-xl font-black text-white focus:outline-none">
+                        <input type="number" id="quranPages" placeholder="عدد الصفحات" class="w-full bg-transparent text-xl font-black text-white focus:outline-none placeholder-slate-600">
                     </div>
                 </div>
             </div>
 
-            <div id="step3" class="step-content space-y-8">
+            <div id="step3" class="step-content space-y-6">
                 <div class="text-center mb-6">
-                    <i class="fa-solid fa-heart-pulse text-4xl text-red-400 mb-4"></i>
+                    <i class="fa-solid fa-heart-pulse text-5xl text-danger mb-4" style="filter: drop-shadow(0 0 10px rgba(255,69,58,0.5));"></i>
                     <h2 class="text-2xl font-black text-white">المؤشرات الحيوية</h2>
                 </div>
 
-                <div class="bg-slate-800 p-6 rounded-3xl border-2 border-slate-700 text-center">
+                <div class="bg-slate-800/80 p-6 rounded-3xl border-2 border-slate-700 text-center">
                     <label class="block text-lg font-bold text-slate-400 mb-2">الوزن الحالي (Kg)</label>
-                    <input type="number" step="0.1" placeholder="مثال: 95.5" class="w-full bg-transparent text-5xl font-black text-center text-white focus:outline-none">
+                    <input type="number" step="0.1" id="weight" placeholder="مثال: 85.5" class="w-full bg-transparent text-5xl font-black text-center text-white focus:outline-none placeholder-slate-600">
                 </div>
 
-                <div class="bg-slate-800 p-6 rounded-3xl border-2 border-slate-700 text-center">
-                    <label class="block text-lg font-bold text-slate-400 mb-2">نسبة الدهون (%)</label>
-                    <input type="number" step="0.1" placeholder="0.0" class="w-full bg-transparent text-4xl font-black text-center text-white focus:outline-none">
+                <div class="bg-slate-800/80 p-6 rounded-3xl border-2 border-slate-700 text-center">
+                    <label class="block text-lg font-bold text-slate-400 mb-2">عدد الخطوات</label>
+                    <input type="number" id="steps" placeholder="مثال: 8000" class="w-full bg-transparent text-4xl font-black text-center text-white focus:outline-none placeholder-slate-600">
                 </div>
 
-                <div class="bg-slate-800 p-6 rounded-3xl border-2 border-slate-700 text-center">
+                <div class="bg-slate-800/80 p-6 rounded-3xl border-2 border-slate-700 text-center">
                     <label class="block text-lg font-bold text-slate-400 mb-2">ساعات النوم</label>
-                    <input type="number" step="0.5" placeholder="8" class="w-full bg-transparent text-4xl font-black text-center text-white focus:outline-none">
+                    <input type="number" step="0.5" id="sleep" placeholder="مثال: 7.5" class="w-full bg-transparent text-4xl font-black text-center text-white focus:outline-none placeholder-slate-600">
                 </div>
             </div>
 
             <div id="step4" class="step-content space-y-8">
                 <div class="text-center mb-6">
-                    <i class="fa-solid fa-user-tie text-4xl text-pink-400 mb-4"></i>
+                    <i class="fa-solid fa-user-tie text-5xl text-orange-400 mb-4" style="filter: drop-shadow(0 0 10px rgba(251,146,60,0.5));"></i>
                     <h2 class="text-2xl font-black text-white">المظهر والكاريزما</h2>
                 </div>
 
                 <div class="space-y-4 mt-8">
                     <label class="cursor-pointer block">
-                        <input type="checkbox" class="big-toggle hidden">
-                        <div class="py-6 rounded-2xl border-2 border-slate-600 bg-slate-800 text-xl font-bold text-slate-300 text-center transition-all flex justify-center items-center gap-3">
-                            <i class="fa-solid fa-spray-can text-pink-400"></i> المينوكسديل
+                        <input type="checkbox" id="minox" class="big-toggle hidden">
+                        <div class="py-6 rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-xl font-bold text-slate-300 text-center transition-all flex justify-center items-center gap-3">
+                            <i class="fa-solid fa-spray-can text-orange-400"></i> جلسة المينوكسديل
                         </div>
                     </label>
                     
                     <label class="cursor-pointer block">
-                        <input type="checkbox" class="big-toggle hidden">
-                        <div class="py-6 rounded-2xl border-2 border-slate-600 bg-slate-800 text-xl font-bold text-slate-300 text-center transition-all flex justify-center items-center gap-3">
-                            <i class="fa-solid fa-spa text-emerald-400"></i> روتين العناية بالبشرة
+                        <input type="checkbox" id="skincare" class="big-toggle hidden">
+                        <div class="py-6 rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-xl font-bold text-slate-300 text-center transition-all flex justify-center items-center gap-3">
+                            <i class="fa-solid fa-spa text-teal-400"></i> روتين العناية بالبشرة
                         </div>
                     </label>
                 </div>
             </div>
 
-            <div id="step5" class="step-content space-y-8">
+            <div id="step5" class="step-content space-y-6">
                 <div class="text-center mb-6">
-                    <i class="fa-solid fa-brain text-4xl text-blue-400 mb-4"></i>
-                    <h2 class="text-2xl font-black text-white">العقل والمستقبل</h2>
+                    <i class="fa-solid fa-brain text-5xl text-purple-400 mb-4" style="filter: drop-shadow(0 0 10px rgba(192,132,252,0.5));"></i>
+                    <h2 class="text-2xl font-black text-white">العقل والعمل</h2>
                 </div>
 
-                <div class="bg-slate-800 p-5 rounded-2xl border-2 border-slate-700 text-center">
-                    <label class="block text-base font-bold text-slate-300 mb-2">مذاكرة البورتفوليو المعماري (ساعات)</label>
-                    <input type="number" step="0.5" placeholder="0" class="w-full bg-transparent text-4xl font-black text-center text-white focus:outline-none">
+                <div class="bg-slate-800/80 p-5 rounded-2xl border-2 border-slate-700 text-center">
+                    <label class="block text-base font-bold text-slate-300 mb-2">المذاكرة والعمارة (ساعات)</label>
+                    <input type="number" step="0.5" id="studyHours" placeholder="0" class="w-full bg-transparent text-4xl font-black text-center text-white focus:outline-none placeholder-slate-600">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-800 p-4 rounded-2xl border-2 border-slate-700 text-center">
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border-2 border-slate-700 text-center">
                         <label class="block text-sm font-bold text-slate-400 mb-2">الإنجليزية (د)</label>
-                        <input type="number" placeholder="0" class="w-full bg-transparent text-2xl font-black text-center text-white focus:outline-none">
+                        <input type="number" id="englishMins" placeholder="0" class="w-full bg-transparent text-2xl font-black text-center text-white focus:outline-none placeholder-slate-600">
                     </div>
-                    <div class="bg-slate-800 p-4 rounded-2xl border-2 border-slate-700 text-center">
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border-2 border-slate-700 text-center">
                         <label class="block text-sm font-bold text-slate-400 mb-2">الإيطالية (د)</label>
-                        <input type="number" placeholder="0" class="w-full bg-transparent text-2xl font-black text-center text-white focus:outline-none">
+                        <input type="number" id="italianMins" placeholder="0" class="w-full bg-transparent text-2xl font-black text-center text-white focus:outline-none placeholder-slate-600">
                     </div>
                 </div>
 
                 <label class="cursor-pointer block">
-                    <input type="checkbox" class="big-toggle hidden">
-                    <div class="py-5 rounded-2xl border-2 border-slate-600 bg-slate-800 text-lg font-bold text-slate-300 text-center transition-all">
-                        هل نزلت وردية العمل اليوم؟
+                    <input type="checkbox" id="workDone" class="big-toggle hidden">
+                    <div class="py-5 rounded-2xl border-2 border-slate-600 bg-slate-800/80 text-lg font-bold text-slate-300 text-center transition-all">
+                        هل قمت بإنجاز عملك الأساسي؟ (المطبعة)
                     </div>
                 </label>
             </div>
 
-            <div id="step6" class="step-content space-y-8">
+            <div id="step6" class="step-content space-y-6">
                 <div class="text-center mb-6">
-                    <i class="fa-solid fa-crown text-4xl text-gold mb-4"></i>
+                    <i class="fa-solid fa-crown text-5xl text-gold mb-4" style="filter: drop-shadow(0 0 15px rgba(255,215,0,0.6));"></i>
                     <h2 class="text-2xl font-black text-white">إمبراطورية صقر</h2>
                 </div>
 
-                <div class="bg-slate-800 p-5 rounded-2xl border-2 border-slate-700">
+                <div class="bg-slate-800/80 p-5 rounded-2xl border-2 border-slate-700">
                     <label class="block text-base font-bold text-slate-300 mb-3 text-center">قناة حكايات صقر</label>
-                    <select class="w-full bg-slate-900 border-2 border-slate-600 rounded-xl p-4 text-lg font-bold text-white focus:outline-none focus:border-gold text-center appearance-none">
-                        <option>لم أعمل على القناة اليوم</option>
-                        <option>البحث وكتابة السكريبت</option>
-                        <option>التسجيل الصوتي</option>
-                        <option>المونتاج والتصميم</option>
-                        <option>تم نشر فيديو جديد 🚀</option>
+                    <select id="youtubeTask" class="w-full bg-slate-900 border-2 border-slate-600 rounded-xl p-4 text-lg font-bold text-white focus:outline-none focus:border-gold text-center appearance-none">
+                        <option value="none">لم أعمل على القناة اليوم</option>
+                        <option value="script">البحث وكتابة السكريبت</option>
+                        <option value="record">التسجيل الصوتي</option>
+                        <option value="edit">المونتاج والتصميم</option>
+                        <option value="publish">تم نشر فيديو جديد 🚀</option>
                     </select>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4">
-                    <div class="bg-slate-800 p-5 rounded-2xl border-2 border-slate-700 flex items-center justify-between">
+                    <div class="bg-slate-800/80 p-5 rounded-2xl border-2 border-slate-700 flex items-center justify-between">
                         <label class="text-lg font-bold text-slate-300">ذهب مُضاف (جرام)</label>
-                        <input type="number" step="0.01" placeholder="0.00" class="w-1/3 bg-transparent text-2xl font-black text-gold text-left focus:outline-none border-b-2 border-slate-600">
+                        <input type="number" step="0.01" id="addGold" placeholder="0.00" class="w-1/3 bg-transparent text-2xl font-black text-gold text-left focus:outline-none border-b-2 border-slate-600 placeholder-slate-600">
                     </div>
-                    <div class="bg-slate-800 p-5 rounded-2xl border-2 border-slate-700 flex items-center justify-between">
+                    <div class="bg-slate-800/80 p-5 rounded-2xl border-2 border-slate-700 flex items-center justify-between">
                         <label class="text-lg font-bold text-slate-300">سيولة مُضافة (EGP)</label>
-                        <input type="number" placeholder="0" class="w-1/3 bg-transparent text-2xl font-black text-success text-left focus:outline-none border-b-2 border-slate-600">
+                        <input type="number" id="addCash" placeholder="0" class="w-1/3 bg-transparent text-2xl font-black text-success text-left focus:outline-none border-b-2 border-slate-600 placeholder-slate-600">
                     </div>
                 </div>
             </div>
 
             <div class="mt-10 flex gap-4">
-                <button type="button" id="prevBtn" class="hidden w-1/3 bg-slate-800 text-slate-300 font-bold text-lg py-4 rounded-2xl border-2 border-slate-600 hover:bg-slate-700 transition-all">رجوع</button>
-                <button type="button" id="nextBtn" class="w-full bg-accent text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:scale-[0.98] transition-transform">استمرار</button>
-                <button type="submit" id="submitBtn" class="hidden w-full bg-success text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:scale-[0.98] transition-transform flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-lock"></i> اعتماد التقرير
+                <button type="button" id="prevBtn" class="hidden w-1/4 bg-slate-800 text-slate-300 font-bold text-lg py-4 rounded-2xl border-2 border-slate-600 hover:bg-slate-700 transition-all">رجوع</button>
+                <button type="button" id="nextBtn" class="w-full bg-accent text-white font-black text-xl py-4 rounded-2xl shadow-[0_5px_15px_rgba(90,117,255,0.3)] hover:scale-[0.98] transition-transform">استمرار</button>
+                <button type="button" id="submitBtn" class="hidden w-full bg-success text-black font-black text-xl py-4 rounded-2xl shadow-[0_5px_20px_rgba(48,209,88,0.4)] hover:scale-[0.98] transition-transform flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-lock"></i> تقييم وإغلاق اليوم
                 </button>
             </div>
         </form>
+        
+        <div id="resultScreen" class="hidden p-8 text-center pb-12">
+            <h2 class="text-3xl font-black text-white mb-2">تم إغلاق اليوم</h2>
+            <p class="text-slate-400 font-bold mb-8">الكفاءة الكلية للإمبراطورية</p>
+            
+            <div id="scoreCircle" class="score-circle text-white mb-8">
+                0%
+            </div>
+            
+            <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700 mb-8 inline-block mx-auto min-w-[200px]">
+                <div class="text-sm font-bold text-slate-400 mb-1">نقاط الخبرة المكتسبة</div>
+                <div class="text-2xl font-black text-gold">+<span id="earnedXP">0</span> XP</div>
+            </div>
+            
+            <button onclick="window.location.href='index.html'" class="w-full bg-slate-800 text-white font-black text-xl py-4 rounded-2xl border-2 border-slate-600 hover:bg-slate-700 transition-all">
+                العودة لغرفة القيادة
+            </button>
+        </div>
+
     </div>
 
     <script>
+        // --- 1. التنقل بين الخطوات ---
         let currentStep = 1;
-        const totalSteps = 6; // تم التعديل إلى 6 خطوات
+        const totalSteps = 6;
 
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
@@ -276,15 +304,161 @@
             }
         }
 
-        document.getElementById('dailyReportForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            let currentXP = parseInt(localStorage.getItem('sakr_xp')) || 0;
-            localStorage.setItem('sakr_xp', currentXP + 200); // زيادة المكافأة لـ 200 بسبب التفصيل
+        // --- 2. خوارزمية التقييم والإرسال ---
+        submitBtn.addEventListener('click', () => {
+            // أ. جمع البيانات من الفورم
+            const reportData = {
+                // الفرائض (30% من التقييم)
+                faraid: [
+                    document.getElementById('fajr').checked,
+                    document.getElementById('dhuhr').checked,
+                    document.getElementById('asr').checked,
+                    document.getElementById('maghrib').checked,
+                    document.getElementById('isha').checked
+                ],
+                // النوافل (10%)
+                sunnah: [
+                    document.getElementById('sunnahFajr').checked,
+                    document.getElementById('sunnahDhuhr').checked,
+                    document.getElementById('sunnahMaghrib').checked,
+                    document.getElementById('sunnahIsha').checked,
+                    document.getElementById('witr').checked
+                ],
+                qiyam: parseInt(document.getElementById('qiyamRakas').value) || 0,
+                quran: parseInt(document.getElementById('quranPages').value) || 0,
+                
+                // الجسد (20%)
+                weight: parseFloat(document.getElementById('weight').value) || null,
+                steps: parseInt(document.getElementById('steps').value) || 0,
+                sleepHours: parseFloat(document.getElementById('sleep').value) || 0,
+                
+                // المظهر
+                aesthetic: {
+                    minox: document.getElementById('minox').checked,
+                    skincare: document.getElementById('skincare').checked
+                },
+                
+                // العقل والعمل (20% + 20%)
+                study: parseFloat(document.getElementById('studyHours').value) || 0,
+                english: parseInt(document.getElementById('englishMins').value) || 0,
+                italian: parseInt(document.getElementById('italianMins').value) || 0,
+                workDone: document.getElementById('workDone').checked,
+                
+                // الإمبراطورية (مكافآت إضافية)
+                youtube: document.getElementById('youtubeTask').value,
+                addedGold: parseFloat(document.getElementById('addGold').value) || 0,
+                addedCash: parseFloat(document.getElementById('addCash').value) || 0
+            };
 
-            alert(`أحسنت يا صقر! تم تسجيل بيانات اليوم بنجاح.\nكسبت +200 XP 🦅`);
-            window.location.href = 'index.html';
+            // ب. جلب الأهداف (Baselines) للحساب
+            let baselines = JSON.parse(localStorage.getItem('SakrOS_Targets')) || { sleep: 6.5, steps: 8000, pro: 140, study: 2, eng: 60, ita: 10, quran: 2 };
+            
+            // ج. حساب التقييم (Score out of 100)
+            let score = 0;
+            
+            // 1. الفرائض (30 نقطة) - كل صلاة 6 نقاط
+            let faraidCount = reportData.faraid.filter(Boolean).length;
+            score += faraidCount * 6;
+            
+            // 2. النوافل (10 نقاط)
+            let sunnahCount = reportData.sunnah.filter(Boolean).length;
+            score += sunnahCount * 1; // 5 نقاط
+            if (reportData.qiyam > 0) score += 2;
+            if (reportData.quran >= baselines.quran) score += 3;
+            else if (reportData.quran > 0) score += 1;
+
+            // 3. الجسد والنوم (20 نقطة)
+            if (reportData.sleepHours >= baselines.sleep - 1 && reportData.sleepHours <= baselines.sleep + 1.5) score += 10;
+            else if (reportData.sleepHours > 0) score += 5; // نوم سيء بس نام
+            
+            if (reportData.steps >= baselines.steps) score += 10;
+            else if (reportData.steps >= baselines.steps / 2) score += 5;
+
+            // 4. العمل والمطبعة (20 نقطة)
+            if (reportData.workDone) score += 20;
+
+            // 5. المذاكرة والعقل (20 نقطة)
+            if (reportData.study >= baselines.study) score += 10;
+            else if (reportData.study > 0) score += (reportData.study / baselines.study) * 10;
+
+            if (reportData.english >= baselines.eng) score += 5;
+            if (reportData.italian >= baselines.ita) score += 5;
+
+            // كبح المجموع عند 100%
+            score = Math.min(Math.round(score), 100);
+            reportData.score = score;
+
+            // د. حساب نقاط الخبرة (XP)
+            let xpEarned = Math.round(score * 1.5); // أساسي
+            
+            // بونص الإمبراطورية (يوتيوب ومال)
+            if (reportData.youtube !== 'none') xpEarned += 30;
+            if (reportData.youtube === 'publish') xpEarned += 100; // بونص ضخم للنشر
+            if (reportData.addedGold > 0) xpEarned += 50;
+            if (reportData.addedCash > 0) xpEarned += 20;
+            if (reportData.aesthetic.minox) xpEarned += 10;
+
+            // حفظ الـ XP
+            let currentXP = parseInt(localStorage.getItem('SakrOS_TotalXP')) || 0;
+            localStorage.setItem('SakrOS_TotalXP', currentXP + xpEarned);
+
+            // إضافة الذهب والسيولة للخزنة إن وجدوا
+            if(reportData.addedGold > 0 || reportData.addedCash > 0){
+                let fin = JSON.parse(localStorage.getItem('Falcon_Final_V29_Pro')) || { goldGrams: 19.8, cash: 30000 };
+                fin.goldGrams = (parseFloat(fin.goldGrams) + reportData.addedGold).toFixed(2);
+                fin.cash = parseFloat(fin.cash) + reportData.addedCash;
+                localStorage.setItem('Falcon_Final_V29_Pro', JSON.stringify(fin));
+            }
+
+            // هـ. حفظ التقرير في الأرشيف (Master Report)
+            let todayDate = new Date();
+            let y = todayDate.getFullYear();
+            let m = String(todayDate.getMonth() + 1).padStart(2, '0');
+            let d = String(todayDate.getDate()).padStart(2, '0');
+            let dateStr = `${y}-${m}-${d}`;
+            
+            let masterDB = JSON.parse(localStorage.getItem('SakrOS_MasterReport_V1')) || {};
+            
+            // دمج التقرير مع بيانات قد تكون موجودة مسبقاً (مثل الدايت من IronForge)
+            masterDB[dateStr] = { ...masterDB[dateStr], ...reportData };
+            localStorage.setItem('SakrOS_MasterReport_V1', JSON.stringify(masterDB));
+
+            // و. عرض النتيجة والاحتفال
+            showResultScreen(score, xpEarned);
         });
+
+        function showResultScreen(score, xpEarned) {
+            document.getElementById('dailyReportForm').classList.add('hidden');
+            document.querySelector('.bg-slate-800\\/50').classList.add('hidden'); // إخفاء الهيدر
+            const resultScreen = document.getElementById('resultScreen');
+            resultScreen.classList.remove('hidden');
+            
+            const circle = document.getElementById('scoreCircle');
+            document.getElementById('earnedXP').innerText = xpEarned;
+
+            // تلوين الدائرة حسب النتيجة
+            let circleColor = '#ff453a'; // أحمر
+            if(score >= 80) circleColor = '#30D158'; // أخضر
+            else if(score >= 50) circleColor = '#FFD700'; // ذهبي
+
+            // تأثير العداد
+            let currentScore = 0;
+            let timer = setInterval(() => {
+                currentScore++;
+                circle.innerText = `${currentScore}%`;
+                circle.style.borderColor = circleColor;
+                circle.style.color = circleColor;
+                circle.style.boxShadow = `0 0 ${currentScore/5}px ${circleColor}`;
+                
+                if(currentScore >= score) {
+                    clearInterval(timer);
+                    // إطلاق الاحتفال إذا كانت النتيجة جيدة
+                    if(score >= 50) {
+                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: [circleColor, '#ffffff'] });
+                    }
+                }
+            }, 20); // سرعة العداد
+        }
     </script>
 </body>
 </html>
