@@ -12,7 +12,7 @@
     <meta name="theme-color" content="#0B1021">
     
     <style>
-        /* ================= DEEP NAVY THEME (V4.4 RELIGION DASHBOARD) ================= */
+        /* ================= DEEP NAVY THEME (V4.5 RELIGION & DUA) ================= */
         :root {
             --bg-main: #060913;      
             --card-bg: rgba(27, 35, 65, 0.7);      
@@ -61,6 +61,8 @@
         .bento-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
         
         .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; position: relative; animation: fadeUp 0.5s ease-out forwards; opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
+        .bento-card.clickable { cursor: pointer; transition: 0.2s; }
+        .bento-card.clickable:active { transform: scale(0.98); background: rgba(35, 44, 80, 0.9); }
         
         .card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; font-size: 1.1rem; font-weight: 900; color: #fff; }
         .icon-sq { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
@@ -104,7 +106,10 @@
         .chart-wrapper { width: 100%; height: 200px; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 10px; border: 1px solid rgba(255,255,255,0.05); margin-top: 15px;}
 
         /* --- MODALS --- */
-        #textModal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index:3000; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 15px;}
+        #textModal, #duaListModal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 15px;}
+        #textModal { z-index:3000; }
+        #duaListModal { z-index:2500; }
+        
         .text-card { background: var(--card-bg); width: 100%; max-width: 450px; max-height: 85vh; display: flex; flex-direction: column; padding: 25px; border-radius: 30px; border: 1px solid var(--border); position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.7); animation: fadeUp 0.3s ease-out;}
         .text-content-wrapper { overflow-y: auto; padding-right: 5px; margin-bottom: 15px; }
         .text-content-wrapper::-webkit-scrollbar { width: 4px; } .text-content-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
@@ -116,6 +121,11 @@
 
         .modal-close { width: 100%; padding: 18px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 20px; color: #fff; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.2s; flex-shrink: 0; font-family: var(--font);}
         .modal-close:active { background: rgba(255,255,255,0.1); transform: scale(0.98); }
+
+        /* --- DUA LIST BUTTONS --- */
+        .dua-list-btn { width: 100%; text-align: right; padding: 18px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; color: #fff; font-weight: 800; font-size: 1.05rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; font-family: var(--font);}
+        .dua-list-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.05); }
+        .dua-list-btn i { color: var(--gold); font-size: 0.9rem; }
 
     </style>
 </head>
@@ -204,6 +214,30 @@
             </div>
         </div>
 
+        <div class="bento-card clickable" style="animation-delay: 0.2s; border-top: 2px solid var(--purple);" onclick="openDuaList()">
+            <div class="card-head" style="margin-bottom: 5px;">
+                <div class="icon-sq" style="background:rgba(191, 90, 242, 0.1); color:var(--purple);">📖</div> 
+                مكتبة الأدعية الشاملة
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 700; margin-right: 52px;">حصنك اليومي، تيسير الرزق، وتفريج الهموم.</div>
+        </div>
+
+    </div>
+
+    <div id="duaListModal">
+        <div class="text-card">
+            <h2 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:15px; font-weight:900; text-align:center; color: var(--purple);">مكتبة الأدعية</h2>
+            <div class="text-content-wrapper">
+                <button class="dua-list-btn" onclick="showDua('istighfar')">سيد الاستغفار <i class="fas fa-chevron-left"></i></button>
+                <button class="dua-list-btn" onclick="showDua('hifz')">أدعية العفو والعافية والحفظ <i class="fas fa-chevron-left"></i></button>
+                <button class="dua-list-btn" onclick="showDua('dunya')">أدعية جامعة لخير الدنيا والآخرة <i class="fas fa-chevron-left"></i></button>
+                <button class="dua-list-btn" onclick="showDua('tawakkul')">دعاء تيسير الأمور والتوكل <i class="fas fa-chevron-left"></i></button>
+                <button class="dua-list-btn" onclick="showDua('rizq')">أدعية سعة الرزق والبركة <i class="fas fa-chevron-left"></i></button>
+                <button class="dua-list-btn" onclick="showDua('najah')">أدعية تيسير الأمور الصعبة والنجاح <i class="fas fa-chevron-left"></i></button>
+                <button class="dua-list-btn" onclick="showDua('hamm')">أدعية إزالة الهم والحزن <i class="fas fa-chevron-left"></i></button>
+            </div>
+            <button class="modal-close" onclick="document.getElementById('duaListModal').style.display='none'">إغلاق المكتبة</button>
+        </div>
     </div>
 
     <div id="textModal">
@@ -212,7 +246,7 @@
             <div class="text-content-wrapper">
                 <div id="modalContent" class="text-content">...</div>
             </div>
-            <button class="modal-close" onclick="closeAdhkarModal()">إغلاق وإتمام القراءة ✔️</button>
+            <button class="modal-close" id="closeDhikrBtn" onclick="closeTextModal()">إغلاق وإتمام القراءة ✔️</button>
         </div>
     </div>
 
@@ -226,11 +260,8 @@
     function getSafeJSON(key, defaultVal) { try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; } }
 
     const DB_KEY = 'SakrOS_Religion_History_V2';
-
-    // استخدام كائن يحفظ التاريخ كمفتاح (لحفظ بيانات 14 يوم)
     let historyDB = getSafeJSON(DB_KEY, {});
 
-    // تهيئة يوم جديد إذا لم يكن موجوداً
     if (!historyDB[TODAY]) {
         historyDB[TODAY] = {
             prayers: { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false },
@@ -239,8 +270,7 @@
             adhkarEvening: false,
             tasbeeh: 0
         };
-        // الحفاظ على حالة الختمة (لأنها ممتدة عبر الأيام)
-        let lastDate = Object.keys(historyDB).sort().reverse()[1]; // اليوم السابق
+        let lastDate = Object.keys(historyDB).sort().reverse()[1];
         if (lastDate && historyDB[lastDate].khatma) {
             historyDB[TODAY].khatma = historyDB[lastDate].khatma;
         } else {
@@ -249,9 +279,9 @@
         saveDB();
     }
 
-    const currentTypeAdhkar = { type: null }; // لتتبع أي نوع أذكار يقرأه المستخدم الآن
+    const currentModalState = { type: null }; // لتتبع أي نوع أذكار يقرأه المستخدم
 
-    // --- نصوص الأذكار كاملة ---
+    // --- نصوص الأذكار ---
     const ADHKAR = {
         morning: `
 <div class="dhikr-section">
@@ -269,6 +299,11 @@
     <br><span class="dhikr-count">3 مرات</span>
 </div>
 <div class="dhikr-section">
+    <div class="dhikr-title">أصبحنا وأصبح الملك لله</div>
+    "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيْرَ مَا بَعْدَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشَرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ".
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
     <div class="dhikr-title">سيد الاستغفار</div>
     "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي، فَإِنَّهُ لا يَغْفِرُ الذُّنُوبَ إِلا أَنْتَ".
     <br><span class="dhikr-count">مرة واحدة</span>
@@ -276,6 +311,14 @@
 <div class="dhikr-section">
     "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ".
     <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لا إِلَهَ إِلا أَنْتَ. اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، لا إِلَهَ إِلا أَنْتَ".
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
+<div class="dhikr-section">
+    "حَسْبِيَ اللَّهُ لا إِلَهَ إِلا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ".
+    <br><span class="dhikr-count">7 مرات</span>
 </div>
 <div class="dhikr-section">
     "بِسْمِ اللَّهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ".
@@ -286,29 +329,39 @@
     <br><span class="dhikr-count">3 مرات</span>
 </div>
 <div class="dhikr-section">
-    "حَسْبِيَ اللَّهُ لا إِلَهَ إِلا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ".
-    <br><span class="dhikr-count">7 مرات</span>
+    "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ".
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "أَصْبَحْنَا عَلَى فِطْرَةِ الإِسْلامِ، وَعَلَى كَلِمَةِ الإِخْلاصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ حَنِيفًا مُسْلِمًا وَمَا كَانَ مِنَ الْمُشْرِكِينَ".
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ".
+    <br><span class="dhikr-count">3 مرات</span>
 </div>
         `,
         evening: `
 <div class="dhikr-section">
     <div class="dhikr-title">آية الكرسي</div>
     أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ<br>
-    ﴿اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ ... وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾
+    ﴿اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾
     <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
     <div class="dhikr-title">سورة الإخلاص والمعوذتين</div>
-    (الإخلاص، الفلق، الناس)
+    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>
+    ﴿قُلْ هُوَ اللَّهُ أَحَدٌ...﴾ ﴿قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...﴾ ﴿قُلْ أَعُوذُ بِرَبِّ النَّاسِ...﴾
     <br><span class="dhikr-count">3 مرات</span>
 </div>
 <div class="dhikr-section">
-    <div class="dhikr-title">سيد الاستغفار</div>
-    "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ..."
+    <div class="dhikr-title">أمسينا وأمسى الملك لله</div>
+    "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذِهِ اللَّيْلَةِ وَخَيْرَ مَا بَعْدَهَا، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذِهِ اللَّيْلَةِ وَشَرِّ مَا بَعْدَهَا، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ".
     <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
-    "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إِلَهَ إِلا اللَّهُ، وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ..."
+    <div class="dhikr-title">سيد الاستغفار</div>
+    "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي، فَإِنَّهُ لا يَغْفِرُ الذُّنُوبَ إِلا أَنْتَ".
     <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
@@ -316,8 +369,28 @@
     <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
+    "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لا إِلَهَ إِلا أَنْتَ. اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، لا إِلَهَ إِلا أَنْتَ".
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
+<div class="dhikr-section">
+    "حَسْبِيَ اللَّهُ لا إِلَهَ إِلا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ".
+    <br><span class="dhikr-count">7 مرات</span>
+</div>
+<div class="dhikr-section">
     "بِسْمِ اللَّهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ".
     <br><span class="dhikr-count">3 مرات</span>
+</div>
+<div class="dhikr-section">
+    "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالإِسْلامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا".
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
+<div class="dhikr-section">
+    "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ".
+    <br><span class="dhikr-count">مرة واحدة</span>
+</div>
+<div class="dhikr-section">
+    "أَمْسَيْنَا عَلَى فِطْرَةِ الإِسْلامِ، وَعَلَى كَلِمَةِ الإِخْلاصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ حَنِيفًا مُسْلِمًا وَمَا كَانَ مِنَ الْمُشْرِكِينَ".
+    <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
     "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ".
@@ -326,6 +399,105 @@
         `
     };
 
+    // --- نصوص مكتبة الأدعية الشاملة ---
+    const DUA_COLLECTION = {
+        istighfar: {
+            title: "سيد الاستغفار",
+            content: `
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">سيد الاستغفار (من أهم ما يُقال يومياً)</div>
+    "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي، فَإِنَّهُ لا يَغْفِرُ الذُّنُوبَ إِلا أَنْتَ."
+</div>`
+        },
+        hifz: {
+            title: "أدعية العفو والعافية والحفظ",
+            content: `
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">دعاء العافية في الدين والدنيا</div>
+    "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي، وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ، وَمِنْ خَلْفِي، وَعَنْ يَمِينِي، وَعَنْ شِمَالِي، وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي."
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">للحفظ من كل مكروه</div>
+    "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ."
+    <br><span class="dhikr-count">تُقال 3 مرات صباحاً ومساءً</span>
+</div>`
+        },
+        dunya: {
+            title: "أدعية جامعة لخير الدنيا والآخرة",
+            content: `
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">أكثر دعاء كان يردده النبي</div>
+    "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ."
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">للثبات على الدين</div>
+    "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ."
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">بعد كل صلاة مكتوبة</div>
+    "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ."
+</div>`
+        },
+        tawakkul: {
+            title: "دعاء تيسير الأمور والتوكل",
+            content: `
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">عند الخروج من المنزل</div>
+    "بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ."
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">لتيسير أي أمر صعب</div>
+    "اللَّهُمَّ لا سَهْلَ إِلا مَا جَعَلْتَهُ سَهْلاً، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلاً."
+</div>`
+        },
+        rizq: {
+            title: "أدعية سعة الرزق والبركة",
+            content: `
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">بعد صلاة الفجر</div>
+    "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلاً مُتَقَبَّلًا."
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">لسداد الدين والبركة في المال</div>
+    "اللَّهُمَّ اكْفِنِي بِحَلالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ."
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">مفتاح الرزق המضمون</div>
+    كثرة الاستغفار: (فَقُلْتُ اسْتَغْفِرُوا رَبَّكُمْ إِنَّهُ كَانَ غَفَّارًا * يُرْسِلِ السَّمَاءَ عَلَيْكُمْ مِدْرَارًا * وَيُمْدِدْكُمْ بِأَمْوَالٍ وَبَنِينَ...).
+</div>`
+        },
+        najah: {
+            title: "أدعية تيسير الأمور الصعبة والنجاح",
+            content: `
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">دعاء نبي الله موسى (مهم للتقديم أو العرض)</div>
+    "رَبِّ اشْرَحْ لِي صَدْرِي * وَيَسِّرْ لِي أَمْرِي * وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي * يَفْقَهُوا قَوْلِي."
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">لتفويض الأمر لله</div>
+    "يا حَيُّ يا قَيُّومُ بِرَحْمَتِكَ أسْتَغِيثُ، أصْلِحْ لِي شَأْنِي كُلَّهُ، وَلا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ."
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">الاستعانة بالحوقلة</div>
+    الإكثار من قول "لا حَوْلَ وَلا قُوَّةَ إِلَّا بِاللَّهِ"، فهي مفتاح لتيسير كل عسير وتفريج الكروب.
+</div>`
+        },
+        hamm: {
+            title: "أدعية إزالة الهم والحزن",
+            content: `
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">دعاء الكرب (دعاء ذي النون)</div>
+    "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ."
+    <br><span class="dhikr-count">قال النبي ﷺ: لم يدعُ بها مسلم في شيء قط إلا استجاب الله له.</span>
+</div>
+<div class="dhikr-section">
+    <div class="dhikr-title" style="color: var(--gold);">للتخلص من ضغوط التفكير والكسل</div>
+    "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ."
+</div>`
+        }
+    };
+
+
     window.onload = function() {
         document.getElementById('dateDisp').innerHTML = new Date().toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
         
@@ -333,8 +505,8 @@
         renderQiyam(); 
         renderTasbeeh(); 
         renderKhatma();
-        updateAdhkarButtons(); // تحديث شكل الأزرار لو تمت قراءتها اليوم
-        drawCharts(); // رسم الجداول
+        updateAdhkarButtons(); 
+        drawCharts(); 
     };
 
     function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(historyDB)); }
@@ -344,7 +516,7 @@
         historyDB[TODAY].prayers[prayer] = !historyDB[TODAY].prayers[prayer];
         saveDB(); 
         renderPrayers();
-        drawCharts(); // تحديث الرسم
+        drawCharts(); 
         if(navigator.vibrate) navigator.vibrate(20);
     }
 
@@ -376,27 +548,46 @@
 
     // --- الأذكار ---
     function showAdhkar(type) {
-        currentTypeAdhkar.type = type;
+        currentModalState.type = type;
         let title = type === 'morning' ? "☀️ أذكار الصباح" : "🌙 أذكار المساء";
         let color = type === 'morning' ? "var(--orange)" : "var(--cyan)";
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalTitle').style.color = color;
         document.getElementById('modalContent').innerHTML = ADHKAR[type];
+        
+        document.getElementById('closeDhikrBtn').innerText = "إغلاق وإتمام القراءة ✔️";
         document.getElementById('textModal').style.display = 'flex';
     }
 
-    function closeAdhkarModal() {
+    // --- مكتبة الأدعية الشاملة ---
+    function openDuaList() {
+        document.getElementById('duaListModal').style.display = 'flex';
+    }
+
+    function showDua(key) {
+        currentModalState.type = 'dua'; // للإشارة إلى أن المفتوح هو دعاء وليس أذكار
+        let duaData = DUA_COLLECTION[key];
+        
+        document.getElementById('modalTitle').innerText = duaData.title;
+        document.getElementById('modalTitle').style.color = "var(--purple)";
+        document.getElementById('modalContent').innerHTML = duaData.content;
+        
+        document.getElementById('closeDhikrBtn').innerText = "إغلاق الدعاء والعودة";
+        document.getElementById('textModal').style.display = 'flex';
+    }
+
+    function closeTextModal() {
         document.getElementById('textModal').style.display='none';
-        // تسجيل أن الأذكار قُرئت
-        if(currentTypeAdhkar.type === 'morning') historyDB[TODAY].adhkarMorning = true;
-        if(currentTypeAdhkar.type === 'evening') historyDB[TODAY].adhkarEvening = true;
         
-        saveDB();
-        updateAdhkarButtons();
-        drawCharts();
+        if(currentModalState.type === 'morning') historyDB[TODAY].adhkarMorning = true;
+        if(currentModalState.type === 'evening') historyDB[TODAY].adhkarEvening = true;
         
-        // احتفال صغير للأذكار
-        confetti({ particleCount: 50, spread: 40, origin: { y: 0.8 }, colors: ['#5A75FF', '#FFB700'] });
+        if(currentModalState.type === 'morning' || currentModalState.type === 'evening') {
+            saveDB();
+            updateAdhkarButtons();
+            drawCharts();
+            confetti({ particleCount: 50, spread: 40, origin: { y: 0.8 }, colors: ['#5A75FF', '#FFB700'] });
+        }
     }
 
     function updateAdhkarButtons() {
@@ -491,38 +682,29 @@
     // =========================================================
     // 📊 دوال رسم الجداول البيانية (Charts) لآخر 14 يوم
     // =========================================================
-    
-    // متغيرات للاحتفاظ بنسخة من الجداول لتحديثها
     let chartPrayers, chartAdhkar, chartQiyam;
 
     function drawCharts() {
-        // 1. تجهيز مصفوفة التواريخ (آخر 14 يوم)
         let labels = [];
         let dataPrayers = [];
         let dataQiyam = [];
         let dataAdhkar = [];
 
         let d = new Date();
-        // تجميع البيانات من الأقدم للأحدث (منذ 13 يوماً وحتى اليوم)
         for(let i = 13; i >= 0; i--) {
             let pastDate = new Date(d);
             pastDate.setDate(d.getDate() - i);
             let ds = getLocalYMD(pastDate);
             
-            // إضافة صيغة التاريخ للعرض (مثال: 5/14)
             labels.push(`${pastDate.getMonth()+1}/${pastDate.getDate()}`);
             
-            // سحب بيانات اليوم أو وضع أصفار
             let dayData = historyDB[ds];
             if(dayData) {
-                // حساب عدد الصلوات
                 let countPrayers = Object.values(dayData.prayers || {}).filter(Boolean).length;
                 dataPrayers.push(countPrayers);
                 
-                // حساب ركعات القيام
                 dataQiyam.push(dayData.qiyam || 0);
                 
-                // حساب الأذكار (كم مرة: صباح + مساء = 2)
                 let countAdhkar = 0;
                 if(dayData.adhkarMorning) countAdhkar++;
                 if(dayData.adhkarEvening) countAdhkar++;
@@ -534,7 +716,6 @@
             }
         }
 
-        // إعدادات الخطوط والشبكة المشتركة للرسوم
         Chart.defaults.color = '#8A94B5';
         Chart.defaults.font.family = 'Cairo';
         const gridOptions = { color: 'rgba(255,255,255,0.05)' };
