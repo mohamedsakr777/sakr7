@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IronForge V15.3 | SAKR OS</title>
+    <title>IronForge V15.4 | Bio-Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* ================= IRONFORGE V15.3 (BULLETPROOF EDITION) ================= */
+        /* ================= IRONFORGE V15.4 (BIO-TRACKER EDITION) ================= */
         :root {
             --bg-base: #030303; 
             --bg-card: rgba(18, 18, 20, 0.7); 
@@ -60,7 +60,7 @@
         .segment { flex: 1; text-align: center; padding: 12px 0; font-size: 0.95rem; font-weight: 800; color: var(--text-sub); border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .segment.active { background: var(--apple-blue); color: #000; box-shadow: 0 4px 15px rgba(255, 94, 0, 0.5); }
 
-        .clone-machine-btn { background: linear-gradient(135deg, rgba(255, 94, 0, 0.1), rgba(255, 215, 0, 0.05)); border: 1px solid rgba(255, 94, 0, 0.3); color: var(--apple-blue); width: 100%; padding: 15px; border-radius: 16px; font-weight: 900; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px; cursor: pointer; transition: 0.3s;}
+        .clone-machine-btn { background: linear-gradient(135deg, rgba(255, 94, 0, 0.1), rgba(255, 215, 0, 0.05)); border: 1px solid rgba(255, 94, 0, 0.3); color: var(--apple-blue); width: 100%; padding: 15px; border-radius: 16px; font-weight: 900; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
         .clone-machine-btn:active { transform: scale(0.97); background: var(--apple-blue); color: #000;}
 
         /* --- MACROS & MICROS --- */
@@ -69,10 +69,16 @@
         .ios-bar-bg { width: 100%; height: 10px; background: rgba(0,0,0,0.5); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);}
         .ios-bar-fill { height: 100%; border-radius: 10px; transition: width 1s ease; box-shadow: inset 0 0 10px rgba(255,255,255,0.2);}
 
+        /* 🔥 NEW MICROS TRACKER STYLES 🔥 */
         .micro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .micro-box { background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 10px 5px; border-radius: 12px; text-align: center;}
-        .micro-val { font-size: 1rem; font-weight: 900; color: #fff; font-family: monospace;}
+        .micro-box { background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 10px 5px 15px 5px; border-radius: 12px; text-align: center; position: relative;}
+        .micro-val { font-size: 1.1rem; font-weight: 900; color: #fff; font-family: monospace; display: flex; justify-content: center; align-items: baseline;}
+        .micro-target { font-size: 0.65rem; color: var(--text-sub); margin-left: 2px;}
         .micro-lbl { font-size: 0.65rem; color: var(--text-sub); font-weight: 900; margin-top: 2px;}
+        
+        .micro-bar-bg { position: absolute; bottom: 6px; left: 10%; width: 80%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;}
+        .micro-bar-fill { height: 100%; background: var(--apple-cyan); width: 0%; transition: width 0.8s ease;}
+        .micro-bar-fill.done { background: var(--apple-green); box-shadow: 0 0 5px var(--apple-green);}
 
         /* --- SUPPLEMENTS STATION --- */
         .supp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -109,13 +115,13 @@
 
         /* --- MODALS --- */
         .ios-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: flex-end; justify-content: center;}
-        .modal-body { background: var(--bg-card); border: 1px solid var(--border); width: 100%; max-width: 500px; max-height: 85vh; border-radius: 35px 35px 0 0; padding: 30px 25px; overflow-y: auto;}
+        .modal-body { background: var(--bg-card); border: 1px solid var(--border); width: 100%; max-width: 500px; max-height: 85vh; border-radius: 35px 35px 0 0; padding: 30px 25px; overflow-y: auto; animation: fadeUp 0.3s ease-out;}
         .drag-indicator { width: 40px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 10px; margin: 0 auto 25px auto; }
         .m-close { background: rgba(255,255,255,0.1); color: #fff; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; position: absolute; top: 15px; left: 15px;}
 
         /* --- LISTS --- */
-        .list-item { padding: 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.03);}
-        .history-card { background: rgba(0,0,0,0.4); border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border); overflow: hidden; }
+        .list-item { padding: 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.03); transition: 0.2s;}
+        .history-card { background: rgba(0,0,0,0.4); border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
         .history-header { background: rgba(255, 94, 0, 0.05); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; font-weight: 900; border-bottom: 1px solid rgba(255, 94, 0, 0.1); color: var(--apple-blue);}
         .history-body { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         .macro-badge { background: rgba(0,0,0,0.5); padding: 6px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 900; font-family: monospace; border: 1px solid rgba(255,255,255,0.05);}
@@ -128,9 +134,6 @@
         .view { display: none; }
         .view.active { display: block; animation: fadeUp 0.3s ease-out;}
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .chk-container { display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 1rem; font-weight: 800;}
-        .chk-container input { width: 24px; height: 24px; accent-color: var(--apple-blue); }
 
         /* --- WATER TRACKER --- */
         .water-grid { display: flex; justify-content: space-between; margin-top: 20px; }
@@ -165,7 +168,7 @@
 
         <div style="flex:1; text-align:center;">
             <h1>Iron<span>Forge</span></h1>
-            <div class="text-sub" id="sysDate">V15.3 Bulletproof</div>
+            <div class="text-sub" id="sysDate">V15.4 Bio-Tracker</div>
         </div>
         
         <div id="lockBadge" class="lock-badge" onclick="toggleDayLock()">
@@ -203,16 +206,48 @@
         </div>
 
         <div class="ios-card" style="border-color: rgba(191, 90, 242, 0.3);">
-            <h2><i class="fas fa-microscope" style="color:var(--purple);"></i> المغذيات الدقيقة (من الأكل)</h2>
+            <h2><i class="fas fa-microscope" style="color:var(--purple);"></i> المغذيات الدقيقة (المكتسبة)</h2>
             <div class="micro-grid">
-                <div class="micro-box"><div class="micro-val" id="ui-zinc">0</div><div class="micro-lbl">Zinc (mg)</div></div>
-                <div class="micro-box"><div class="micro-val" id="ui-iron">0</div><div class="micro-lbl">Iron (mg)</div></div>
-                <div class="micro-box"><div class="micro-val" id="ui-calc">0</div><div class="micro-lbl">Calc (mg)</div></div>
-                <div class="micro-box"><div class="micro-val" id="ui-mag">0</div><div class="micro-lbl">Mag (mg)</div></div>
-                <div class="micro-box"><div class="micro-val" id="ui-vitc">0</div><div class="micro-lbl">Vit C (mg)</div></div>
-                <div class="micro-box"><div class="micro-val" id="ui-vitd">0</div><div class="micro-lbl">Vit D (IU)</div></div>
-                <div class="micro-box"><div class="micro-val" id="ui-vita">0</div><div class="micro-lbl">Vit A (IU)</div></div>
-                <div class="micro-box"><div class="micro-val" id="ui-omega">0</div><div class="micro-lbl">Omg3 (mg)</div></div>
+                <div class="micro-box">
+                    <div class="micro-val"><span id="ui-zinc">0</span><span class="micro-target" id="ui-zinc-tgt">/15</span></div>
+                    <div class="micro-lbl">Zinc (mg)</div>
+                    <div class="micro-bar-bg"><div class="micro-bar-fill" id="ui-zinc-bar"></div></div>
+                </div>
+                <div class="micro-box">
+                    <div class="micro-val"><span id="ui-iron">0</span><span class="micro-target" id="ui-iron-tgt">/18</span></div>
+                    <div class="micro-lbl">Iron (mg)</div>
+                    <div class="micro-bar-bg"><div class="micro-bar-fill" id="ui-iron-bar"></div></div>
+                </div>
+                <div class="micro-box">
+                    <div class="micro-val"><span id="ui-calc">0</span><span class="micro-target" id="ui-calc-tgt">/1000</span></div>
+                    <div class="micro-lbl">Calc (mg)</div>
+                    <div class="micro-bar-bg"><div class="micro-bar-fill" id="ui-calc-bar"></div></div>
+                </div>
+                <div class="micro-box">
+                    <div class="micro-val"><span id="ui-mag">0</span><span class="micro-target" id="ui-mag-tgt">/400</span></div>
+                    <div class="micro-lbl">Mag (mg)</div>
+                    <div class="micro-bar-bg"><div class="micro-bar-fill" id="ui-mag-bar"></div></div>
+                </div>
+                <div class="micro-box">
+                    <div class="micro-val"><span id="ui-vitc">0</span><span class="micro-target" id="ui-vitc-tgt">/100</span></div>
+                    <div class="micro-lbl">Vit C (mg)</div>
+                    <div class="micro-bar-bg"><div class="micro-bar-fill" id="ui-vitc-bar"></div></div>
+                </div>
+                <div class="micro-box">
+                    <div class="micro-val"><span id="ui-vitd">0</span><span class="micro-target" id="ui-vitd-tgt">/1k</span></div>
+                    <div class="micro-lbl">Vit D (IU)</div>
+                    <div class="micro-bar-bg"><div class="micro-bar-fill" id="ui-vitd-bar"></div></div>
+                </div>
+                <div class="micro-box">
+                    <div class="micro-val"><span id="ui-vita">0</span><span class="micro-target" id="ui-vita-tgt">/3k</span></div>
+                    <div class="micro-lbl">Vit A (IU)</div>
+                    <div class="micro-bar-bg"><div class="micro-bar-fill" id="ui-vita-bar"></div></div>
+                </div>
+                <div class="micro-box">
+                    <div class="micro-val"><span id="ui-omega">0</span><span class="micro-target" id="ui-omega-tgt">/1k</span></div>
+                    <div class="micro-lbl">Omg3 (mg)</div>
+                    <div class="micro-bar-bg"><div class="micro-bar-fill" id="ui-omega-bar"></div></div>
+                </div>
             </div>
         </div>
 
@@ -331,7 +366,9 @@
 
         <div class="ios-card">
             <h2 style="color: var(--apple-blue);"><i class="fas fa-leaf"></i> قاعدة الطعام الشاملة</h2>
-            <input type="text" id="dbF-name" placeholder="اسم الأكلة">
+            <div class="flex-between" style="gap: 10px;">
+                <input type="text" id="dbF-name" placeholder="اسم الأكلة">
+            </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
                 <input type="number" id="dbF-p" placeholder="Pro (g)">
                 <input type="number" id="dbF-c" placeholder="Carb (g)">
@@ -359,19 +396,32 @@
         </div>
         
         <div class="ios-card" style="border-color: rgba(255, 215, 0, 0.3);">
-            <h2 style="color: var(--gold);"><i class="fas fa-bullseye"></i> إعدادات الماكروز</h2>
-            <select id="targetModeSelect" onchange="loadTargetSettings()" style="margin-bottom: 20px; text-align:center; font-size: 1.1rem;">
+            <h2 style="color: var(--gold);"><i class="fas fa-bullseye"></i> إعدادات الأهداف الشاملة</h2>
+            <select id="targetModeSelect" onchange="loadTargetSettings()" style="margin-bottom: 15px; text-align:center; font-size: 1.1rem;">
                 <option value="high">High Carb (تمرين عنيف)</option>
                 <option value="med">Medium Carb (متوسط/كارديو)</option>
                 <option value="low">Low Carb (راحة)</option>
             </select>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
                 <input type="number" id="targetKcal" placeholder="Kcal" style="text-align:center; margin:0;">
                 <input type="number" id="targetPro" placeholder="Pro" style="text-align:center; margin:0;">
                 <input type="number" id="targetCarb" placeholder="Carb" style="text-align:center; margin:0;">
                 <input type="number" id="targetFat" placeholder="Fat" style="text-align:center; margin:0;">
             </div>
-            <button class="ios-btn" style="background: rgba(255, 215, 0, 0.15); color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.4);" onclick="saveTargetSettings()">تحديث الأهداف</button>
+
+            <h3 style="color:var(--text-sub); font-size:0.9rem; margin-bottom:10px;"><i class="fas fa-microscope"></i> أهداف الفيتامينات والمعادن اليومية</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px;">
+                <input type="number" id="t-zinc" placeholder="Zinc" style="text-align:center; margin:0; font-size:0.9rem; padding:10px;">
+                <input type="number" id="t-iron" placeholder="Iron" style="text-align:center; margin:0; font-size:0.9rem; padding:10px;">
+                <input type="number" id="t-calc" placeholder="Calc" style="text-align:center; margin:0; font-size:0.9rem; padding:10px;">
+                <input type="number" id="t-mag" placeholder="Mag" style="text-align:center; margin:0; font-size:0.9rem; padding:10px;">
+                <input type="number" id="t-vitc" placeholder="VitC" style="text-align:center; margin:0; font-size:0.9rem; padding:10px;">
+                <input type="number" id="t-vitd" placeholder="VitD" style="text-align:center; margin:0; font-size:0.9rem; padding:10px;">
+                <input type="number" id="t-vita" placeholder="VitA" style="text-align:center; margin:0; font-size:0.9rem; padding:10px;">
+                <input type="number" id="t-omega" placeholder="Omg3" style="text-align:center; margin:0; font-size:0.9rem; padding:10px;">
+            </div>
+
+            <button class="ios-btn" style="background: rgba(255, 215, 0, 0.15); color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.4);" onclick="saveTargetSettings()">تحديث كل الأهداف</button>
         </div>
         
         <div class="ios-card" style="border-color: rgba(255, 94, 0, 0.3);">
@@ -413,41 +463,23 @@
     </div>
 
     <script>
-        // دالة الإغلاق الآمنة
-        function closeAll() {
-            document.querySelectorAll('.ios-modal').forEach(m => m.style.display = 'none');
-        }
-
-        // إعدادات الوقت الأساسية
-        function getLocalYMD() {
-            let d = new Date(); 
-            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-            return d.toISOString().split('T')[0];
-        }
+        function closeAll() { document.querySelectorAll('.ios-modal').forEach(m => m.style.display = 'none'); }
+        function getLocalYMD() { let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().split('T')[0]; }
         const TODAY = getLocalYMD();
+        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; 
         
-        // دالة استدعاء البيانات بأمان
-        function getSafeJSON(key, defaultVal) { 
-            try { 
-                let data = localStorage.getItem(key); 
-                return data ? JSON.parse(data) : defaultVal; 
-            } catch(e) { 
-                return defaultVal; 
-            } 
-        }
+        function getSafeJSON(key, defaultVal) { try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; } }
 
         let DB = { foodDB: [], exDB: [], suppDB: [], mealGroups: [], routines: [], history: {}, settings: {}, measurements: {}, progressPics: [] };
         let currentGroupType = ''; 
         let timerInterval; 
         let timeLeft = 0;
 
-        // تهيئة النظام
         window.onload = function() {
             try {
                 let saved = localStorage.getItem('IronForge_V15_CLINIC'); 
                 if (saved) { DB = JSON.parse(saved); } 
                 
-                // حماية المصفوفات من الانهيار إذا كانت ممسوحة
                 if(!DB.foodDB) DB.foodDB = [];
                 if(!DB.exDB) DB.exDB = [];
                 if(!DB.suppDB || DB.suppDB.length === 0) {
@@ -471,13 +503,15 @@
                         low:  { kcal: 1800, p: 180, c: 80,  f: 85, label: "Low Carb" }
                     };
                 }
-
-                if (!DB.history[TODAY]) { 
-                    DB.history[TODAY] = { locked: false, carbCycle: 'high', weight: null, water: 0, foodLog: [], workoutLog: [], suppLog: {} }; 
+                
+                // Initialize Micro Targets if missing
+                if(!DB.settings.microTargets) {
+                    DB.settings.microTargets = { zinc: 15, iron: 18, calc: 1000, mag: 400, vitc: 100, vitd: 1000, vita: 3000, omega: 1000 };
                 }
+
+                if (!DB.history[TODAY]) { DB.history[TODAY] = { locked: false, carbCycle: 'high', weight: null, water: 0, foodLog: [], workoutLog: [], suppLog: {} }; }
                 if (!DB.history[TODAY].suppLog) DB.history[TODAY].suppLog = {};
 
-                // استدعاء كافة وظائف الواجهة
                 loadTargetSettings(); 
                 syncCarbCycleUI(); 
                 updateDashboard(); 
@@ -488,15 +522,11 @@
                 renderMeasurementsUI(); 
                 renderProgressPics();
 
-                // تشغيل الرادار الأوتوماتيكي
                 checkFoodQueue();
-
-            } catch(e) {
-                console.error("Initialization Error", e);
-            }
+            } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- الرادار الذكي (يشتغل كل ثانيتين للتأمين) ---
+        // --- الرادار ---
         function checkFoodQueue() {
             try {
                 let queueStr = localStorage.getItem('SakrOS_PendingFoodQueue');
@@ -504,10 +534,7 @@
                 
                 let pendingQueue = JSON.parse(queueStr);
                 if (pendingQueue && pendingQueue.length > 0) {
-                    if (DB.history[TODAY].locked) { 
-                        alert("تم إرسال وجبات من المطبخ، لكن يومك مغلق! افتح اليوم لتسجيلها."); 
-                        return; 
-                    }
+                    if (DB.history[TODAY].locked) { alert("المطبخ أرسل وجبات، لكن يومك مغلق! افتح اليوم للتسجيل."); return; }
 
                     let addedCount = 0;
                     pendingQueue.forEach(food => {
@@ -528,37 +555,26 @@
                     });
                     
                     localStorage.removeItem('SakrOS_PendingFoodQueue');
-                    saveDB(); 
-                    updateDashboard(); 
-                    renderDBLists(); 
+                    saveDB(); updateDashboard(); renderDBLists(); 
                     
                     if(addedCount > 0) {
                         if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
                         alert(`تم استلام ${addedCount} وجبة من المطبخ بنجاح! 🚀`);
                     }
                 }
-            } catch(e) {
-                console.error("Queue Error", e);
-            }
+            } catch(e) {}
         }
-
-        // تشغيل الرادار بشكل دوري تحسباً لعدم استجابة الـ Visibility API
         setInterval(checkFoodQueue, 2000);
+        window.addEventListener('visibilitychange', () => { if (!document.hidden) checkFoodQueue(); });
 
-        window.addEventListener('visibilitychange', () => { 
-            if (!document.hidden) checkFoodQueue(); 
-        });
-
-        // --- آلة الاستنساخ الزمني ---
+        // --- الاستنساخ ---
         function cloneYesterday() {
             if(DB.history[TODAY].locked) return alert("لا يمكن الاستنساخ، اليوم مغلق! 🔒");
-            
             let dates = Object.keys(DB.history).sort((a,b) => b.localeCompare(a));
             let yesterdayStr = dates.find(d => d < TODAY);
             if(!yesterdayStr) return alert("لا يوجد سجل سابق.");
             
             let yData = DB.history[yesterdayStr];
-            
             let hasFood = yData.foodLog && yData.foodLog.length > 0;
             let hasWork = yData.workoutLog && yData.workoutLog.length > 0;
             
@@ -567,9 +583,7 @@
 
             if(hasFood) {
                 DB.history[TODAY].foodLog = DB.history[TODAY].foodLog || [];
-                yData.foodLog.forEach(f => { 
-                    DB.history[TODAY].foodLog.push({ uid: Date.now() + Math.random().toString(), id: f.id }); 
-                });
+                yData.foodLog.forEach(f => { DB.history[TODAY].foodLog.push({ uid: Date.now() + Math.random().toString(), id: f.id }); });
             }
             if(hasWork) {
                 DB.history[TODAY].workoutLog = DB.history[TODAY].workoutLog || [];
@@ -578,39 +592,26 @@
                     DB.history[TODAY].workoutLog.push({ uid: Date.now() + Math.random().toString(), id: w.id, sets: newSets }); 
                 });
             }
-
-            saveDB(); 
-            updateDashboard(); 
-            renderForge();
+            saveDB(); updateDashboard(); renderForge();
             if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
             alert("تم الاستنساخ بنجاح! 🔄🔥");
         }
 
-        function saveDB() { 
-            localStorage.setItem('IronForge_V15_CLINIC', JSON.stringify(DB)); 
-        }
+        function saveDB() { localStorage.setItem('IronForge_V15_CLINIC', JSON.stringify(DB)); }
 
-        // --- واجهة التنقل والمودال ---
         function switchTab(viewId, element) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
             document.querySelectorAll('.tab-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active'); 
-            element.classList.add('active'); 
-            window.scrollTo(0,0);
+            document.getElementById('view-' + viewId).classList.add('active'); element.classList.add('active'); window.scrollTo(0,0);
             if(viewId === 'progress') { renderProgressLedger(); drawWeightChart(); renderMeasurementsUI(); renderProgressPics(); }
             if(viewId === 'db') renderDBLists();
         }
 
-        function openModal(id) { 
-            document.getElementById(id).style.display = 'flex'; 
-            if(id === 'modalFood') renderModalList('food'); 
-            if(id === 'modalEx') renderModalList('ex'); 
-        }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; if(id === 'modalFood') renderModalList('food'); if(id === 'modalEx') renderModalList('ex'); }
 
-        // --- المكملات والاستشفاء ---
+        // --- المكملات ---
         function renderSupps() {
-            let container = document.getElementById('ui-supps'); 
-            container.innerHTML = '';
+            let container = document.getElementById('ui-supps'); container.innerHTML = '';
             let log = DB.history[TODAY].suppLog || {};
             
             DB.suppDB.forEach(s => {
@@ -619,73 +620,22 @@
                 let doneClass = isDone ? 'done' : '';
                 
                 if(s.type === 'pill') {
-                    container.innerHTML += `
-                        <div class="supp-card ${doneClass}">
-                            <div class="supp-pill" onclick="togglePill(${s.id})">
-                                <div>
-                                    <div class="supp-title">${s.name}</div>
-                                    <div class="text-sub" style="font-size:0.75rem;">الهدف: ${s.target} ${s.unit}</div>
-                                </div>
-                                <div class="pill-circle"><i class="fas fa-check"></i></div>
-                            </div>
-                        </div>`;
+                    container.innerHTML += `<div class="supp-card ${doneClass}"><div class="supp-pill" onclick="togglePill(${s.id})"><div><div class="supp-title">${s.name}</div><div class="text-sub" style="font-size:0.75rem;">الهدف: ${s.target} ${s.unit}</div></div><div class="pill-circle"><i class="fas fa-check"></i></div></div></div>`;
                 } else {
                     let pct = Math.min((current / s.target) * 100, 100);
-                    container.innerHTML += `
-                        <div class="supp-card ${doneClass}">
-                            <div class="supp-dose">
-                                <div>
-                                    <div class="supp-title">${s.name}</div>
-                                    <div class="text-mono" style="font-size:0.8rem; color:var(--text-sub);">${current} / ${s.target} ${s.unit}</div>
-                                </div>
-                                <div class="dose-controls">
-                                    <button class="dose-btn" onclick="updateDose(${s.id}, -${s.step})">-</button>
-                                    <button class="dose-btn" onclick="updateDose(${s.id}, ${s.step})">+</button>
-                                </div>
-                            </div>
-                            <div class="dose-progress" style="width: ${pct}%;"></div>
-                        </div>`;
+                    container.innerHTML += `<div class="supp-card ${doneClass}"><div class="supp-dose"><div><div class="supp-title">${s.name}</div><div class="text-mono" style="font-size:0.8rem; color:var(--text-sub);">${current} / ${s.target} ${s.unit}</div></div><div class="dose-controls"><button class="dose-btn" onclick="updateDose(${s.id}, -${s.step})">-</button><button class="dose-btn" onclick="updateDose(${s.id}, ${s.step})">+</button></div></div><div class="dose-progress" style="width: ${pct}%;"></div></div>`;
                 }
             });
         }
+        function togglePill(id) { if(DB.history[TODAY].locked) return; if(!DB.history[TODAY].suppLog) DB.history[TODAY].suppLog = {}; let s = DB.suppDB.find(x => x.id === id); DB.history[TODAY].suppLog[id] = DB.history[TODAY].suppLog[id] >= s.target ? 0 : s.target; saveDB(); renderSupps(); }
+        function updateDose(id, amount) { if(DB.history[TODAY].locked) return; if(!DB.history[TODAY].suppLog) DB.history[TODAY].suppLog = {}; let current = DB.history[TODAY].suppLog[id] || 0; current += amount; if(current < 0) current = 0; DB.history[TODAY].suppLog[id] = current; saveDB(); renderSupps(); }
 
-        function togglePill(id) {
-            if(DB.history[TODAY].locked) return;
-            if(!DB.history[TODAY].suppLog) DB.history[TODAY].suppLog = {};
-            let s = DB.suppDB.find(x => x.id === id);
-            DB.history[TODAY].suppLog[id] = DB.history[TODAY].suppLog[id] >= s.target ? 0 : s.target;
-            saveDB(); renderSupps();
-        }
-
-        function updateDose(id, amount) {
-            if(DB.history[TODAY].locked) return;
-            if(!DB.history[TODAY].suppLog) DB.history[TODAY].suppLog = {};
-            let current = DB.history[TODAY].suppLog[id] || 0;
-            current += amount;
-            if(current < 0) current = 0;
-            DB.history[TODAY].suppLog[id] = current;
-            saveDB(); renderSupps();
-        }
-
-        // --- الماكروز والميكروز (الشاشة الرئيسية) ---
-        function syncCarbCycleUI() {
-            let mode = DB.history[TODAY].carbCycle || 'high'; 
-            document.querySelectorAll('.segment').forEach(s => s.classList.remove('active'));
-            if(mode==='high') document.querySelectorAll('.segment')[0].classList.add('active'); 
-            if(mode==='med') document.querySelectorAll('.segment')[1].classList.add('active'); 
-            if(mode==='low') document.querySelectorAll('.segment')[2].classList.add('active');
-        }
-        
-        function setCarbCycle(mode) { 
-            if(DB.history[TODAY].locked) return; 
-            DB.history[TODAY].carbCycle = mode; 
-            saveDB(); syncCarbCycleUI(); updateDashboard(); 
-        }
+        // --- داشبورد الماكروز والميكروز ---
+        function syncCarbCycleUI() { let mode = DB.history[TODAY].carbCycle || 'high'; document.querySelectorAll('.segment').forEach(s => s.classList.remove('active')); if(mode==='high') document.querySelectorAll('.segment')[0].classList.add('active'); if(mode==='med') document.querySelectorAll('.segment')[1].classList.add('active'); if(mode==='low') document.querySelectorAll('.segment')[2].classList.add('active'); }
+        function setCarbCycle(mode) { if(DB.history[TODAY].locked) return; DB.history[TODAY].carbCycle = mode; saveDB(); syncCarbCycleUI(); updateDashboard(); }
         
         function getDailyStats(dateStr) {
-            let day = DB.history[dateStr]; 
-            if(!day) return null; 
-            
+            let day = DB.history[dateStr]; if(!day) return null; 
             let cons = { kcal:0, p:0, c:0, f:0, zinc:0, iron:0, mag:0, calc:0, vitc:0, vitd:0, vita:0, omega:0 };
             
             (day.foodLog || []).forEach(f => { 
@@ -698,11 +648,7 @@
             });
             
             let burned = 0; let vol = 0; let setsDone = 0;
-            (day.workoutLog || []).forEach(w => { 
-                (w.sets || []).forEach(s => { 
-                    if(s.done) { burned += 15; vol += (s.kg * s.reps); setsDone++; } 
-                }); 
-            });
+            (day.workoutLog || []).forEach(w => { (w.sets || []).forEach(s => { if(s.done) { burned += 15; vol += (s.kg * s.reps); setsDone++; } }); });
             
             let target = DB.settings.targets[day.carbCycle || 'high']; 
             return { cons, burned, vol, setsDone, target, isLocked: day.locked, typeLabel: target.label };
@@ -710,139 +656,74 @@
 
         function updateDashboard() {
             try {
-                let stats = getDailyStats(TODAY); 
-                let day = DB.history[TODAY];
+                let stats = getDailyStats(TODAY); let day = DB.history[TODAY];
                 
                 let badge = document.getElementById('lockBadge');
-                if(stats.isLocked) { 
-                    badge.innerHTML = '<i class="fas fa-lock"></i> مقفل'; 
-                    badge.className = 'lock-badge locked'; 
-                } else { 
-                    badge.innerHTML = '<i class="fas fa-unlock"></i> نشط'; 
-                    badge.className = 'lock-badge'; 
-                }
+                if(stats.isLocked) { badge.innerHTML = '<i class="fas fa-lock"></i> مقفل'; badge.className = 'lock-badge locked'; } else { badge.innerHTML = '<i class="fas fa-unlock"></i> نشط'; badge.className = 'lock-badge'; }
                 document.getElementById('carbCycleControl').style.pointerEvents = stats.isLocked ? 'none' : 'auto';
 
                 let remKcal = (stats.target.kcal - stats.cons.kcal) + stats.burned;
-                document.getElementById('ui-goal-kcal').innerText = stats.target.kcal; 
-                document.getElementById('ui-burn-kcal').innerText = stats.burned; 
-                document.getElementById('ui-food-total').innerText = `${stats.cons.kcal} Kcal`;
-                document.getElementById('ui-rem-kcal').innerText = Math.round(remKcal); 
-                document.getElementById('ui-rem-kcal').style.color = remKcal < 0 ? 'var(--apple-red)' : 'var(--apple-green)';
+                document.getElementById('ui-goal-kcal').innerText = stats.target.kcal; document.getElementById('ui-burn-kcal').innerText = stats.burned; document.getElementById('ui-food-total').innerText = `${stats.cons.kcal} Kcal`;
+                document.getElementById('ui-rem-kcal').innerText = Math.round(remKcal); document.getElementById('ui-rem-kcal').style.color = remKcal < 0 ? 'var(--apple-red)' : 'var(--apple-green)';
 
-                const updateBar = (id, current, max) => { 
-                    document.getElementById(`ui-${id}-text`).innerText = `${current} / ${max}g`; 
-                    let pct = max>0 ? (current/max)*100 : 0; 
-                    document.getElementById(`ui-${id}-bar`).style.width = `${Math.min(pct,100)}%`; 
-                    document.getElementById(`ui-${id}-bar`).style.background = pct>100 ? 'var(--apple-red)' : ''; 
-                };
-                
-                updateBar('pro', stats.cons.p, stats.target.p); 
-                updateBar('carb', stats.cons.c, stats.target.c); 
-                updateBar('fat', stats.cons.f, stats.target.f);
+                const updateBar = (id, current, max) => { document.getElementById(`ui-${id}-text`).innerText = `${current} / ${max}g`; let pct = max>0 ? (current/max)*100 : 0; document.getElementById(`ui-${id}-bar`).style.width = `${Math.min(pct,100)}%`; document.getElementById(`ui-${id}-bar`).style.background = pct>100 ? 'var(--apple-red)' : ''; };
+                updateBar('pro', stats.cons.p, stats.target.p); updateBar('carb', stats.cons.c, stats.target.c); updateBar('fat', stats.cons.f, stats.target.f);
 
+                // Update Micros Radar (With Progress Bars)
+                let mTargets = DB.settings.microTargets;
                 ['zinc','iron','calc','mag','vitc','vitd','vita','omega'].forEach(m => {
-                    document.getElementById(`ui-${m}`).innerText = stats.cons[m] || 0;
+                    let current = stats.cons[m] || 0;
+                    let target = mTargets[m] || 1;
+                    
+                    document.getElementById(`ui-${m}`).innerText = current;
+                    document.getElementById(`ui-${m}-tgt`).innerText = `/${target}`;
+                    
+                    let pct = Math.min((current / target) * 100, 100);
+                    let bar = document.getElementById(`ui-${m}-bar`);
+                    if(bar) {
+                        bar.style.width = pct + '%';
+                        if(pct >= 100) bar.classList.add('done'); else bar.classList.remove('done');
+                    }
                 });
 
                 renderSupps();
 
-                const list = document.getElementById('foodListContainer'); 
-                list.innerHTML = '';
-                if(!day.foodLog || day.foodLog.length === 0) {
-                    list.innerHTML = '<div style="text-align:center; padding:15px; color:var(--text-sub); font-size:0.85rem;">لم يتم تسجيل طعام اليوم.</div>';
-                }
-                
+                const list = document.getElementById('foodListContainer'); list.innerHTML = '';
+                if(!day.foodLog || day.foodLog.length === 0) list.innerHTML = '<div style="text-align:center; padding:15px; color:var(--text-sub); font-size:0.85rem;">لم يتم تسجيل طعام اليوم.</div>';
                 (day.foodLog || []).forEach(entry => {
-                    let dbItem = DB.foodDB.find(x => x.id === entry.id); 
-                    if(!dbItem) return;
+                    let dbItem = DB.foodDB.find(x => x.id === entry.id); if(!dbItem) return;
                     list.innerHTML += `<div class="list-item"><div><div style="font-weight:900; color:#fff; font-size:1.05rem;">${dbItem.name}</div><div class="text-sub">P:${dbItem.p} • C:${dbItem.c} • F:${dbItem.f}</div></div><div class="flex-between" style="gap:15px;"><span class="text-mono" style="color:var(--gold); font-size:1.1rem;">${dbItem.kcal}</span>${!stats.isLocked ? `<span style="color:var(--apple-red); font-size:1.4rem; cursor:pointer; background:rgba(255,59,48,0.1); width:35px; height:35px; border-radius:10px; display:flex; justify-content:center; align-items:center; transition:0.2s;" onclick="delFood('${entry.uid}')"><i class="fas fa-times"></i></span>` : ''}</div></div>`;
                 });
-            } catch(e) {
-                console.error("Dashboard Error", e);
-            }
+            } catch(e) {}
         }
 
-        // --- إدارة الأطعمة والتمارين اليومية ---
-        function renderModalList(type) { 
-            const list = document.getElementById(type === 'food' ? 'modalFoodItems' : 'modalExItems'); 
-            list.innerHTML = ''; 
-            let dbArr = type === 'food' ? DB.foodDB : DB.exDB; 
-            dbArr.forEach(item => { 
-                let sub = type === 'food' ? `${item.kcal} Kcal` : ''; 
-                list.innerHTML += `<div class="list-item" style="cursor:pointer;" onclick="addItem('${type}', ${item.id})"><div><div style="font-weight:800; color:#fff; font-size:1.05rem;">${item.name}</div><div class="text-sub">${sub}</div></div><div style="color:var(--apple-blue); font-weight:900; font-size:1.5rem;"><i class="fas fa-plus-circle"></i></div></div>`; 
-            }); 
-        }
-        
-        function addItem(type, id) { 
-            if(DB.history[TODAY].locked) return; 
-            let uid = Date.now() + Math.floor(Math.random()*1000).toString();
-            if(type === 'food') { 
-                DB.history[TODAY].foodLog = DB.history[TODAY].foodLog || []; 
-                DB.history[TODAY].foodLog.push({ uid: uid, id: id }); 
-            } 
-            if(type === 'ex') { 
-                DB.history[TODAY].workoutLog = DB.history[TODAY].workoutLog || []; 
-                DB.history[TODAY].workoutLog.push({ uid: uid, id: id, sets: [] }); 
-            } 
-            saveDB(); updateDashboard(); renderForge(); closeAll(); 
-        }
-        
-        function delFood(uid) { 
-            DB.history[TODAY].foodLog = DB.history[TODAY].foodLog.filter(f => String(f.uid) !== String(uid)); 
-            saveDB(); updateDashboard(); 
-        }
+        // --- قوائم الطعام والتمارين ---
+        function renderModalList(type) { const list = document.getElementById(type === 'food' ? 'modalFoodItems' : 'modalExItems'); list.innerHTML = ''; let dbArr = type === 'food' ? DB.foodDB : DB.exDB; dbArr.forEach(item => { let sub = type === 'food' ? `${item.kcal} Kcal` : ''; list.innerHTML += `<div class="list-item" style="cursor:pointer;" onclick="addItem('${type}', ${item.id})"><div><div style="font-weight:800; color:#fff; font-size:1.05rem;">${item.name}</div><div class="text-sub">${sub}</div></div><div style="color:var(--apple-blue); font-weight:900; font-size:1.5rem;"><i class="fas fa-plus-circle"></i></div></div>`; }); }
+        function addItem(type, id) { if(DB.history[TODAY].locked) return; let uid = Date.now() + Math.floor(Math.random()*1000).toString(); if(type === 'food') { DB.history[TODAY].foodLog = DB.history[TODAY].foodLog || []; DB.history[TODAY].foodLog.push({ uid: uid, id: id }); } if(type === 'ex') { DB.history[TODAY].workoutLog = DB.history[TODAY].workoutLog || []; DB.history[TODAY].workoutLog.push({ uid: uid, id: id, sets: [] }); } saveDB(); updateDashboard(); renderForge(); closeAll(); }
+        function delFood(uid) { DB.history[TODAY].foodLog = DB.history[TODAY].foodLog.filter(f => String(f.uid) !== String(uid)); saveDB(); updateDashboard(); }
 
         function renderForge() {
             try {
-                const container = document.getElementById('workoutContainer'); 
-                container.innerHTML = ''; 
-                let day = DB.history[TODAY]; 
-                let isLocked = day.locked; 
-                let vol = 0;
-                
-                if(!day.workoutLog || day.workoutLog.length === 0) {
-                    container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-sub); font-size:0.9rem;">لا توجد تمارين مسجلة اليوم.</div>';
-                }
-                
+                const container = document.getElementById('workoutContainer'); container.innerHTML = ''; let day = DB.history[TODAY]; let isLocked = day.locked; let vol = 0;
+                if(!day.workoutLog || day.workoutLog.length === 0) container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-sub); font-size:0.9rem;">لا توجد تمارين.</div>';
                 (day.workoutLog || []).forEach((w, wIdx) => {
-                    let dbEx = DB.exDB.find(x => x.id === w.id); 
-                    let setsHtml = '';
-                    
+                    let dbEx = DB.exDB.find(x => x.id === w.id); let setsHtml = '';
                     (w.sets || []).forEach((s, sIdx) => {
-                        if(s.done) vol += (s.kg * s.reps); 
-                        let disabled = isLocked ? 'disabled' : '';
+                        if(s.done) vol += (s.kg * s.reps); let disabled = isLocked ? 'disabled' : '';
                         setsHtml += `<div class="set-row ${s.done ? 'done' : ''}"><div style="font-family:monospace; color:var(--text-sub); font-weight:900; font-size:1.1rem; text-align:center;">${sIdx + 1}</div><input type="number" placeholder="Kg" value="${s.kg}" onchange="updateSet('${w.uid}',${sIdx},'kg',this.value)" ${disabled} style="margin:0; text-align:center; background:rgba(0,0,0,0.5);"><input type="number" placeholder="Reps" value="${s.reps}" onchange="updateSet('${w.uid}',${sIdx},'reps',this.value)" ${disabled} style="margin:0; text-align:center; background:rgba(0,0,0,0.5);"><div class="check-circle" onclick="${isLocked ? '' : `toggleSet('${w.uid}',${sIdx})`}"><i class="fas fa-check"></i></div></div>`;
                     });
-                    
                     container.innerHTML += `<div class="ios-card" style="padding: 18px;"><div class="flex-between" style="margin-bottom:15px; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:12px;"><h2 style="margin:0; border:none; color:var(--apple-cyan);">${dbEx ? dbEx.name : 'Unknown'}</h2><div style="display:flex; gap:10px;">${!isLocked ? `<div style="background:rgba(0, 188, 212, 0.1); color:var(--apple-cyan); padding:6px 12px; border-radius:10px; font-weight:900; cursor:pointer; font-size:0.85rem; transition:0.2s;" onclick="addSet('${w.uid}')">+ Set</div>` : ''}${!isLocked ? `<div style="background:rgba(255, 69, 58, 0.1); color:var(--apple-red); padding:6px 12px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:0.85rem;" onclick="delEx('${w.uid}')"><i class="fas fa-trash"></i></div>` : ''}</div></div><div class="set-row text-sub" style="margin-bottom:10px; text-align:center; font-weight:800; font-size:0.8rem;"><div>مجموعة</div><div>الوزن</div><div>التكرار</div><div>تم</div></div>${setsHtml}</div>`;
                 });
-                
-                document.getElementById('ui-volume').innerHTML = `${vol} <span style="font-size:1.2rem; color:var(--text-sub);">kg</span>`; 
-                updateDashboard();
-            } catch(e) {
-                console.error("Forge Error", e);
-            }
+                document.getElementById('ui-volume').innerHTML = `${vol} <span style="font-size:1.2rem; color:var(--text-sub);">kg</span>`; updateDashboard();
+            } catch(e) {}
         }
-        
         function addSet(uid) { let w = DB.history[TODAY].workoutLog.find(x => String(x.uid) === String(uid)); if(!w) return; let last = w.sets[w.sets.length-1]; w.sets.push({ kg: last ? last.kg : '', reps: last ? last.reps : '', done: false }); saveDB(); renderForge(); }
         function updateSet(uid, sIdx, f, v) { let w = DB.history[TODAY].workoutLog.find(x => String(x.uid) === String(uid)); if(!w) return; w.sets[sIdx][f] = parseFloat(v) || 0; saveDB(); updateDashboard(); }
-        function toggleSet(uid, sIdx) { 
-            let w = DB.history[TODAY].workoutLog.find(x => String(x.uid) === String(uid)); if(!w) return; 
-            w.sets[sIdx].done = !w.sets[sIdx].done; saveDB(); renderForge(); 
-            // تشغيل العداد تلقائياً عند إنهاء المجموعة
-            if(w.sets[sIdx].done && document.getElementById('view-train').classList.contains('active')) {
-                startTimer(90);
-            }
-        }
+        function toggleSet(uid, sIdx) { let w = DB.history[TODAY].workoutLog.find(x => String(x.uid) === String(uid)); if(!w) return; w.sets[sIdx].done = !w.sets[sIdx].done; saveDB(); renderForge(); if(w.sets[sIdx].done && document.getElementById('view-train').classList.contains('active')) { startTimer(90); } }
         function delEx(uid) { if(confirm('حذف التمرين؟')) { DB.history[TODAY].workoutLog = DB.history[TODAY].workoutLog.filter(w => String(w.uid) !== String(uid)); saveDB(); renderForge(); } }
 
-        // --- PROGRESS ---
-        function toggleDayLock() { 
-            DB.history[TODAY].locked = !DB.history[TODAY].locked; 
-            saveDB(); updateDashboard(); renderForge(); renderWaterTracker(); renderSupps(); window.scrollTo(0,0); 
-        }
-        
+        // --- التقدم والتسجيل ---
+        function toggleDayLock() { DB.history[TODAY].locked = !DB.history[TODAY].locked; saveDB(); updateDashboard(); renderForge(); renderWaterTracker(); renderSupps(); window.scrollTo(0,0); }
         function logMeasurements() { let belly = document.getElementById('inpBelly').value; let neck = document.getElementById('inpNeck').value; let arm = document.getElementById('inpArm').value; let thigh = document.getElementById('inpThigh').value; if(!belly && !neck && !arm && !thigh) return; DB.measurements[TODAY] = { belly, neck, arm, thigh }; saveDB(); renderMeasurementsUI(); alert('تم الحفظ بنجاح!'); }
         function renderMeasurementsUI() { let latestDate = Object.keys(DB.measurements).sort((a,b) => b.localeCompare(a))[0]; let ui = document.getElementById('latestMeasurements'); if(latestDate) { let m = DB.measurements[latestDate]; ui.innerHTML = `آخر قياس (${latestDate}): <br> بطن: ${m.belly||'--'} | رقبة: ${m.neck||'--'} | ذراع: ${m.arm||'--'} | فخذ: ${m.thigh||'--'}`; } }
 
@@ -857,8 +738,46 @@
         function renderWaterTracker() { const grid = document.getElementById('waterGrid'); grid.innerHTML = ''; let current = DB.history[TODAY].water || 0; document.getElementById('ui-water-text').innerText = `${current * 0.5} / 4L`; for(let i=1; i<=8; i++) { let fillClass = i <= current ? 'filled' : ''; grid.innerHTML += `<div class="water-drop ${fillClass}" onclick="toggleWater(${i})"></div>`; } }
         function toggleWater(index) { if(DB.history[TODAY].locked) return; if(DB.history[TODAY].water === index) DB.history[TODAY].water = index - 1; else DB.history[TODAY].water = index; saveDB(); renderWaterTracker(); }
 
-        function loadTargetSettings() { let mode = document.getElementById('targetModeSelect').value; let t = DB.settings.targets[mode]; document.getElementById('targetKcal').value = t.kcal; document.getElementById('targetPro').value = t.p; document.getElementById('targetCarb').value = t.c; document.getElementById('targetFat').value = t.f; }
-        function saveTargetSettings() { let mode = document.getElementById('targetModeSelect').value; DB.settings.targets[mode].kcal = parseInt(document.getElementById('targetKcal').value)||0; DB.settings.targets[mode].p = parseInt(document.getElementById('targetPro').value)||0; DB.settings.targets[mode].c = parseInt(document.getElementById('targetCarb').value)||0; DB.settings.targets[mode].f = parseInt(document.getElementById('targetFat').value)||0; saveDB(); updateDashboard(); alert("تم التحديث!"); }
+        // --- الإعدادات وقاعدة البيانات ---
+        function loadTargetSettings() { 
+            let mode = document.getElementById('targetModeSelect').value; 
+            let t = DB.settings.targets[mode]; 
+            document.getElementById('targetKcal').value = t.kcal; 
+            document.getElementById('targetPro').value = t.p; 
+            document.getElementById('targetCarb').value = t.c; 
+            document.getElementById('targetFat').value = t.f; 
+            
+            let m = DB.settings.microTargets;
+            document.getElementById('t-zinc').value = m.zinc;
+            document.getElementById('t-iron').value = m.iron;
+            document.getElementById('t-calc').value = m.calc;
+            document.getElementById('t-mag').value = m.mag;
+            document.getElementById('t-vitc').value = m.vitc;
+            document.getElementById('t-vitd').value = m.vitd;
+            document.getElementById('t-vita').value = m.vita;
+            document.getElementById('t-omega').value = m.omega;
+        }
+        
+        function saveTargetSettings() { 
+            let mode = document.getElementById('targetModeSelect').value; 
+            DB.settings.targets[mode].kcal = parseInt(document.getElementById('targetKcal').value)||0; 
+            DB.settings.targets[mode].p = parseInt(document.getElementById('targetPro').value)||0; 
+            DB.settings.targets[mode].c = parseInt(document.getElementById('targetCarb').value)||0; 
+            DB.settings.targets[mode].f = parseInt(document.getElementById('targetFat').value)||0; 
+            
+            DB.settings.microTargets = {
+                zinc: parseInt(document.getElementById('t-zinc').value)||1,
+                iron: parseInt(document.getElementById('t-iron').value)||1,
+                calc: parseInt(document.getElementById('t-calc').value)||1,
+                mag: parseInt(document.getElementById('t-mag').value)||1,
+                vitc: parseInt(document.getElementById('t-vitc').value)||1,
+                vitd: parseInt(document.getElementById('t-vitd').value)||1,
+                vita: parseInt(document.getElementById('t-vita').value)||1,
+                omega: parseInt(document.getElementById('t-omega').value)||1
+            };
+            
+            saveDB(); updateDashboard(); alert("تم التحديث بنجاح!"); 
+        }
 
         function openGroupMaker(type) { currentGroupType = type; document.getElementById('buildGroupTitle').innerText = type === 'food' ? 'إنشاء قالب وجبة' : 'إنشاء روتين تمرين'; document.getElementById('groupNameInp').value = ''; const list = document.getElementById('groupChecklist'); list.innerHTML = ''; let dbArr = type === 'food' ? DB.foodDB : DB.exDB; dbArr.forEach(item => { let sub = type === 'food' ? `${item.kcal} kcal` : ''; list.innerHTML += `<div class="list-item" style="padding:12px;"><label class="chk-container"><input type="checkbox" value="${item.id}" class="group-chk"><div><div style="font-weight:800; color:#fff;">${item.name}</div><div class="text-sub">${sub}</div></div></label></div>`; }); openModal('modalCreateGroup'); }
         function saveGroup() { let name = document.getElementById('groupNameInp').value; if(!name) return alert("اكتب اسم القالب!"); let checkedIds = Array.from(document.querySelectorAll('.group-chk:checked')).map(cb => parseInt(cb.value)); if(checkedIds.length === 0) return alert("اختر عنصر واحد على الأقل"); if(currentGroupType === 'food') DB.mealGroups.push({ id: Date.now(), name: name, items: checkedIds }); else DB.routines.push({ id: Date.now(), name: name, items: checkedIds }); saveDB(); closeAll(); alert("تم الحفظ بنجاح!"); }
@@ -869,11 +788,8 @@
         function drawWeightChart() { 
             try {
                 const svg = document.getElementById('weightChart'); const tooltip = document.getElementById('chartTooltip'); svg.innerHTML = ''; 
-                let dates = Object.keys(DB.history).sort((a,b) => a.localeCompare(b)); 
-                let weightData = []; 
-                dates.forEach(d => { if(DB.history[d].weight) weightData.push({ date: d, weight: DB.history[d].weight }); }); 
-                weightData = weightData.slice(-7); 
-                if(weightData.length < 2) { svg.innerHTML = '<text x="50%" y="50%" fill="var(--text-sub)" text-anchor="middle" font-size="0.85rem" font-weight="800">سجل وزنين على الأقل لرسم المنحنى</text>'; return; } 
+                let dates = Object.keys(DB.history).sort((a,b) => a.localeCompare(b)); let weightData = []; dates.forEach(d => { if(DB.history[d].weight) weightData.push({ date: d, weight: DB.history[d].weight }); }); 
+                weightData = weightData.slice(-7); if(weightData.length < 2) { svg.innerHTML = '<text x="50%" y="50%" fill="var(--text-sub)" text-anchor="middle" font-size="0.85rem" font-weight="800">سجل وزنين على الأقل لرسم المنحنى</text>'; return; } 
                 let maxW = Math.max(...weightData.map(d=>d.weight))+2; let minW = Math.min(...weightData.map(d=>d.weight))-2; let range = maxW - minW; 
                 let w = svg.clientWidth || 300; let h = 180; let points = ""; let circles = ""; 
                 weightData.forEach((d, i) => { 
@@ -901,7 +817,6 @@
             } catch(e) {}
         }
 
-        // --- DB OPS ---
         function saveSuppDB() { let name = document.getElementById('dbS-name').value; let type = document.getElementById('dbS-type').value; let unit = document.getElementById('dbS-unit').value || 'unit'; let target = parseFloat(document.getElementById('dbS-target').value)||1; let step = parseFloat(document.getElementById('dbS-step').value)||1; if(!name) return; DB.suppDB.unshift({ id: Date.now(), name, type, unit, target, step }); saveDB(); renderDBLists(); document.getElementById('dbS-name').value=''; document.getElementById('dbS-target').value=''; document.getElementById('dbS-step').value=''; }
         function saveFoodDB() { let name = document.getElementById('dbF-name').value; let p = parseFloat(document.getElementById('dbF-p').value)||0; let c = parseFloat(document.getElementById('dbF-c').value)||0; let f = parseFloat(document.getElementById('dbF-f').value)||0; let zinc = parseFloat(document.getElementById('dbF-zinc').value)||0; let iron = parseFloat(document.getElementById('dbF-iron').value)||0; let mag = parseFloat(document.getElementById('dbF-mag').value)||0; let calc = parseFloat(document.getElementById('dbF-calc').value)||0; let vitc = parseFloat(document.getElementById('dbF-vitc').value)||0; let vitd = parseFloat(document.getElementById('dbF-vitd').value)||0; let vita = parseFloat(document.getElementById('dbF-vita').value)||0; let omega = parseFloat(document.getElementById('dbF-omega').value)||0; if(!name) return alert("اكتب اسم الأكلة!"); DB.foodDB.unshift({ id: Date.now(), name, p, c, f, kcal: (p*4 + c*4 + f*9), zinc, iron, mag, calc, vitc, vitd, vita, omega }); saveDB(); renderDBLists(); document.querySelectorAll('input[id^="dbF"]').forEach(i=>i.value=''); }
         function saveExDB() { let name = document.getElementById('dbE-name').value; if(!name) return; DB.exDB.unshift({ id: Date.now(), name }); saveDB(); renderDBLists(); document.getElementById('dbE-name').value=''; }
@@ -916,7 +831,7 @@
         function deleteFromDB(type, id) { if(!confirm("حذف العنصر نهائياً؟")) return; if(type === 'food') DB.foodDB = DB.foodDB.filter(x => x.id !== id); else if(type === 'supp') DB.suppDB = DB.suppDB.filter(x => x.id !== id); else DB.exDB = DB.exDB.filter(x => x.id !== id); saveDB(); renderDBLists(); }
 
         function exportBackup() { const blob = new Blob([JSON.stringify(DB)], {type:"application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `IronForge_Backup_${TODAY}.json`; document.body.appendChild(a); a.click(); a.remove(); }
-        function importBackup(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const imported = JSON.parse(e.target.result); if(imported.history) { if(confirm('هل أنت متأكد من مسح الحالي واسترجاع النسخة؟')) { DB = imported; saveDB(); alert("تم استرجاع البيانات! 🦅"); location.reload(); } } else { alert("الملف غير صالح."); } } catch(err) { alert("حدث خطأ أثناء القراءة."); } }; reader.readAsText(file); }
+        function importBackup(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const imported = JSON.parse(e.target.result); if(imported.history) { if(confirm('هل أنت متأكد من استرجاع النسخة؟')) { DB = imported; saveDB(); alert("تم استرجاع البيانات! 🦅"); location.reload(); } } else { alert("الملف غير صالح."); } } catch(err) { alert("حدث خطأ أثناء القراءة."); } }; reader.readAsText(file); }
 
         window.addEventListener('resize', () => { if(document.getElementById('view-progress').classList.contains('active')) drawWeightChart(); });
     </script>
