@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAKR OS | Crimson Kitchen (Macro Edition)</title>
+    <title>SAKR OS | Crimson Kitchen (Clinic Edition)</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <meta name="theme-color" content="#050505">
     
     <style>
-        /* ================= DEEP BLACK & CRIMSON (MACRO EDITION) ================= */
+        /* ================= DEEP BLACK & CRIMSON ================= */
         :root {
             --bg-main: #050505;      
             --card-bg: #111111;      
@@ -18,10 +18,10 @@
             --border: rgba(229, 57, 53, 0.2); 
             
             --accent-red: #E53935;  
-            --cyan: #00bcd4; /* Protein */
-            --gold: #FFB700; /* Carbs */
-            --purple: #BF5AF2; /* Fats */
-            --green: #30D158; /* Export */
+            --cyan: #00bcd4; 
+            --gold: #FFB700; 
+            --purple: #BF5AF2; 
+            --green: #30D158; 
             
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.6);
@@ -97,7 +97,7 @@
         .upload-box.has-img { border: none; }
 
         .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
-        .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;}
+        .row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;}
 
         .btn-submit { background: var(--accent-red); color: #fff; border: none; padding: 18px; border-radius: 16px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 5px 20px rgba(229, 57, 53, 0.3); transition: 0.2s;}
         .btn-submit:active { transform: scale(0.97); }
@@ -114,11 +114,16 @@
         .scaler-val { font-size: 1rem; font-weight: 900; color: var(--accent-red); font-family: monospace; background: rgba(229, 57, 53, 0.1); padding: 2px 8px; border-radius: 8px;}
         .scaler-slider { width: 100%; accent-color: var(--accent-red); height: 6px; background: rgba(255,255,255,0.1); outline: none; border-radius: 3px;}
 
-        /* 🔥 MACROS BAR UPDATE 🔥 */
+        /* 🔥 MACROS & MICROS BAR 🔥 */
         .v-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .v-stat-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03); padding: 10px 5px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;}
         .v-val { font-size: 1.1rem; font-weight: 900; font-family: monospace; color: #fff;}
         .v-lbl { font-size: 0.6rem; color: var(--text-secondary); font-weight: 900; letter-spacing: 0.5px;}
+
+        .micro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+        .micro-box { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.03); padding: 8px 5px; border-radius: 10px; text-align: center;}
+        .micro-val { font-size: 0.9rem; font-weight: 900; color: #fff; font-family: monospace;}
+        .micro-lbl { font-size: 0.55rem; color: var(--text-secondary); font-weight: 900; margin-top: 2px;}
 
         .v-section { background: var(--card-bg); padding: 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.03);}
         .s-head { font-size: 1rem; font-weight: 900; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;}
@@ -136,22 +141,6 @@
         .btn-data:active { transform: scale(0.97); background: rgba(229, 57, 53, 0.1); }
         .gemini-paste { background: rgba(0, 188, 212, 0.05); border: 1px solid rgba(0, 188, 212, 0.3); color: var(--cyan); margin-top: 15px;}
     </style>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC0eaAz23LDPwI_-zXMOL4U_QOFbLqVTX0",
-            authDomain: "sakr-d12dc.firebaseapp.com",
-            databaseURL: "https://sakr-d12dc-default-rtdb.firebaseio.com",
-            projectId: "sakr-d12dc",
-            storageBucket: "sakr-d12dc.firebasestorage.app",
-            messagingSenderId: "874423050089",
-            appId: "1:874423050089:web:b25dd95e5a1f7c3bd867f8"
-        };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const dbCloud = firebase.database();
-    </script>
 </head>
 <body>
 
@@ -167,8 +156,8 @@
     <div class="controls">
         <div class="filters">
             <div class="chip active" onclick="filterData('All', this)">الكتالوج</div>
-            <div class="chip" onclick="filterData('Italian', this)">إيطالي 🇮🇹</div>
             <div class="chip" onclick="filterData('Protein', this)">عضلات 💪</div>
+            <div class="chip" onclick="filterData('Italian', this)">إيطالي 🇮🇹</div>
             <div class="chip" onclick="filterData('Fast', this)">سريع ⚡</div>
             <div class="chip" onclick="filterData('Dessert', this)">حلى 🍰</div>
         </div>
@@ -180,26 +169,24 @@
     <div class="modal" id="addModal">
         <div class="modal-content">
             <div class="m-header">
-                إضافة لوحة غذائية كاملة
+                إضافة وجبة ذكية
                 <div class="m-close" onclick="closeAll()"><i class="fas fa-times"></i></div>
             </div>
             
             <div class="input-group">
-                <label>اسم الوجبة</label>
-                <input type="text" id="iTitle" placeholder="مثال: دجاج بالرز...">
+                <input type="text" id="iTitle" placeholder="اسم الوجبة (مثال: شوفان بروتين)...">
             </div>
             
             <div class="input-group">
-                <label>صورة الوجبة (من جهازك)</label>
                 <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInp').click()">
                     <img id="imgPreview" src="">
                     <i class="fas fa-camera" style="font-size:1.8rem; margin-bottom:5px; color:var(--accent-red);"></i>
+                    <div style="font-size:0.8rem;">صورة الوجبة</div>
                 </div>
                 <input type="file" id="fileInp" accept="image/*" style="display:none;" onchange="processImage(event)">
             </div>
 
             <div class="input-group">
-                <label>التصنيف</label>
                 <select id="iCat">
                     <option value="Protein">عضلات 💪</option>
                     <option value="Italian">إيطالي 🇮🇹</option>
@@ -208,40 +195,40 @@
                 </select>
             </div>
 
+            <label style="font-size:0.85rem; color:var(--text-secondary); font-weight:800; margin-top:10px;">الماكروز الأساسية:</label>
             <div class="row-2">
-                <div class="input-group">
-                    <label style="color:var(--accent-red);">السعرات (Kcal)</label>
-                    <input type="number" id="iCals" placeholder="مثال: 400">
-                </div>
-                <div class="input-group">
-                    <label style="color:var(--cyan);">البروتين (g)</label>
-                    <input type="number" id="iPro" placeholder="مثال: 30">
-                </div>
+                <input type="number" id="iCals" placeholder="Kcal السعرات">
+                <input type="number" id="iPro" placeholder="Pro البروتين (g)">
             </div>
-            <div class="row-2" style="margin-top: 5px;">
-                <div class="input-group">
-                    <label style="color:var(--gold);">الكارب (g)</label>
-                    <input type="number" id="iCarbs" placeholder="مثال: 45">
-                </div>
-                <div class="input-group">
-                    <label style="color:var(--purple);">الدهون (g)</label>
-                    <input type="number" id="iFats" placeholder="مثال: 12">
-                </div>
+            <div class="row-2">
+                <input type="number" id="iCarbs" placeholder="Carbs الكارب (g)">
+                <input type="number" id="iFats" placeholder="Fats الدهون (g)">
             </div>
 
-            <div class="input-group" style="margin-top: 5px;">
-                <label>التكلفة التقريبية (ج.م)</label>
-                <input type="number" id="iCost" placeholder="مثال: 45">
+            <label style="font-size:0.85rem; color:var(--purple); font-weight:800; margin-top:10px;">الفيتامينات والمعادن (اختياري):</label>
+            <div class="row-4">
+                <input type="number" id="iZinc" placeholder="Zinc mg">
+                <input type="number" id="iIron" placeholder="Iron mg">
+                <input type="number" id="iMag" placeholder="Mag mg">
+                <input type="number" id="iCalc" placeholder="Calc mg">
+            </div>
+            <div class="row-4">
+                <input type="number" id="iVitC" placeholder="VitC mg">
+                <input type="number" id="iVitD" placeholder="VitD IU">
+                <input type="number" id="iVitA" placeholder="VitA IU">
+                <input type="number" id="iOmega" placeholder="Omg3 mg">
             </div>
 
-            <div class="input-group">
-                <label>المكونات (الكميات بالأرقام)</label>
-                <textarea id="iIng" placeholder="100 جرام دجاج..."></textarea>
+            <div class="input-group" style="margin-top: 10px;">
+                <input type="number" id="iCost" placeholder="التكلفة التقريبية (ج.م)">
             </div>
 
             <div class="input-group">
-                <label>خطوات الطبخ</label>
-                <textarea id="iSteps" placeholder="1. اشوي الدجاج..."></textarea>
+                <textarea id="iIng" placeholder="المكونات (مثال: 100 جرام شوفان...)"></textarea>
+            </div>
+
+            <div class="input-group">
+                <textarea id="iSteps" placeholder="خطوات الطبخ..."></textarea>
             </div>
 
             <button class="btn-submit" id="btnSave" onclick="saveRecipe()">حفظ الوصفة الشاملة</button>
@@ -266,22 +253,21 @@
             </div>
 
             <div class="v-stats-bar">
-                <div class="v-stat-card">
-                    <div class="v-val" style="color:var(--accent-red);" id="vCals">0</div>
-                    <div class="v-lbl">CALS</div>
-                </div>
-                <div class="v-stat-card">
-                    <div class="v-val" style="color:var(--cyan);" id="vPro">0g</div>
-                    <div class="v-lbl">PRO</div>
-                </div>
-                <div class="v-stat-card">
-                    <div class="v-val" style="color:var(--gold);" id="vCarbs">0g</div>
-                    <div class="v-lbl">CARB</div>
-                </div>
-                <div class="v-stat-card">
-                    <div class="v-val" style="color:var(--purple);" id="vFats">0g</div>
-                    <div class="v-lbl">FAT</div>
-                </div>
+                <div class="v-stat-card"><div class="v-val" style="color:var(--accent-red);" id="vCals">0</div><div class="v-lbl">CALS</div></div>
+                <div class="v-stat-card"><div class="v-val" style="color:var(--cyan);" id="vPro">0g</div><div class="v-lbl">PRO</div></div>
+                <div class="v-stat-card"><div class="v-val" style="color:var(--gold);" id="vCarbs">0g</div><div class="v-lbl">CARB</div></div>
+                <div class="v-stat-card"><div class="v-val" style="color:var(--purple);" id="vFats">0g</div><div class="v-lbl">FAT</div></div>
+            </div>
+
+            <div class="micro-grid">
+                <div class="micro-box"><div class="micro-val" id="vZinc">0</div><div class="micro-lbl">Zinc (mg)</div></div>
+                <div class="micro-box"><div class="micro-val" id="vIron">0</div><div class="micro-lbl">Iron (mg)</div></div>
+                <div class="micro-box"><div class="micro-val" id="vCalc">0</div><div class="micro-lbl">Calc (mg)</div></div>
+                <div class="micro-box"><div class="micro-val" id="vMag">0</div><div class="micro-lbl">Mag (mg)</div></div>
+                <div class="micro-box"><div class="micro-val" id="vVitC">0</div><div class="micro-lbl">VitC (mg)</div></div>
+                <div class="micro-box"><div class="micro-val" id="vVitD">0</div><div class="micro-lbl">VitD (IU)</div></div>
+                <div class="micro-box"><div class="micro-val" id="vVitA">0</div><div class="micro-lbl">VitA (IU)</div></div>
+                <div class="micro-box"><div class="micro-val" id="vOmega">0</div><div class="micro-lbl">Omg3 (mg)</div></div>
             </div>
 
             <button class="btn-export" onclick="exportToPhysical()"><i class="fas fa-rocket"></i> إرسال لليومي الغذائي</button>
@@ -317,7 +303,7 @@
             
             <div style="height:1px; background:var(--border); margin: 10px 0;"></div>
             
-            <button class="btn-data gemini-paste" onclick="openGeminiModal()"><i class="fas fa-robot"></i> استيراد وصفة (مدمجة بالماكروز)</button>
+            <button class="btn-data gemini-paste" onclick="openGeminiModal()"><i class="fas fa-robot"></i> استيراد وصفة شاملة (Gemini)</button>
         </div>
     </div>
 
@@ -328,16 +314,16 @@
                 <div class="m-close" onclick="closeAll()"><i class="fas fa-times"></i></div>
             </div>
             <div class="input-group">
-                <label>الصق الكود البرمجي (JSON) هنا:</label>
-                <textarea id="geminiInput" style="min-height: 180px; font-family: monospace; font-size:0.8rem;" placeholder='{"title": "...", "cat": "...", "cals": 400, "pro": 30, "carbs": 40, "fats": 10, ...}'></textarea>
+                <label>الصق كود الـ JSON المدمج بالفيتامينات هنا:</label>
+                <textarea id="geminiInput" style="min-height: 180px; font-family: monospace; font-size:0.8rem; direction:ltr;" placeholder='{"title": "...", "cat": "...", "cals": 400, "pro": 30, "carbs": 40, "fats": 10, "zinc": 2, "iron": 5, "mag": 50, ...}'></textarea>
             </div>
-            <button class="btn-submit" style="background:var(--cyan); box-shadow: 0 5px 20px rgba(0, 188, 212, 0.3);" onclick="processGeminiImport()">توليد الوصفة</button>
+            <button class="btn-submit" style="background:var(--cyan); box-shadow: 0 5px 20px rgba(0, 188, 212, 0.3);" onclick="processGeminiImport()">تفريغ وتحضير الوجبة</button>
         </div>
     </div>
 
     <script>
-        const DB_KEY = 'SakrOS_Kitchen_V7_Macro'; // تغيير المفتاح ليتوافق مع الهيكل الجديد
-        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; // مفتاح الطابور لصفحة Physical
+        const DB_KEY = 'SakrOS_Kitchen_V8_Clinic'; 
+        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; 
         let recipes = [];
         let filter = 'All';
         let baseRecipe = null; 
@@ -346,30 +332,21 @@
         // --- Core System ---
         window.onload = () => {
             let local = getSafeJSON(DB_KEY, []);
-            if(typeof dbCloud !== 'undefined') {
-                dbCloud.ref(DB_KEY).once('value').then(snap => {
-                    if(snap.exists()) {
-                        recipes = snap.val();
-                        localStorage.setItem(DB_KEY, JSON.stringify(recipes));
-                    } else { recipes = local; }
-                    render();
-                }).catch(() => { recipes = local; render(); });
-            } else { recipes = local; render(); }
+            recipes = local;
+            render();
         };
 
         function getSafeJSON(k, d) { try { let v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){return d;} }
         function saveDB() {
             localStorage.setItem(DB_KEY, JSON.stringify(recipes));
-            if(typeof dbCloud !== 'undefined') dbCloud.ref(DB_KEY).set(recipes);
         }
 
-        // --- EXPORT TO PHYSICAL (SUPERCHARGED BRIDGE) ---
+        // --- EXPORT TO PHYSICAL (CLINIC BRIDGE) ---
         function exportToPhysical() {
             if(!baseRecipe) return;
             
             let scaleVal = parseFloat(document.getElementById('scaleInput').value) || 1;
             
-            // تجهيز بيانات الوجبة للتصدير بجميع الماكروز
             let exportedData = {
                 id: 'food_' + Date.now(),
                 title: baseRecipe.title,
@@ -377,22 +354,31 @@
                 pro: Math.round(baseRecipe.pro * scaleVal),
                 carbs: Math.round((baseRecipe.carbs || 0) * scaleVal),
                 fats: Math.round((baseRecipe.fats || 0) * scaleVal),
+                
+                // إضافة الميكروز للتصدير
+                zinc: Math.round((baseRecipe.zinc || 0) * scaleVal),
+                iron: Math.round((baseRecipe.iron || 0) * scaleVal),
+                mag: Math.round((baseRecipe.mag || 0) * scaleVal),
+                calc: Math.round((baseRecipe.calc || 0) * scaleVal),
+                vitc: Math.round((baseRecipe.vitc || 0) * scaleVal),
+                vitd: Math.round((baseRecipe.vitd || 0) * scaleVal),
+                vita: Math.round((baseRecipe.vita || 0) * scaleVal),
+                omega: Math.round((baseRecipe.omega || 0) * scaleVal),
+                
                 scale: scaleVal,
                 dateAdded: new Date().toISOString()
             };
 
-            // سحب طابور الانتظار الحالي وإضافة الوجبة
             let pendingQueue = getSafeJSON(EXPORT_QUEUE_KEY, []);
             pendingQueue.push(exportedData);
             
-            // حفظ في الـ LocalStorage ليراها Physical
             localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
 
             closeAll();
-            alert(`تم إرسال (${exportedData.title}) لليومي الغذائي! 🚀\n\nالسعرات: ${exportedData.cals}\nبروتين: ${exportedData.pro}g | كارب: ${exportedData.carbs}g | دهون: ${exportedData.fats}g\n\nافتح Physical لاستلامها.`);
+            alert(`تم إرسال (${exportedData.title}) بجميع المعادن والفيتامينات لليومي الغذائي! 🚀\nافتح Physical لاستلامها.`);
         }
 
-        // --- Data Center (Backup/Restore) ---
+        // --- Data Center ---
         function exportDB() {
             let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recipes));
             let dl = document.createElement('a');
@@ -431,10 +417,23 @@
                 
                 document.getElementById('iTitle').value = data.title || "";
                 document.getElementById('iCat').value = data.cat || "Protein";
+                
+                // Macros
                 document.getElementById('iCals').value = data.cals || 0;
                 document.getElementById('iPro').value = data.pro || 0;
                 document.getElementById('iCarbs').value = data.carbs || 0;
                 document.getElementById('iFats').value = data.fats || 0;
+                
+                // Micros
+                document.getElementById('iZinc').value = data.zinc || 0;
+                document.getElementById('iIron').value = data.iron || 0;
+                document.getElementById('iMag').value = data.mag || 0;
+                document.getElementById('iCalc').value = data.calc || 0;
+                document.getElementById('iVitC').value = data.vitc || 0;
+                document.getElementById('iVitD').value = data.vitd || 0;
+                document.getElementById('iVitA').value = data.vita || 0;
+                document.getElementById('iOmega').value = data.omega || 0;
+                
                 document.getElementById('iCost').value = data.cost || 0;
                 document.getElementById('iIng').value = data.ing || "";
                 document.getElementById('iSteps').value = data.steps || "";
@@ -449,7 +448,7 @@
             }
         }
 
-        // --- Image Compression ---
+        // --- Image Processing ---
         function processImage(event) {
             const file = event.target.files[0];
             if(!file) return;
@@ -531,10 +530,21 @@
                 title: t,
                 cat: cat,
                 img: compressedImgData,
+                
                 cals: parseInt(document.getElementById('iCals').value) || 0,
                 pro: parseInt(document.getElementById('iPro').value) || 0,
-                carbs: parseInt(document.getElementById('iCarbs').value) || 0, // أضيف حديثاً
-                fats: parseInt(document.getElementById('iFats').value) || 0,   // أضيف حديثاً
+                carbs: parseInt(document.getElementById('iCarbs').value) || 0, 
+                fats: parseInt(document.getElementById('iFats').value) || 0,   
+                
+                zinc: parseInt(document.getElementById('iZinc').value) || 0,
+                iron: parseInt(document.getElementById('iIron').value) || 0,
+                mag: parseInt(document.getElementById('iMag').value) || 0,
+                calc: parseInt(document.getElementById('iCalc').value) || 0,
+                vitc: parseInt(document.getElementById('iVitC').value) || 0,
+                vitd: parseInt(document.getElementById('iVitD').value) || 0,
+                vita: parseInt(document.getElementById('iVitA').value) || 0,
+                omega: parseInt(document.getElementById('iOmega').value) || 0,
+
                 cost: parseInt(document.getElementById('iCost').value) || 0,
                 ing: document.getElementById('iIng').value,
                 steps: document.getElementById('iSteps').value
@@ -543,7 +553,7 @@
             saveDB();
             closeAll(); render();
 
-            ['iTitle','iCals','iPro','iCarbs','iFats','iCost','iIng','iSteps','fileInp'].forEach(id => document.getElementById(id).value='');
+            ['iTitle','iCals','iPro','iCarbs','iFats','iZinc','iIron','iMag','iCalc','iVitC','iVitD','iVitA','iOmega','iCost','iIng','iSteps','fileInp'].forEach(id => document.getElementById(id).value='');
             document.getElementById('imgPreview').style.display = 'none';
             document.getElementById('uploadBox').classList.remove('has-img');
             compressedImgData = "";
@@ -568,12 +578,18 @@
             
             document.getElementById('sVal').innerText = `x${val}`;
             
-            // تحديث قيم الماكروز
+            // Macros
             document.getElementById('vCals').innerText = Math.round(baseRecipe.cals * val);
             document.getElementById('vPro').innerText = Math.round(baseRecipe.pro * val) + 'g';
             document.getElementById('vCarbs').innerText = Math.round((baseRecipe.carbs || 0) * val) + 'g';
             document.getElementById('vFats').innerText = Math.round((baseRecipe.fats || 0) * val) + 'g';
             
+            // Micros
+            ['Zinc', 'Iron', 'Mag', 'Calc', 'VitC', 'VitD', 'VitA', 'Omega'].forEach(m => {
+                let valKey = m.toLowerCase();
+                document.getElementById('v' + m).innerText = Math.round((baseRecipe[valKey] || 0) * val);
+            });
+
             document.getElementById('vCost').innerText = Math.round((baseRecipe.cost || 0) * val);
 
             let ul = document.getElementById('vIngList'); 
