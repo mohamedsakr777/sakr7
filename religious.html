@@ -7,11 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <meta name="theme-color" content="#0B1021">
     
     <style>
-        /* ================= DEEP NAVY THEME (V4.3 RELIGION) ================= */
+        /* ================= DEEP NAVY THEME (V4.4 RELIGION DASHBOARD) ================= */
         :root {
             --bg-main: #060913;      
             --card-bg: rgba(27, 35, 65, 0.7);      
@@ -39,8 +40,8 @@
         body { 
             background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; padding: 25px 20px 120px; overflow-x: hidden; 
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(48, 209, 88, 0.1), transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(255, 183, 0, 0.1), transparent 50%),
+                radial-gradient(circle at 10% 20%, rgba(48, 209, 88, 0.05), transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(255, 183, 0, 0.05), transparent 50%),
                 linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
@@ -57,7 +58,7 @@
         .header-info p { font-size: 0.85rem; color: var(--gold); font-weight: 800; margin-top: 4px; letter-spacing: 1px;}
 
         /* --- BENTO GRID --- */
-        .bento-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .bento-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
         
         .bento-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; position: relative; animation: fadeUp 0.5s ease-out forwards; opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
         
@@ -99,6 +100,9 @@
         .tasbeeh-val { font-size: 3rem; font-weight: 900; line-height: 1; font-family: monospace; color: var(--cyan);}
         .tasbeeh-lbl { font-size: 0.8rem; color: var(--text-secondary); font-weight: 800; margin-top: 5px;}
 
+        /* --- CHARTS CONTAINER --- */
+        .chart-wrapper { width: 100%; height: 200px; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 10px; border: 1px solid rgba(255,255,255,0.05); margin-top: 15px;}
+
         /* --- MODALS --- */
         #textModal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 9, 19, 0.95); z-index:3000; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 15px;}
         .text-card { background: var(--card-bg); width: 100%; max-width: 450px; max-height: 85vh; display: flex; flex-direction: column; padding: 25px; border-radius: 30px; border: 1px solid var(--border); position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.7); animation: fadeUp 0.3s ease-out;}
@@ -138,6 +142,10 @@
                 <div class="pray-pill" id="p_isha" onclick="togPray('isha')">العشاء</div>
             </div>
             
+            <div class="chart-wrapper">
+                <canvas id="prayersChart"></canvas>
+            </div>
+
             <div id="khatmaContainer" class="khatma-box"></div>
             
             <div class="control-item" style="margin-top:10px;">
@@ -161,6 +169,10 @@
                 <button class="adhkar-btn btn-evening" onclick="showAdhkar('evening')"><i class="fas fa-moon"></i> المساء</button>
             </div>
 
+            <div class="chart-wrapper">
+                <canvas id="adhkarChart"></canvas>
+            </div>
+
             <div class="control-item" style="margin-top:15px;">
                 <div style="display:flex;flex-direction:column;">
                     <span style="font-weight:900; font-size:1.1rem;">قيام الليل / السنن</span>
@@ -171,6 +183,10 @@
                     <span class="step-val" id="v_qiyam">0</span>
                     <button class="step-btn" onclick="updateQiyam(2)">+</button>
                 </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="qiyamChart"></canvas>
             </div>
         </div>
 
@@ -196,7 +212,7 @@
             <div class="text-content-wrapper">
                 <div id="modalContent" class="text-content">...</div>
             </div>
-            <button class="modal-close" onclick="document.getElementById('textModal').style.display='none'">إغلاق وإتمام القراءة ✔️</button>
+            <button class="modal-close" onclick="closeAdhkarModal()">إغلاق وإتمام القراءة ✔️</button>
         </div>
     </div>
 
@@ -209,16 +225,33 @@
     const TODAY = getLocalYMD();
     function getSafeJSON(key, defaultVal) { try { let data = localStorage.getItem(key); return data ? JSON.parse(data) : defaultVal; } catch(e) { return defaultVal; } }
 
-    const DB_KEY = 'SakrOS_Religion_V1';
+    const DB_KEY = 'SakrOS_Religion_History_V2';
 
-    let db = getSafeJSON(DB_KEY, {
-        lastDate: null,
-        prayers: { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false },
-        qiyam: 0,
-        tasbeeh: 0,
-        khatma: { active: false, targetDays: 30, startDate: null, current: 0 }
-    });
+    // استخدام كائن يحفظ التاريخ كمفتاح (لحفظ بيانات 14 يوم)
+    let historyDB = getSafeJSON(DB_KEY, {});
 
+    // تهيئة يوم جديد إذا لم يكن موجوداً
+    if (!historyDB[TODAY]) {
+        historyDB[TODAY] = {
+            prayers: { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false },
+            qiyam: 0,
+            adhkarMorning: false,
+            adhkarEvening: false,
+            tasbeeh: 0
+        };
+        // الحفاظ على حالة الختمة (لأنها ممتدة عبر الأيام)
+        let lastDate = Object.keys(historyDB).sort().reverse()[1]; // اليوم السابق
+        if (lastDate && historyDB[lastDate].khatma) {
+            historyDB[TODAY].khatma = historyDB[lastDate].khatma;
+        } else {
+            historyDB[TODAY].khatma = { active: false, targetDays: 30, startDate: null, current: 0, celebrated: false };
+        }
+        saveDB();
+    }
+
+    const currentTypeAdhkar = { type: null }; // لتتبع أي نوع أذكار يقرأه المستخدم الآن
+
+    // --- نصوص الأذكار كاملة ---
     const ADHKAR = {
         morning: `
 <div class="dhikr-section">
@@ -228,9 +261,11 @@
     <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
-    <div class="dhikr-title">المعوذات</div>
+    <div class="dhikr-title">سورة الإخلاص والمعوذتين</div>
     بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>
-    (قُلْ هُوَ اللَّهُ أَحَدٌ...) (قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...) (قُلْ أَعُوذُ بِرَبِّ النَّاسِ...)
+    ﴿قُلْ هُوَ اللَّهُ أَحَدٌ * اللَّهُ الصَّمَدُ * لَمْ يَلِدْ وَلَمْ يُولَدْ * وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ﴾<br><br>
+    ﴿قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ * مِن شَرِّ مَا خَلَقَ * وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ * وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ * وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ﴾<br><br>
+    ﴿قُلْ أَعُوذُ بِرَبِّ النَّاسِ * مَلِكِ النَّاسِ * إِلَٰهِ النَّاسِ * مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ * الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ * مِنَ الْجِنَّةِ وَالنَّاسِ﴾
     <br><span class="dhikr-count">3 مرات</span>
 </div>
 <div class="dhikr-section">
@@ -250,6 +285,10 @@
     "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالإِسْلامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا".
     <br><span class="dhikr-count">3 مرات</span>
 </div>
+<div class="dhikr-section">
+    "حَسْبِيَ اللَّهُ لا إِلَهَ إِلا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ".
+    <br><span class="dhikr-count">7 مرات</span>
+</div>
         `,
         evening: `
 <div class="dhikr-section">
@@ -259,17 +298,17 @@
     <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
-    <div class="dhikr-title">المعوذات</div>
+    <div class="dhikr-title">سورة الإخلاص والمعوذتين</div>
     (الإخلاص، الفلق، الناس)
     <br><span class="dhikr-count">3 مرات</span>
 </div>
 <div class="dhikr-section">
     <div class="dhikr-title">سيد الاستغفار</div>
-    "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ..."
+    "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ..."
     <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
-    "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إِلَهَ إِلا اللَّهُ..."
+    "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إِلَهَ إِلا اللَّهُ، وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ..."
     <br><span class="dhikr-count">مرة واحدة</span>
 </div>
 <div class="dhikr-section">
@@ -280,27 +319,32 @@
     "بِسْمِ اللَّهِ الَّذِي لا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الأَرْضِ وَلا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ".
     <br><span class="dhikr-count">3 مرات</span>
 </div>
+<div class="dhikr-section">
+    "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ".
+    <br><span class="dhikr-count">3 مرات</span>
+</div>
         `
     };
 
     window.onload = function() {
         document.getElementById('dateDisp').innerHTML = new Date().toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
         
-        if (db.lastDate !== TODAY) {
-            db.prayers = { fajr: false, dhuhr: false, asr: false, maghrib: false, isha: false };
-            db.qiyam = 0;
-            db.lastDate = TODAY;
-            saveDB();
-        }
-
-        renderPrayers(); renderQiyam(); renderTasbeeh(); renderKhatma();
+        renderPrayers(); 
+        renderQiyam(); 
+        renderTasbeeh(); 
+        renderKhatma();
+        updateAdhkarButtons(); // تحديث شكل الأزرار لو تمت قراءتها اليوم
+        drawCharts(); // رسم الجداول
     };
 
-    function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+    function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(historyDB)); }
 
+    // --- التحديثات اليومية ---
     function togPray(prayer) {
-        db.prayers[prayer] = !db.prayers[prayer];
-        saveDB(); renderPrayers();
+        historyDB[TODAY].prayers[prayer] = !historyDB[TODAY].prayers[prayer];
+        saveDB(); 
+        renderPrayers();
+        drawCharts(); // تحديث الرسم
         if(navigator.vibrate) navigator.vibrate(20);
     }
 
@@ -308,27 +352,31 @@
         const pList = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
         pList.forEach(p => {
             const el = document.getElementById('p_' + p);
-            if (db.prayers[p]) el.classList.add('active'); else el.classList.remove('active');
+            if (historyDB[TODAY].prayers[p]) el.classList.add('active'); else el.classList.remove('active');
         });
     }
 
     function updateQiyam(val) {
-        db.qiyam = Math.max(0, (db.qiyam || 0) + val);
-        saveDB(); renderQiyam();
+        historyDB[TODAY].qiyam = Math.max(0, (historyDB[TODAY].qiyam || 0) + val);
+        saveDB(); 
+        renderQiyam();
+        drawCharts();
     }
-    function renderQiyam() { document.getElementById('v_qiyam').innerText = db.qiyam || 0; }
+    function renderQiyam() { document.getElementById('v_qiyam').innerText = historyDB[TODAY].qiyam || 0; }
 
     function incTasbeeh() {
-        db.tasbeeh = (db.tasbeeh || 0) + 1;
+        historyDB[TODAY].tasbeeh = (historyDB[TODAY].tasbeeh || 0) + 1;
         saveDB(); renderTasbeeh();
         if (navigator.vibrate) navigator.vibrate(10);
     }
     function resetTasbeeh() {
-        if(confirm("هل تريد تصفير عداد السبحة؟")) { db.tasbeeh = 0; saveDB(); renderTasbeeh(); }
+        if(confirm("هل تريد تصفير عداد السبحة لليوم؟")) { historyDB[TODAY].tasbeeh = 0; saveDB(); renderTasbeeh(); }
     }
-    function renderTasbeeh() { document.getElementById('tasbeehCount').innerText = db.tasbeeh || 0; }
+    function renderTasbeeh() { document.getElementById('tasbeehCount').innerText = historyDB[TODAY].tasbeeh || 0; }
 
+    // --- الأذكار ---
     function showAdhkar(type) {
+        currentTypeAdhkar.type = type;
         let title = type === 'morning' ? "☀️ أذكار الصباح" : "🌙 أذكار المساء";
         let color = type === 'morning' ? "var(--orange)" : "var(--cyan)";
         document.getElementById('modalTitle').innerText = title;
@@ -337,11 +385,41 @@
         document.getElementById('textModal').style.display = 'flex';
     }
 
+    function closeAdhkarModal() {
+        document.getElementById('textModal').style.display='none';
+        // تسجيل أن الأذكار قُرئت
+        if(currentTypeAdhkar.type === 'morning') historyDB[TODAY].adhkarMorning = true;
+        if(currentTypeAdhkar.type === 'evening') historyDB[TODAY].adhkarEvening = true;
+        
+        saveDB();
+        updateAdhkarButtons();
+        drawCharts();
+        
+        // احتفال صغير للأذكار
+        confetti({ particleCount: 50, spread: 40, origin: { y: 0.8 }, colors: ['#5A75FF', '#FFB700'] });
+    }
+
+    function updateAdhkarButtons() {
+        if(historyDB[TODAY].adhkarMorning) {
+            document.querySelector('.btn-morning').innerHTML = '✔️ الصباح (تم)';
+            document.querySelector('.btn-morning').style.background = 'rgba(48, 209, 88, 0.2)';
+            document.querySelector('.btn-morning').style.color = 'var(--green)';
+            document.querySelector('.btn-morning').style.borderColor = 'var(--green)';
+        }
+        if(historyDB[TODAY].adhkarEvening) {
+            document.querySelector('.btn-evening').innerHTML = '✔️ المساء (تم)';
+            document.querySelector('.btn-evening').style.background = 'rgba(48, 209, 88, 0.2)';
+            document.querySelector('.btn-evening').style.color = 'var(--green)';
+            document.querySelector('.btn-evening').style.borderColor = 'var(--green)';
+        }
+    }
+
+    // --- الختمة ---
     function renderKhatma() {
         const kBox = document.getElementById('khatmaContainer');
-        document.getElementById('v_quran').innerText = db.khatma.current || 0;
+        document.getElementById('v_quran').innerText = historyDB[TODAY].khatma.current || 0;
 
-        if (!db.khatma.active) {
+        if (!historyDB[TODAY].khatma.active) {
             kBox.innerHTML = `
                 <div style="margin-bottom:10px; font-weight:900; font-size:1.1rem; color:var(--green);">🏁 ابدأ ختمة جديدة</div>
                 <div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:15px; font-weight:700;">حدد هدفك (عدد الأيام لإنهاء 604 صفحة):</div>
@@ -353,19 +431,18 @@
         } else {
             const totalPages = 604;
             const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            const start = new Date(db.khatma.startDate);
+            const start = new Date(historyDB[TODAY].khatma.startDate);
             const daysPassed = Math.max(1, Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1);
             
-            const dailyRate = Math.ceil(totalPages / db.khatma.targetDays);
+            const dailyRate = Math.ceil(totalPages / historyDB[TODAY].khatma.targetDays);
             const expectedPage = Math.min(604, dailyRate * daysPassed);
-            const actualPage = db.khatma.current;
+            const actualPage = historyDB[TODAY].khatma.current;
             const diff = actualPage - expectedPage;
             
             let statusBadge = ""; let statusMsg = "";
             if (actualPage >= 604) {
                 statusBadge = `<span class="k-status k-ahead">تمت الختمة 🎉</span>`;
                 statusMsg = "تقبل الله! ابدأ ختمة جديدة.";
-                if(!db.khatma.celebrated) { fireConfetti(); db.khatma.celebrated = true; saveDB(); }
             } else if (diff >= 0) {
                 statusBadge = `<span class="k-status k-ahead">سابق بـ ${diff} ص 🔥</span>`;
                 statusMsg = `هدف اليوم: صـ ${expectedPage}`;
@@ -377,7 +454,7 @@
             let pct = Math.min(100, (actualPage / 604) * 100).toFixed(1);
 
             kBox.innerHTML = `
-                <div class="khatma-stat"><span>اليوم ${daysPassed} من ${db.khatma.targetDays}</span> ${statusBadge}</div>
+                <div class="khatma-stat"><span>اليوم ${daysPassed} من ${historyDB[TODAY].khatma.targetDays}</span> ${statusBadge}</div>
                 <div style="height:10px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.05); border-radius:5px; margin:12px 0; overflow:hidden;">
                     <div style="height:100%; width:${pct}%; background:var(--green); transition:0.8s;"></div>
                 </div>
@@ -393,34 +470,145 @@
     function startKhatma() {
         const d = parseInt(document.getElementById('kTargetDays').value) || 30;
         let startD = new Date(); startD.setMinutes(startD.getMinutes() - startD.getTimezoneOffset());
-        db.khatma = { active: true, targetDays: d, startDate: startD.toISOString(), current: 0, celebrated: false };
+        historyDB[TODAY].khatma = { active: true, targetDays: d, startDate: startD.toISOString(), current: 0, celebrated: false };
         saveDB(); renderKhatma();
     }
 
     function updateKhatmaPage(n) {
-        if(!db.khatma.active) return alert("الرجاء بدء ختمة أولاً.");
-        let newVal = (db.khatma.current || 0) + n;
+        if(!historyDB[TODAY].khatma.active) return alert("الرجاء بدء ختمة أولاً.");
+        let newVal = (historyDB[TODAY].khatma.current || 0) + n;
         if (newVal < 0) newVal = 0; if (newVal > 604) newVal = 604;
-        db.khatma.current = newVal;
+        historyDB[TODAY].khatma.current = newVal;
         saveDB(); renderKhatma();
     }
     
     function resetKhatma() {
         if(confirm("هل أنت متأكد من إنهاء هذه الختمة والبدء من جديد؟")) {
-            db.khatma.active = false; saveDB(); renderKhatma();
+            historyDB[TODAY].khatma.active = false; saveDB(); renderKhatma();
         }
     }
 
-    function fireConfetti() {
-        var duration = 3 * 1000; var animationEnd = Date.now() + duration; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
-        function randomInOut(min, max) { return Math.random() * (max - min) + min; }
-        var interval = setInterval(function() {
-            var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) { return clearInterval(interval); }
-            var particleCount = 50 * (timeLeft / duration);
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.1, 0.3), y: Math.random() - 0.2 } }));
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.7, 0.9), y: Math.random() - 0.2 } }));
-        }, 250);
+    // =========================================================
+    // 📊 دوال رسم الجداول البيانية (Charts) لآخر 14 يوم
+    // =========================================================
+    
+    // متغيرات للاحتفاظ بنسخة من الجداول لتحديثها
+    let chartPrayers, chartAdhkar, chartQiyam;
+
+    function drawCharts() {
+        // 1. تجهيز مصفوفة التواريخ (آخر 14 يوم)
+        let labels = [];
+        let dataPrayers = [];
+        let dataQiyam = [];
+        let dataAdhkar = [];
+
+        let d = new Date();
+        // تجميع البيانات من الأقدم للأحدث (منذ 13 يوماً وحتى اليوم)
+        for(let i = 13; i >= 0; i--) {
+            let pastDate = new Date(d);
+            pastDate.setDate(d.getDate() - i);
+            let ds = getLocalYMD(pastDate);
+            
+            // إضافة صيغة التاريخ للعرض (مثال: 5/14)
+            labels.push(`${pastDate.getMonth()+1}/${pastDate.getDate()}`);
+            
+            // سحب بيانات اليوم أو وضع أصفار
+            let dayData = historyDB[ds];
+            if(dayData) {
+                // حساب عدد الصلوات
+                let countPrayers = Object.values(dayData.prayers || {}).filter(Boolean).length;
+                dataPrayers.push(countPrayers);
+                
+                // حساب ركعات القيام
+                dataQiyam.push(dayData.qiyam || 0);
+                
+                // حساب الأذكار (كم مرة: صباح + مساء = 2)
+                let countAdhkar = 0;
+                if(dayData.adhkarMorning) countAdhkar++;
+                if(dayData.adhkarEvening) countAdhkar++;
+                dataAdhkar.push(countAdhkar);
+            } else {
+                dataPrayers.push(0);
+                dataQiyam.push(0);
+                dataAdhkar.push(0);
+            }
+        }
+
+        // إعدادات الخطوط والشبكة المشتركة للرسوم
+        Chart.defaults.color = '#8A94B5';
+        Chart.defaults.font.family = 'Cairo';
+        const gridOptions = { color: 'rgba(255,255,255,0.05)' };
+
+        // 1. رسم بياني: الصلوات الخمس
+        const ctxPrayers = document.getElementById('prayersChart').getContext('2d');
+        if(chartPrayers) chartPrayers.destroy();
+        chartPrayers = new Chart(ctxPrayers, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'عدد الصلوات',
+                    data: dataPrayers,
+                    backgroundColor: 'rgba(48, 209, 88, 0.7)',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 5, grid: gridOptions }, x: { grid: { display: false } } },
+                plugins: { legend: { display: false }, tooltip: { rtl: true } }
+            }
+        });
+
+        // 2. رسم بياني: الأذكار
+        const ctxAdhkar = document.getElementById('adhkarChart').getContext('2d');
+        if(chartAdhkar) chartAdhkar.destroy();
+        chartAdhkar = new Chart(ctxAdhkar, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'عدد الأذكار (صباح/مساء)',
+                    data: dataAdhkar,
+                    borderColor: '#FF9500',
+                    backgroundColor: 'rgba(255, 149, 0, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#FF9500'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, max: 2, ticks:{stepSize:1}, grid: gridOptions }, x: { grid: { display: false } } },
+                plugins: { legend: { display: false }, tooltip: { rtl: true } }
+            }
+        });
+
+        // 3. رسم بياني: قيام الليل
+        const ctxQiyam = document.getElementById('qiyamChart').getContext('2d');
+        if(chartQiyam) chartQiyam.destroy();
+        chartQiyam = new Chart(ctxQiyam, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'عدد الركعات',
+                    data: dataQiyam,
+                    backgroundColor: '#BF5AF2',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, grid: gridOptions }, x: { grid: { display: false } } },
+                plugins: { legend: { display: false }, tooltip: { rtl: true } }
+            }
+        });
     }
+
 </script>
 </body>
 </html>
