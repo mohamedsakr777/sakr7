@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAKR OS | Crimson Kitchen (Clinic Edition)</title>
+    <title>SAKR OS | Crimson Kitchen (V19 Masterpiece)</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <meta name="theme-color" content="#050505">
     
     <style>
-        /* ================= DEEP BLACK & CRIMSON ================= */
+        /* ================= DEEP BLACK & CRIMSON THEME ================= */
         :root {
             --bg-main: #050505;      
             --card-bg: #111111;      
-            --card-hover: #1a1a1a;
             --border: rgba(229, 57, 53, 0.2); 
             
             --accent-red: #E53935;  
@@ -48,14 +47,17 @@
         .header-title span { font-size: 0.75rem; color: var(--accent-red); font-weight: 700; letter-spacing: 1px; text-transform: uppercase;}
 
         /* --- CONTROLS --- */
-        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; animation: fadeUp 0.5s ease-out forwards;}
+        .controls { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; animation: fadeUp 0.5s ease-out forwards;}
         
-        .filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; flex: 1;}
+        .filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .filters::-webkit-scrollbar { display: none; }
         .chip { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); color: var(--text-secondary); padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.3s;}
         .chip.active { background: var(--accent-red); color: #fff; border-color: var(--accent-red); font-weight: 900; box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3);}
 
-        .btn-add { background: var(--accent-red); color: #fff; width: 45px; height: 45px; border-radius: 14px; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3); transition: 0.2s; flex-shrink: 0; margin-right: 10px;}
+        .action-row { display: flex; gap: 10px; align-items: center; }
+        .btn-day { background: rgba(0, 188, 212, 0.1); color: var(--cyan); border: 1px solid rgba(0, 188, 212, 0.3); padding: 0 15px; height: 45px; border-radius: 14px; font-weight: 900; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; flex: 1;}
+        .btn-day:active { transform: scale(0.96); background: var(--cyan); color: #000; }
+        .btn-add { background: var(--accent-red); color: #fff; width: 60px; height: 45px; border-radius: 14px; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3); transition: 0.2s; flex-shrink: 0;}
         .btn-add:active { transform: scale(0.9); }
 
         /* --- GRID --- */
@@ -68,7 +70,10 @@
         .c-img { width: 100%; height: 100%; background-size: cover; background-position: center;}
         .c-img::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, var(--card-bg), transparent);}
         
-        .c-tag { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; border: 1px solid rgba(255,255,255,0.1);}
+        .c-badges { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; align-items: flex-end;}
+        .c-tag { background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 900; border: 1px solid rgba(255,255,255,0.1);}
+        .tag-time { border-color: var(--gold); color: var(--gold); }
+        .tag-type { border-color: var(--cyan); color: var(--cyan); }
         
         .c-content { padding: 12px; flex: 1; display: flex; flex-direction: column;}
         .c-title { font-size: 0.95rem; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
@@ -114,7 +119,7 @@
         .scaler-val { font-size: 1rem; font-weight: 900; color: var(--accent-red); font-family: monospace; background: rgba(229, 57, 53, 0.1); padding: 2px 8px; border-radius: 8px;}
         .scaler-slider { width: 100%; accent-color: var(--accent-red); height: 6px; background: rgba(255,255,255,0.1); outline: none; border-radius: 3px;}
 
-        /* 🔥 MACROS & MICROS BAR 🔥 */
+        /* MACROS & MICROS BAR */
         .v-stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .v-stat-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03); padding: 10px 5px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;}
         .v-val { font-size: 1.1rem; font-weight: 900; font-family: monospace; color: #fff;}
@@ -136,16 +141,22 @@
         .btn-delete { background: transparent; color: var(--text-secondary); border: none; padding: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 5px;}
         .btn-delete:active { color: var(--accent-red); }
 
-        /* --- DATA CENTER MODAL --- */
+        /* --- DATA CENTER & OTHERS --- */
         .btn-data { background: var(--card-bg); color: #fff; border: 1px solid var(--border); padding: 15px; border-radius: 16px; font-size: 1rem; font-weight: 900; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s;}
         .btn-data:active { transform: scale(0.97); background: rgba(229, 57, 53, 0.1); }
         .gemini-paste { background: rgba(0, 188, 212, 0.05); border: 1px solid rgba(0, 188, 212, 0.3); color: var(--cyan); margin-top: 15px;}
+        
+        /* Day Plan Checkboxes */
+        .day-check-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .day-check-item input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--cyan); }
+        .day-check-title { font-size: 0.95rem; font-weight: 900; color: #fff; }
+        .day-check-sub { font-size: 0.75rem; color: var(--text-secondary); font-family: monospace; }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <a href="index.html" class="btn-circle"><i class="fas fa-arrow-right"></i></a>
+        <a href="physical.html" class="btn-circle"><i class="fas fa-arrow-right"></i></a>
         <div class="header-title">
             <span>Kitchen</span>
             المطبخ
@@ -156,12 +167,15 @@
     <div class="controls">
         <div class="filters">
             <div class="chip active" onclick="filterData('All', this)">الكتالوج</div>
-            <div class="chip" onclick="filterData('Protein', this)">عضلات 💪</div>
-            <div class="chip" onclick="filterData('Italian', this)">إيطالي 🇮🇹</div>
-            <div class="chip" onclick="filterData('Fast', this)">سريع ⚡</div>
-            <div class="chip" onclick="filterData('Dessert', this)">حلى 🍰</div>
+            <div class="chip" onclick="filterData('Protein', this)">بروتين عالٍ 💪</div>
+            <div class="chip" onclick="filterData('Carb', this)">كارب عالٍ ⚡</div>
+            <div class="chip" onclick="filterData('Balanced', this)">متوازن 🥗</div>
+            <div class="chip" onclick="filterData('Fats', this)">دهون صحية 🥑</div>
         </div>
-        <button class="btn-add" onclick="openAdd()"><i class="fas fa-plus"></i></button>
+        <div class="action-row">
+            <button class="btn-day" onclick="openDayPlan()"><i class="fas fa-layer-group"></i> تجميع يوم</button>
+            <button class="btn-add" onclick="openAdd()"><i class="fas fa-plus"></i></button>
+        </div>
     </div>
 
     <div class="grid" id="mainGrid"></div>
@@ -176,23 +190,35 @@
             <div class="input-group">
                 <input type="text" id="iTitle" placeholder="اسم الوجبة (مثال: شوفان بروتين)...">
             </div>
+
+            <div class="row-2">
+                <div class="input-group">
+                    <label>توقيت الوجبة</label>
+                    <select id="iMealTime">
+                        <option value="فطار">فطار 🌅</option>
+                        <option value="غداء">غداء ☀️</option>
+                        <option value="عشاء">عشاء 🌙</option>
+                        <option value="سناك">سناك 🍎</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>نوع الدايت</label>
+                    <select id="iDietType">
+                        <option value="Protein">بروتين عالٍ 💪</option>
+                        <option value="Carb">كارب عالٍ ⚡</option>
+                        <option value="Balanced">متوازن 🥗</option>
+                        <option value="Fats">دهون صحية 🥑</option>
+                    </select>
+                </div>
+            </div>
             
             <div class="input-group">
                 <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInp').click()">
                     <img id="imgPreview" src="">
                     <i class="fas fa-camera" style="font-size:1.8rem; margin-bottom:5px; color:var(--accent-red);"></i>
-                    <div style="font-size:0.8rem;">صورة الوجبة</div>
+                    <div style="font-size:0.8rem;">صورة الوجبة (سيتم ضغطها تلقائياً)</div>
                 </div>
                 <input type="file" id="fileInp" accept="image/*" style="display:none;" onchange="processImage(event)">
-            </div>
-
-            <div class="input-group">
-                <select id="iCat">
-                    <option value="Protein">عضلات 💪</option>
-                    <option value="Italian">إيطالي 🇮🇹</option>
-                    <option value="Fast">سريع ⚡</option>
-                    <option value="Dessert">حلويات 🍰</option>
-                </select>
             </div>
 
             <label style="font-size:0.85rem; color:var(--text-secondary); font-weight:800; margin-top:10px;">الماكروز الأساسية:</label>
@@ -224,7 +250,7 @@
             </div>
 
             <div class="input-group">
-                <textarea id="iIng" placeholder="المكونات (مثال: 100 جرام شوفان...)"></textarea>
+                <textarea id="iIng" placeholder="المكونات (اكتب كل مكون في سطر)"></textarea>
             </div>
 
             <div class="input-group">
@@ -290,6 +316,25 @@
         </div>
     </div>
 
+    <div class="modal" id="dayPlanModal">
+        <div class="modal-content">
+            <div class="m-header">
+                <span style="color:var(--cyan);"><i class="fas fa-layer-group"></i> تجميع يوم كامل</span>
+                <div class="m-close" onclick="closeAll()"><i class="fas fa-times"></i></div>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="dayNameInp" placeholder="اكتب اسم اليوم (مثال: السبت - كارب عالي)...">
+            </div>
+
+            <label style="font-size:0.85rem; color:var(--text-secondary); margin-top:10px;">اختر الوجبات لإرسالها معاً لصفحة Physical:</label>
+            <div id="dayPlanList" style="max-height: 250px; overflow-y: auto; background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border);">
+                </div>
+
+            <button class="btn-submit" style="background:var(--cyan); box-shadow: 0 5px 20px rgba(0, 188, 212, 0.3);" onclick="exportDayPlan()"><i class="fas fa-paper-plane"></i> إرسال اليوم بالكامل</button>
+        </div>
+    </div>
+
     <div class="modal" id="dataModal">
         <div class="modal-content">
             <div class="m-header">
@@ -315,14 +360,14 @@
             </div>
             <div class="input-group">
                 <label>الصق كود الـ JSON المدمج بالفيتامينات هنا:</label>
-                <textarea id="geminiInput" style="min-height: 180px; font-family: monospace; font-size:0.8rem; direction:ltr;" placeholder='{"title": "...", "cat": "...", "cals": 400, "pro": 30, "carbs": 40, "fats": 10, "zinc": 2, "iron": 5, "mag": 50, ...}'></textarea>
+                <textarea id="geminiInput" style="min-height: 180px; font-family: monospace; font-size:0.8rem; direction:ltr;" placeholder='{"title": "...", "cat": "...", "cals": 400, "pro": 30, ...}'></textarea>
             </div>
             <button class="btn-submit" style="background:var(--cyan); box-shadow: 0 5px 20px rgba(0, 188, 212, 0.3);" onclick="processGeminiImport()">تفريغ وتحضير الوجبة</button>
         </div>
     </div>
 
     <script>
-        const DB_KEY = 'SakrOS_Kitchen_V8_Clinic'; 
+        const DB_KEY = 'SakrOS_Kitchen_V19'; 
         const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; 
         let recipes = [];
         let filter = 'All';
@@ -337,11 +382,16 @@
         };
 
         function getSafeJSON(k, d) { try { let v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){return d;} }
+        
         function saveDB() {
-            localStorage.setItem(DB_KEY, JSON.stringify(recipes));
+            try {
+                localStorage.setItem(DB_KEY, JSON.stringify(recipes));
+            } catch(e) {
+                alert("تنبيه: مساحة تخزين المتصفح ممتلئة! يرجى حذف بعض الوجبات القديمة.");
+            }
         }
 
-        // --- EXPORT TO PHYSICAL (CLINIC BRIDGE) ---
+        // --- EXPORT TO PHYSICAL (SINGLE) ---
         function exportToPhysical() {
             if(!baseRecipe) return;
             
@@ -354,8 +404,6 @@
                 pro: Math.round(baseRecipe.pro * scaleVal),
                 carbs: Math.round((baseRecipe.carbs || 0) * scaleVal),
                 fats: Math.round((baseRecipe.fats || 0) * scaleVal),
-                
-                // إضافة الميكروز للتصدير
                 zinc: Math.round((baseRecipe.zinc || 0) * scaleVal),
                 iron: Math.round((baseRecipe.iron || 0) * scaleVal),
                 mag: Math.round((baseRecipe.mag || 0) * scaleVal),
@@ -364,7 +412,9 @@
                 vitd: Math.round((baseRecipe.vitd || 0) * scaleVal),
                 vita: Math.round((baseRecipe.vita || 0) * scaleVal),
                 omega: Math.round((baseRecipe.omega || 0) * scaleVal),
-                
+                cost: Math.round((baseRecipe.cost || 0) * scaleVal),
+                ing: baseRecipe.ing || "",
+                steps: baseRecipe.steps || "",
                 scale: scaleVal,
                 dateAdded: new Date().toISOString()
             };
@@ -372,10 +422,73 @@
             let pendingQueue = getSafeJSON(EXPORT_QUEUE_KEY, []);
             pendingQueue.push(exportedData);
             
-            localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
+            try {
+                localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
+                closeAll();
+                alert(`تم إرسال (${exportedData.title}) لليومي الغذائي! 🚀\nافتح Physical لاستلامها.`);
+            } catch(e) {
+                alert("المساحة ممتلئة! لا يمكن إرسال الوجبة.");
+            }
+        }
 
-            closeAll();
-            alert(`تم إرسال (${exportedData.title}) بجميع المعادن والفيتامينات لليومي الغذائي! 🚀\nافتح Physical لاستلامها.`);
+        // --- GROUP DAY EXPORT (تجميع يوم) ---
+        function openDayPlan() {
+            document.getElementById('dayNameInp').value = '';
+            let list = document.getElementById('dayPlanList');
+            list.innerHTML = '';
+            
+            if(recipes.length === 0) {
+                list.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-secondary);">لا توجد وجبات في الكتالوج.</div>';
+            } else {
+                recipes.forEach(r => {
+                    let typeTxt = r.cat === 'Protein' ? 'بروتين' : (r.cat === 'Carb' ? 'كارب' : (r.cat === 'Balanced' ? 'متوازن' : 'دهون'));
+                    list.innerHTML += `
+                        <label class="day-check-item">
+                            <input type="checkbox" class="day-chk" value="${r.id}">
+                            <div>
+                                <div class="day-check-title">${r.title}</div>
+                                <div class="day-check-sub">${r.time || 'وجبة'} | ${typeTxt} | ${r.cals} Cal | Pro: ${r.pro}g</div>
+                            </div>
+                        </label>
+                    `;
+                });
+            }
+            
+            document.getElementById('dayPlanModal').style.display = 'flex';
+        }
+
+        function exportDayPlan() {
+            let dayName = document.getElementById('dayNameInp').value.trim();
+            let nameTag = dayName ? ` [${dayName}]` : "";
+            let checkedIds = Array.from(document.querySelectorAll('.day-chk:checked')).map(cb => cb.value);
+            
+            if(checkedIds.length === 0) return alert("اختر وجبة واحدة على الأقل!");
+
+            let pendingQueue = getSafeJSON(EXPORT_QUEUE_KEY, []);
+
+            checkedIds.forEach(id => {
+                let r = recipes.find(x => x.id === id);
+                if(r) {
+                    let exportedData = {
+                        id: 'food_' + Date.now() + Math.random(),
+                        title: r.title + nameTag,
+                        cals: r.cals || 0, pro: r.pro || 0, carbs: r.carbs || 0, fats: r.fats || 0,
+                        zinc: r.zinc || 0, iron: r.iron || 0, mag: r.mag || 0, calc: r.calc || 0,
+                        vitc: r.vitc || 0, vitd: r.vitd || 0, vita: r.vita || 0, omega: r.omega || 0,
+                        cost: r.cost || 0, ing: r.ing || "", steps: r.steps || "",
+                        scale: 1, dateAdded: new Date().toISOString()
+                    };
+                    pendingQueue.push(exportedData);
+                }
+            });
+
+            try {
+                localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
+                closeAll();
+                alert(`تم إرسال (${checkedIds.length}) وجبات لليومي الغذائي! 🚀\nافتح Physical لاستلامهم.`);
+            } catch(e) {
+                alert("المساحة ممتلئة! يرجى حذف بعض الوجبات.");
+            }
         }
 
         // --- Data Center ---
@@ -416,7 +529,10 @@
                 let data = JSON.parse(val);
                 
                 document.getElementById('iTitle').value = data.title || "";
-                document.getElementById('iCat').value = data.cat || "Protein";
+                
+                // If Gemini provides categories, map them, otherwise keep defaults
+                if(data.cat) document.getElementById('iDietType').value = data.cat;
+                if(data.time) document.getElementById('iMealTime').value = data.time;
                 
                 // Macros
                 document.getElementById('iCals').value = data.cals || 0;
@@ -448,7 +564,7 @@
             }
         }
 
-        // --- Image Processing ---
+        // --- Image Compression (Fixed for 5MB Limit) ---
         function processImage(event) {
             const file = event.target.files[0];
             if(!file) return;
@@ -461,7 +577,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 500; 
+                    const MAX_WIDTH = 400; // حجم ممتاز للموبايل وموفر جداً للمساحة
                     const scaleSize = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
                     canvas.height = img.height * scaleSize;
@@ -469,7 +585,8 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                    compressedImgData = canvas.toDataURL('image/jpeg', 0.6); 
+                    // ضغط الجودة لـ 50%
+                    compressedImgData = canvas.toDataURL('image/jpeg', 0.5); 
 
                     const preview = document.getElementById('imgPreview');
                     preview.src = compressedImgData;
@@ -489,19 +606,23 @@
             let data = filter === 'All' ? recipes : recipes.filter(r => r.cat === filter);
 
             if(data.length === 0) {
-                grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:var(--text-secondary); font-weight:700; border:1px dashed var(--border); border-radius:20px;">لا توجد وصفات.</div>`;
+                grid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px; color:var(--text-secondary); font-weight:700; border:1px dashed var(--border); border-radius:20px;">لا توجد وصفات هنا.</div>`;
                 return;
             }
 
             [...data].reverse().forEach(r => {
                 let bg = r.img ? `url('${r.img}')` : `linear-gradient(135deg, #222, #000)`;
-                let badge = r.cat === 'Italian' ? 'إيطالي 🇮🇹' : (r.cat === 'Protein' ? 'بروتين 💪' : (r.cat === 'Fast' ? 'سريع ⚡' : 'حلويات 🍰'));
+                let typeBadge = r.cat === 'Protein' ? 'بروتين 💪' : (r.cat === 'Carb' ? 'كارب ⚡' : (r.cat === 'Balanced' ? 'متوازن 🥗' : 'دهون 🥑'));
+                let timeBadge = r.time || 'وجبة';
                 
                 grid.innerHTML += `
                     <div class="card" onclick="openView('${r.id}')">
                         <div class="c-img-wrap">
                             <div class="c-img" style="background-image: ${bg};"></div>
-                            <div class="c-tag">${badge}</div>
+                            <div class="c-badges">
+                                <div class="c-tag tag-time">${timeBadge}</div>
+                                <div class="c-tag tag-type">${typeBadge}</div>
+                            </div>
                         </div>
                         <div class="c-content">
                             <div class="c-title">${r.title}</div>
@@ -523,12 +644,14 @@
             let t = document.getElementById('iTitle').value.trim();
             if(!t) return alert("اكتب اسم الوصفة!");
 
-            let cat = document.getElementById('iCat').value;
+            let cat = document.getElementById('iDietType').value;
+            let time = document.getElementById('iMealTime').value;
             
             recipes.push({
                 id: 'r_' + Date.now(),
                 title: t,
                 cat: cat,
+                time: time,
                 img: compressedImgData,
                 
                 cals: parseInt(document.getElementById('iCals').value) || 0,
