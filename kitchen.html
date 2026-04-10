@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAKR OS | Crimson Kitchen (Pro Edition)</title>
+    <title>SAKR OS | Crimson Kitchen (Cloud Edition)</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -39,6 +39,17 @@
 
         @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { 0% { transform: translateY(-20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes pulseGlow { 0% { opacity: 0.5; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.5; transform: scale(0.95); } }
+
+        /* 🔥 Cloud Loader Screen 🔥 */
+        #appLoader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-main); z-index: 99999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .loader-icon { font-size: 4rem; color: var(--accent-red); margin-bottom: 20px; animation: pulseGlow 1.5s infinite; }
+        .loader-text { font-size: 1.2rem; font-weight: 900; color: #fff; letter-spacing: 1px;}
 
         /* --- TOAST NOTIFICATIONS --- */
         .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 400px; }
@@ -168,6 +179,11 @@
 </head>
 <body>
 
+    <div id="appLoader">
+        <i class="fas fa-utensils loader-icon"></i>
+        <div class="loader-text">جاري تحضير المطبخ...</div>
+    </div>
+
     <div id="toastContainer" class="toast-container"></div>
 
     <header class="header">
@@ -175,6 +191,7 @@
         <div class="header-title">
             <span>Kitchen</span>
             المطبخ
+            <div id="sysSyncStatus" style="font-size: 0.55rem; color: var(--cyan); margin-top: 5px; font-weight: bold;">متصل بالسحابة ☁️</div>
         </div>
         <button class="btn-circle" onclick="document.getElementById('dataModal').style.display='flex'"><i class="fas fa-database"></i></button>
     </header>
@@ -381,67 +398,99 @@
         </div>
     </div>
 
+    <script type="module">
+        import { database, ref, set, get } from './js/firebase-config.js';
+        // تمرير أدوات الفايربيز للنافذة العامة
+        window.FirebaseAPI = { database, ref, set, get };
+    </script>
+
     <script>
-        // --- ADVANCED DATABASE SYSTEM (IndexedDB) ---
-        // يحمي من رسالة "الذاكرة ممتلئة" ويستوعب مساحات ضخمة
-        const DB_NAME = 'SakrOS_KitchenDB';
-        const STORE_NAME = 'recipes';
+        // --- CLOUD DATABASE SYSTEM (Firebase) ---
+        const FIREBASE_PATH = 'SakrOS_Kitchen/Catalog';
         const OLD_LOCAL_KEY = 'SakrOS_Kitchen_V19'; // للبحث عن بياناتك القديمة
-        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; 
+        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; // هذا يظل محلي لأنه طابور إرسال للصفحة الأخرى
         
         let recipes = [];
         let filter = 'All';
         let baseRecipe = null; 
         let compressedImgData = ""; 
+        let saveTimeout;
 
-        // Initialize IndexedDB
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                let request = indexedDB.open(DB_NAME, 1);
-                request.onupgradeneeded = (e) => {
-                    let db = e.target.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                    }
-                };
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
+        // --- Firebase Core Logic ---
+        async function loadDataFromDB() {
+            try {
+                if(!window.FirebaseAPI) return null;
+                const { database, ref, get } = window.FirebaseAPI;
+                const snapshot = await get(ref(database, FIREBASE_PATH));
+                return snapshot.exists() ? snapshot.val() : null;
+            } catch (e) {
+                console.error("خطأ في جلب الكتالوج من السحابة:", e);
+                return null;
+            }
         }
 
-        // --- Core System & UI Feedback ---
-        window.onload = async () => {
-            try {
-                let db = await initDB();
-                let tx = db.transaction(STORE_NAME, 'readonly');
-                let store = tx.objectStore(STORE_NAME);
-                let request = store.getAll();
-                
-                request.onsuccess = async () => {
-                    recipes = request.result || [];
-                    
-                    // الترحيل التلقائي من النظام القديم (LocalStorage) إلى النظام الجديد
-                    let oldDataStr = localStorage.getItem(OLD_LOCAL_KEY);
-                    if (oldDataStr) {
-                        try {
-                            let oldData = JSON.parse(oldDataStr);
-                            if (Array.isArray(oldData) && oldData.length > 0) {
-                                for (let r of oldData) {
-                                    await saveRecipeToDB(r); // حفظ في القاعدة الجديدة
-                                }
-                                recipes = [...recipes, ...oldData];
-                                localStorage.removeItem(OLD_LOCAL_KEY); // تنظيف الذاكرة القديمة
-                                showToast("تم ترقية قاعدة البيانات ونقل ملفاتك بنجاح! 🚀", "success");
-                            }
-                        } catch(e) {}
-                    }
-                    render();
-                };
-            } catch(e) {
-                showToast("خطأ في تهيئة قاعدة البيانات المتقدمة.", "error");
-            }
-        };
+        function saveDB() {
+            let statusUI = document.getElementById('sysSyncStatus');
+            if(statusUI) { statusUI.innerText = "جاري المزامنة ☁️"; statusUI.style.color = "var(--gold)"; }
 
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                if(!window.FirebaseAPI) return;
+                const { database, ref, set } = window.FirebaseAPI;
+                try {
+                    await set(ref(database, FIREBASE_PATH), recipes);
+                    if(statusUI) { statusUI.innerText = "متصل بالسحابة ✔️"; statusUI.style.color = "var(--green)"; }
+                    localStorage.setItem('IronForge_Kitchen_Backup', JSON.stringify(recipes));
+                } catch(e) {
+                    console.error("فشل الحفظ:", e);
+                    if(statusUI) { statusUI.innerText = "خطأ في الاتصال ⚠️"; statusUI.style.color = "var(--accent-red)"; }
+                }
+            }, 1500); // 1.5 second debounce
+        }
+
+        // --- Boot & Migration Logic ---
+        let appBootInterval = setInterval(async () => {
+            if (window.FirebaseAPI) {
+                clearInterval(appBootInterval);
+                await initializeAppLogic();
+                // إخفاء شاشة التحميل
+                document.getElementById('appLoader').style.opacity = '0';
+                setTimeout(() => document.getElementById('appLoader').style.display = 'none', 500);
+            }
+        }, 100);
+
+        async function initializeAppLogic() {
+            let saved = await loadDataFromDB();
+            
+            // Fallback to local backup if cloud fails
+            if(!saved) {
+                let backup = localStorage.getItem('IronForge_Kitchen_Backup');
+                if(backup) saved = JSON.parse(backup);
+            }
+
+            if(saved) {
+                // Firebase might turn arrays into objects if keys are weird, ensure it's an array
+                recipes = Array.isArray(saved) ? saved : Object.values(saved);
+            }
+
+            // Old migration (from IndexedDB/LocalStorage v19)
+            let oldDataStr = localStorage.getItem(OLD_LOCAL_KEY);
+            if (oldDataStr) {
+                try {
+                    let oldData = JSON.parse(oldDataStr);
+                    if (Array.isArray(oldData) && oldData.length > 0) {
+                        recipes = [...recipes, ...oldData];
+                        localStorage.removeItem(OLD_LOCAL_KEY);
+                        saveDB(); // Push to cloud
+                        showToast("تم ترقية الكتالوج للسحابة! 🚀", "success");
+                    }
+                } catch(e) {}
+            }
+
+            render();
+        }
+
+        // --- Core UI & Toast ---
         function showToast(msg, type = 'success') {
             let container = document.getElementById('toastContainer');
             let t = document.createElement('div');
@@ -455,29 +504,6 @@
         }
 
         function getSafeJSON(k, d) { try { let v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){return d;} }
-
-        // --- IndexedDB Operations ---
-        async function saveRecipeToDB(recipe) {
-            let db = await initDB();
-            let tx = db.transaction(STORE_NAME, 'readwrite');
-            tx.objectStore(STORE_NAME).put(recipe);
-            return new Promise((resolve) => { tx.oncomplete = resolve; });
-        }
-
-        async function deleteRecipeFromDB(id) {
-            let db = await initDB();
-            let tx = db.transaction(STORE_NAME, 'readwrite');
-            tx.objectStore(STORE_NAME).delete(id);
-            return new Promise((resolve) => { tx.oncomplete = resolve; });
-        }
-
-        async function clearAllDB() {
-            let db = await initDB();
-            let tx = db.transaction(STORE_NAME, 'readwrite');
-            tx.objectStore(STORE_NAME).clear();
-            return new Promise((resolve) => { tx.oncomplete = resolve; });
-        }
-
         function closeOnBackdrop(e, modal) { if(e.target === modal) closeAll(); }
         function closeAll() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
@@ -519,7 +545,6 @@
                 showToast("تم إرسال الوجبة لليومي الغذائي 🚀", "success");
                 fireConfetti();
             } catch(e) {
-                // إذا امتلأ طابور الإرسال نسأله إذا كان يريد تفريغه
                 if(confirm("طابور التصدير ممتلئ! (ربما صفحة Physical لم تقم بتفريغه). هل تريد مسح الطابور القديم وإعادة الإرسال؟")) {
                     localStorage.removeItem(EXPORT_QUEUE_KEY);
                     exportToPhysical();
@@ -600,7 +625,7 @@
             let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recipes));
             let dl = document.createElement('a');
             dl.setAttribute("href", dataStr);
-            dl.setAttribute("download", "SakrOS_Kitchen_Backup_V2.json");
+            dl.setAttribute("download", "SakrOS_Kitchen_Backup_Cloud.json");
             document.body.appendChild(dl); dl.click(); dl.remove();
             showToast("تم حفظ النسخة الاحتياطية", "success");
         }
@@ -614,12 +639,9 @@
                     let imported = JSON.parse(e.target.result);
                     if(Array.isArray(imported)) {
                         recipes = imported;
-                        await clearAllDB(); // مسح القاعدة الحالية
-                        for (let r of recipes) {
-                            await saveRecipeToDB(r); // حفظ الوصفات المستوردة
-                        }
+                        saveDB(); // Push imported data to cloud
                         render(); closeAll();
-                        showToast("تم استرجاع كتالوج الإمبراطورية بنجاح! 🦅", "success");
+                        showToast("تم استرجاع كتالوج الإمبراطورية للسحابة! 🦅", "success");
                         fireConfetti();
                     } else {
                         showToast("ملف غير صالح.", "error");
@@ -674,7 +696,7 @@
             }
         }
 
-        // --- Image Compression (Improved) ---
+        // --- Image Compression ---
         function processImage(event) {
             const file = event.target.files[0];
             if(!file) return;
@@ -688,7 +710,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 300; // تقليل الحجم لضمان سرعة فائقة
+                    const MAX_WIDTH = 300; 
                     const scaleSize = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
                     canvas.height = img.height * scaleSize;
@@ -696,7 +718,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                    compressedImgData = canvas.toDataURL('image/jpeg', 0.4); // ضغط أقوى بقليل يحافظ على الشكل
+                    compressedImgData = canvas.toDataURL('image/jpeg', 0.4); 
 
                     const preview = document.getElementById('imgPreview');
                     preview.src = compressedImgData;
@@ -762,7 +784,7 @@
             document.getElementById('addModal').style.display = 'flex'; 
         }
 
-        async function saveRecipe() {
+        function saveRecipe() {
             let t = document.getElementById('iTitle').value.trim();
             if(!t) return showToast("اكتب اسم الوصفة!", "error");
 
@@ -796,10 +818,10 @@
             };
 
             recipes.push(newRecipe);
-            await saveRecipeToDB(newRecipe); // حفظ في القاعدة المتقدمة
+            saveDB(); // الحفظ للسحابة
 
             closeAll(); render();
-            showToast("تم حفظ الوصفة بنجاح", "success");
+            showToast("تم حفظ الوصفة بنجاح ☁️", "success");
 
             // Reset form
             ['iTitle','iCals','iPro','iCarbs','iFats','iZinc','iIron','iMag','iCalc','iVitC','iVitD','iVitA','iOmega','iCost','iIng','iSteps','fileInp'].forEach(id => document.getElementById(id).value='');
@@ -861,14 +883,13 @@
             }
         }
 
-        async function deleteRecipe() {
-            if(!confirm("هل أنت متأكد من حذف هذه الوصفة من الكتالوج؟")) return;
+        function deleteRecipe() {
+            if(!confirm("هل أنت متأكد من حذف هذه الوصفة من الكتالوج السحابي؟")) return;
             recipes = recipes.filter(r => r.id !== baseRecipe.id);
-            await deleteRecipeFromDB(baseRecipe.id); // مسح من القاعدة
+            saveDB(); // حفظ للسحابة بعد الحذف
             closeAll(); render();
-            showToast("تم الحذف من الكتالوج", "info");
+            showToast("تم الحذف من الكتالوج ☁️", "info");
         }
     </script>
-    <script type="module" src="./js/firebase-config.js"></script>
 </body>
 </html>
