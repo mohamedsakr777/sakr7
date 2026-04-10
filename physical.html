@@ -632,6 +632,48 @@
 
     <script>
         // ==========================================
+        // 🔥 محرك قاعدة البيانات المتقدم (IndexedDB)
+        // ==========================================
+        const DB_NAME = 'IronForgeDB';
+        const STORE_NAME = 'appData';
+
+        function initIndexedDB() {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    let db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME);
+                    }
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function loadDataFromDB() {
+            let db = await initIndexedDB();
+            return new Promise((resolve, reject) => {
+                let tx = db.transaction(STORE_NAME, 'readonly');
+                let store = tx.objectStore(STORE_NAME);
+                let request = store.get('main_db');
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(tx.error);
+            });
+        }
+
+        async function saveDataToDB(data) {
+            let db = await initIndexedDB();
+            return new Promise((resolve, reject) => {
+                let tx = db.transaction(STORE_NAME, 'readwrite');
+                let store = tx.objectStore(STORE_NAME);
+                store.put(data, 'main_db');
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        // ==========================================
         // 1. التهيئة الأساسية ونظام الإشعارات (Toast)
         // ==========================================
         function showToast(msg, type = 'success') {
@@ -664,11 +706,26 @@
 
         function fireConfetti() { confetti({ particleCount: 100, spread: 60, origin: { y: 0.5 }, colors: ['#ff6b22', '#32d74b', '#ffd60a'] }); }
 
-        window.onload = function() {
+        window.onload = async function() {
             try {
-                let saved = localStorage.getItem('IronForge_V18_EMPIRE'); 
-                if (saved) { DB = JSON.parse(saved); } 
+                // جلب البيانات من IndexedDB أولاً
+                let saved = await loadDataFromDB(); 
                 
+                // البحث عن النظام القديم للهجرة التلقائية
+                let oldLocal = localStorage.getItem('IronForge_V18_EMPIRE');
+                if (oldLocal) {
+                    let parsedLocal = JSON.parse(oldLocal);
+                    // إذا كان LocalStorage يحتوي على بيانات أحدث (صور أكثر)، نعتمده للهجرة
+                    if (!saved || (parsedLocal.progressPics && parsedLocal.progressPics.length > (saved.progressPics?.length || 0))) {
+                        saved = parsedLocal;
+                        showToast("تم ترقية النظام ونقل ملفاتك بنجاح! 🚀", "success");
+                        localStorage.removeItem('IronForge_V18_EMPIRE'); // مسح الذاكرة القديمة فوراً
+                    }
+                }
+
+                if (saved) { DB = saved; } 
+                
+                // تهيئة المتغيرات الأساسية إذا لم تكن موجودة
                 if(!DB.foodDB) DB.foodDB = []; 
                 if(!DB.mealGroups) DB.mealGroups = []; 
                 if(!DB.settings) DB.settings = {}; 
@@ -695,7 +752,10 @@
             } catch(e) { console.error("Error loading DB:", e); }
         }
 
-        function saveDB() { localStorage.setItem('IronForge_V18_EMPIRE', JSON.stringify(DB)); }
+        // الحفظ الخلفي الغير متزامن لحماية الواجهة من التجمد
+        function saveDB() { 
+            saveDataToDB(DB).catch(e => console.error("فشل في حفظ قاعدة البيانات المتقدمة:", e)); 
+        }
         
         function switchTab(viewId, element) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
@@ -731,7 +791,7 @@
             const timeUI = document.getElementById('fastingTime');
             const statusUI = document.getElementById('fastingStatus');
             const btn = document.getElementById('fastBtn');
-            const circumference = 163.36; // 2 * PI * 26
+            const circumference = 163.36; 
 
             if(!DB.fasting.active) {
                 ring.style.strokeDashoffset = circumference;
@@ -750,7 +810,6 @@
             let passedH = Math.floor(elapsed / 3600);
             let passedM = Math.floor((elapsed % 3600) / 60);
 
-            // Zero-padding helper
             const pad = (num) => String(num).padStart(2, '0');
 
             if(remaining <= 0) {
@@ -919,10 +978,9 @@
                 let cons = { kcal:0, p:0, c:0, f:0, zinc:0, iron:0, mag:0, calc:0, vitc:0, vitd:0, vita:0, omega:0 };
                 let totalCost = 0; 
                 
-                let validLog = []; // Filter out items deleted from DB
+                let validLog = []; 
 
                 (day.foodLog || []).forEach(f => { 
-                    // Use '==' to match IDs robustly
                     let dbFood = DB.foodDB.find(x => x.id == f.id); 
                     if(dbFood) { 
                         Object.keys(cons).forEach(k => cons[k] += dbFood[k] || 0); 
@@ -931,7 +989,6 @@
                     } 
                 });
                 
-                // Update history to only contain valid items
                 day.foodLog = validLog;
                 
                 let target = DB.settings.targets[day.carbCycle || 'high']; 
@@ -950,7 +1007,6 @@
                 document.getElementById('ui-rem-kcal').innerText = Math.round(target.kcal - cons.kcal); 
                 document.getElementById('ui-cost-total').innerText = totalCost; 
 
-                // 🔥 تحريك الماكروز بشكل تفاعلي
                 const uBar = (id, consumed, max) => { 
                     document.getElementById(`ui-${id}-text`).innerText = `${Math.round(consumed)}/${max}g`; 
                     let percentage = max > 0 ? (consumed / max) * 100 : 0; 
@@ -961,7 +1017,6 @@
                 uBar('carb', cons.c, target.c); 
                 uBar('fat', cons.f, target.f);
 
-                // 🔥 تحريك دائرة السعرات الأساسية بشكل تفاعلي
                 let pKcal = target.kcal > 0 ? (cons.kcal / target.kcal) : 0;
                 let orbRing = document.getElementById('ui-orb-ring');
                 if(orbRing) orbRing.style.strokeDashoffset = 414.7 - (Math.min(pKcal, 1) * 414.7);
@@ -1070,9 +1125,7 @@
                 }
             }
             
-            // Clean up empty lines and trim spaces effectively
             let cleanedIng = ingredients.map(x => x.trim()).filter(x => x.length > 0);
-            
             if(cleanedIng.length === 0) return showToast("لا توجد مكونات مسجلة في المخطط الأسبوعي!", "info");
             
             let uniqueIng = [...new Set(cleanedIng)];
@@ -1134,7 +1187,6 @@
             openModal('modalCreateGroup'); 
         }
 
-        // 🔥 استخدام Number لضمان الحفاظ على الـ IDs الكاملة للقوالب
         function saveGroup() { 
             let n = document.getElementById('groupNameInp').value.trim(); 
             let ids = Array.from(document.querySelectorAll('.group-chk:checked')).map(c => Number(c.value)); 
@@ -1164,7 +1216,6 @@
             openModal('modalGroups'); 
         }
 
-        // 🔥 استخدام == لضمان التطابق
         function applyGroup(id) { 
             let g = DB.mealGroups.find(x => x.id == id); 
             if(!g) return showToast("حدث خطأ", "error"); 
@@ -1180,7 +1231,7 @@
             let v = parseFloat(document.getElementById('inpWeight').value); 
             if(!v) return showToast("أدخل الوزن أولاً", "error"); 
             DB.history[TODAY].weight = v; 
-            saveDB(); renderProgressLedger(); drawWeightChart(); fireConfetti(); 
+            saveDB(); renderProgressLedger(); fireConfetti(); 
             showToast("تم تسجيل الوزن");
         }
         
@@ -1223,25 +1274,27 @@
                 </div>`;
             }).join(''); 
         }
-        function drawWeightChart() { /* Can be expanded later */ }
 
         function handleImageUpload(event) { 
             const file = event.target.files[0]; 
             if(!file) return; 
-            if(DB.progressPics.length >= 24) return showToast("تم الوصول للحد الأقصى للصور", "error"); 
+            // تحديد حد أقصى منطقي لتجنب ثقل الواجهة
+            if(DB.progressPics.length >= 100) return showToast("تم الوصول للحد الأقصى للصور", "error"); 
             
             const reader = new FileReader(); 
             reader.onload = function(e) { 
                 const img = new Image(); 
                 img.onload = function() { 
                     const canvas = document.createElement('canvas'); 
-                    const scaleSize = 500 / img.width; 
-                    canvas.width = 500; 
+                    const MAX_WIDTH = 400; // تقليل الحجم لضمان سرعة فائقة
+                    const scaleSize = MAX_WIDTH / img.width; 
+                    canvas.width = MAX_WIDTH; 
                     canvas.height = img.height * scaleSize; 
                     const ctx = canvas.getContext('2d'); 
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height); 
                     
-                    DB.progressPics.push({ date: TODAY, src: canvas.toDataURL('image/jpeg', 0.7), id: Date.now() }); 
+                    // ضغط إضافي بنسبة 0.5 بدلاً من 0.7 لحفظ المساحة
+                    DB.progressPics.push({ date: TODAY, src: canvas.toDataURL('image/jpeg', 0.5), id: Date.now() }); 
                     saveDB(); renderProgressPics(); fireConfetti(); 
                     showToast("تم حفظ الصورة بنجاح");
                 }; 
@@ -1279,6 +1332,7 @@
         // ⚙️ 7. إعدادات القاعدة (DB Settings & Sync)
         // ==========================================
         function checkFoodQueue() { 
+            // هذا الجزء يظل على LocalStorage لأنه ممر تواصل بين التطبيقين (مساحته صغيرة جداً)
             let q = localStorage.getItem('SakrOS_PendingFoodQueue'); 
             if(!q) return; 
             let arr = JSON.parse(q); 
@@ -1384,16 +1438,18 @@
             showToast("تم تحميل النسخة الاحتياطية", "success");
         }
         
-        function importBackup(event) { 
+        async function importBackup(event) { 
             const file = event.target.files[0]; 
             if (!file) return; 
             const reader = new FileReader(); 
-            reader.onload = function(e) { 
+            reader.onload = async function(e) { 
                 try { 
                     const imported = JSON.parse(e.target.result); 
                     if(imported.history) { 
                         if(confirm('استرجاع البيانات؟ سيتم مسح الحالي.')) { 
-                            DB = imported; saveDB(); location.reload(); 
+                            DB = imported; 
+                            await saveDataToDB(DB); // استخدام الحفظ الذي ينتظر الانتهاء
+                            location.reload(); 
                         } 
                     } else {
                         showToast("ملف غير صالح!", "error");
