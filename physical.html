@@ -653,6 +653,11 @@
     </script>
 
     <script>
+        // 🧹 تنظيف الذاكرة الممتلئة القديمة فوراً لفتح مساحة المتصفح
+        try {
+            localStorage.removeItem('IronForge_Backup');
+        } catch(e) {}
+
         // ==========================================
         // 🔥 محرك قاعدة البيانات السحابية المتقدم (Firebase Engine)
         // ==========================================
@@ -674,8 +679,7 @@
         function saveDB() { 
             // 1. تغيير حالة الهيدر لـ (جاري الحفظ)
             let statusUI = document.getElementById('sysSyncStatus');
-            statusUI.innerText = "جاري المزامنة ☁️";
-            statusUI.style.color = "var(--neon-orange)";
+            if(statusUI) { statusUI.innerText = "جاري المزامنة ☁️"; statusUI.style.color = "var(--neon-orange)"; }
 
             // 2. تطبيق الـ Debounce (تأخير الحفظ ثانية لتجميع التعديلات)
             clearTimeout(saveTimeout);
@@ -683,15 +687,19 @@
                 if(!window.FirebaseAPI) return;
                 const { database, ref, set } = window.FirebaseAPI;
                 try {
+                    // 1. الحفظ الكامل على السحابة
                     await set(ref(database, FIREBASE_PATH), DB);
-                    statusUI.innerText = "متصل بالسحابة ✔️";
-                    statusUI.style.color = "var(--neon-green)";
-                    // حفظ نسخة طوارئ محلية
-                    localStorage.setItem('IronForge_Backup', JSON.stringify(DB));
+                    if(statusUI) { statusUI.innerText = "متصل بالسحابة ✔️"; statusUI.style.color = "var(--neon-green)"; }
+                    
+                    // 2. 🔴 الإصلاح: تفريغ صور التطور من النسخة المحلية لحماية مساحة المتصفح
+                    let lightDB = JSON.parse(JSON.stringify(DB)); 
+                    if(lightDB.progressPics) {
+                        lightDB.progressPics = lightDB.progressPics.map(p => ({...p, src: ""}));
+                    }
+                    localStorage.setItem('IronForge_Backup', JSON.stringify(lightDB));
                 } catch(e) {
                     console.error("فشل الحفظ السحابي:", e);
-                    statusUI.innerText = "خطأ في الاتصال ⚠️";
-                    statusUI.style.color = "var(--neon-red)";
+                    if(statusUI) { statusUI.innerText = "خطأ في الاتصال ⚠️"; statusUI.style.color = "var(--neon-red)"; }
                 }
             }, 1500); 
         }
