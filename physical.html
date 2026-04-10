@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IronForge V18.5 | Ultimate Empire</title>
+    <title>IronForge V18.5 | Cloud Empire</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -40,9 +40,20 @@
 
         @keyframes popIn { 0% { transform: translateY(10px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         @keyframes slideDown { 0% { transform: translate(-50%, -20px); opacity: 0; } 100% { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes pulseGlow { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
         .view, .sub-section { display: none; }
         .view.active, .sub-section.active { display: block; animation: popIn 0.3s ease-out forwards; }
+
+        /* 🔥 Cloud Loader Screen 🔥 */
+        #appLoader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-base); z-index: 99999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .loader-icon { font-size: 4rem; color: var(--neon-gold); margin-bottom: 20px; animation: pulseGlow 1.5s infinite; }
+        .loader-text { font-size: 1.2rem; font-weight: 800; color: #fff; letter-spacing: 2px;}
 
         /* 🔥 Custom Toast Notification 🔥 */
         .toast-container {
@@ -222,6 +233,11 @@
     </style>
 </head>
 <body>
+    
+    <div id="appLoader">
+        <i class="fas fa-satellite-dish loader-icon"></i>
+        <div class="loader-text">جاري الاتصال بقاعدة البيانات...</div>
+    </div>
 
     <div id="toastContainer" class="toast-container"></div>
 
@@ -231,7 +247,7 @@
         </div>
         <div style="flex:1; text-align:center;">
             <h1>Iron<span>Forge</span></h1>
-            <div class="text-sub" id="sysDate">V18.5 | Ultimate Empire</div>
+            <div class="text-sub" id="sysSyncStatus" style="font-weight: 800; color: var(--neon-cyan);">متصل بالسحابة ☁️</div>
         </div>
         <div class="header-actions">
             <div id="lockBadge" class="lock-badge" onclick="toggleDayLock()"><i class="fas fa-unlock"></i></div>
@@ -630,47 +646,54 @@
         </div>
     </div>
 
+    <script type="module">
+        import { database, ref, set, get } from './js/firebase-config.js';
+        // تمرير أدوات الفايربيز للنافذة العامة عشان الكود اللي تحت يشوفها
+        window.FirebaseAPI = { database, ref, set, get };
+    </script>
+
     <script>
         // ==========================================
-        // 🔥 محرك قاعدة البيانات المتقدم (IndexedDB)
+        // 🔥 محرك قاعدة البيانات السحابية المتقدم (Firebase Engine)
         // ==========================================
-        const DB_NAME = 'IronForgeDB';
-        const STORE_NAME = 'appData';
-
-        function initIndexedDB() {
-            return new Promise((resolve, reject) => {
-                let request = indexedDB.open(DB_NAME, 1);
-                request.onupgradeneeded = (e) => {
-                    let db = e.target.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        db.createObjectStore(STORE_NAME);
-                    }
-                };
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
+        const FIREBASE_PATH = 'SakrOS_Kitchen/Data';
+        let saveTimeout; // للـ Debounce عشان منهلكش السيرفر
 
         async function loadDataFromDB() {
-            let db = await initIndexedDB();
-            return new Promise((resolve, reject) => {
-                let tx = db.transaction(STORE_NAME, 'readonly');
-                let store = tx.objectStore(STORE_NAME);
-                let request = store.get('main_db');
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(tx.error);
-            });
+            try {
+                if(!window.FirebaseAPI) return null;
+                const { database, ref, get } = window.FirebaseAPI;
+                const snapshot = await get(ref(database, FIREBASE_PATH));
+                return snapshot.exists() ? snapshot.val() : null;
+            } catch (e) {
+                console.error("خطأ في جلب البيانات من السحابة:", e);
+                return null;
+            }
         }
 
-        async function saveDataToDB(data) {
-            let db = await initIndexedDB();
-            return new Promise((resolve, reject) => {
-                let tx = db.transaction(STORE_NAME, 'readwrite');
-                let store = tx.objectStore(STORE_NAME);
-                store.put(data, 'main_db');
-                tx.oncomplete = () => resolve();
-                tx.onerror = () => reject(tx.error);
-            });
+        function saveDB() { 
+            // 1. تغيير حالة الهيدر لـ (جاري الحفظ)
+            let statusUI = document.getElementById('sysSyncStatus');
+            statusUI.innerText = "جاري المزامنة ☁️";
+            statusUI.style.color = "var(--neon-orange)";
+
+            // 2. تطبيق الـ Debounce (تأخير الحفظ ثانية لتجميع التعديلات)
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                if(!window.FirebaseAPI) return;
+                const { database, ref, set } = window.FirebaseAPI;
+                try {
+                    await set(ref(database, FIREBASE_PATH), DB);
+                    statusUI.innerText = "متصل بالسحابة ✔️";
+                    statusUI.style.color = "var(--neon-green)";
+                    // حفظ نسخة طوارئ محلية
+                    localStorage.setItem('IronForge_Backup', JSON.stringify(DB));
+                } catch(e) {
+                    console.error("فشل الحفظ السحابي:", e);
+                    statusUI.innerText = "خطأ في الاتصال ⚠️";
+                    statusUI.style.color = "var(--neon-red)";
+                }
+            }, 1500); 
         }
 
         // ==========================================
@@ -706,24 +729,40 @@
 
         function fireConfetti() { confetti({ particleCount: 100, spread: 60, origin: { y: 0.5 }, colors: ['#ff6b22', '#32d74b', '#ffd60a'] }); }
 
-        window.onload = async function() {
+        // نظام انتظار السيرفر (Polling) قبل إقلاع التطبيق
+        let appBootInterval = setInterval(async () => {
+            if (window.FirebaseAPI) {
+                clearInterval(appBootInterval);
+                await initializeAppLogic();
+                // إخفاء شاشة التحميل السحابية
+                document.getElementById('appLoader').style.opacity = '0';
+                setTimeout(() => document.getElementById('appLoader').style.display = 'none', 500);
+            }
+        }, 100);
+
+        async function initializeAppLogic() {
             try {
-                // جلب البيانات من IndexedDB أولاً
+                // جلب البيانات من السحابة (Firebase)
                 let saved = await loadDataFromDB(); 
                 
-                // البحث عن النظام القديم للهجرة التلقائية
-                let oldLocal = localStorage.getItem('IronForge_V18_EMPIRE');
-                if (oldLocal) {
-                    let parsedLocal = JSON.parse(oldLocal);
-                    // إذا كان LocalStorage يحتوي على بيانات أحدث (صور أكثر)، نعتمده للهجرة
-                    if (!saved || (parsedLocal.progressPics && parsedLocal.progressPics.length > (saved.progressPics?.length || 0))) {
-                        saved = parsedLocal;
-                        showToast("تم ترقية النظام ونقل ملفاتك بنجاح! 🚀", "success");
-                        localStorage.removeItem('IronForge_V18_EMPIRE'); // مسح الذاكرة القديمة فوراً
-                    }
+                // في حالة فشل السحابة، محاولة الجلب من الطوارئ
+                if(!saved) {
+                    let backup = localStorage.getItem('IronForge_Backup');
+                    if(backup) saved = JSON.parse(backup);
                 }
 
-                if (saved) { DB = saved; } 
+                if (saved) { 
+                    DB = saved; 
+                    // تنظيف قواعد بيانات السحابة (Firebase converts empty arrays to objects, this fixes it)
+                    if(DB.foodDB && !Array.isArray(DB.foodDB)) DB.foodDB = Object.values(DB.foodDB);
+                    if(DB.mealGroups && !Array.isArray(DB.mealGroups)) DB.mealGroups = Object.values(DB.mealGroups);
+                    if(DB.progressPics && !Array.isArray(DB.progressPics)) DB.progressPics = Object.values(DB.progressPics);
+                    Object.keys(DB.history).forEach(date => {
+                        if(DB.history[date].foodLog && !Array.isArray(DB.history[date].foodLog)) {
+                            DB.history[date].foodLog = Object.values(DB.history[date].foodLog);
+                        }
+                    });
+                } 
                 
                 // تهيئة المتغيرات الأساسية إذا لم تكن موجودة
                 if(!DB.foodDB) DB.foodDB = []; 
@@ -749,14 +788,9 @@
                 
                 updateFastingUI();
                 setInterval(updateFastingUI, 1000);
-            } catch(e) { console.error("Error loading DB:", e); }
+            } catch(e) { console.error("Error booting App:", e); }
         }
 
-        // الحفظ الخلفي الغير متزامن لحماية الواجهة من التجمد
-        function saveDB() { 
-            saveDataToDB(DB).catch(e => console.error("فشل في حفظ قاعدة البيانات المتقدمة:", e)); 
-        }
-        
         function switchTab(viewId, element) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
             document.querySelectorAll('.tab-item').forEach(n => n.classList.remove('active'));
@@ -1332,7 +1366,7 @@
         // ⚙️ 7. إعدادات القاعدة (DB Settings & Sync)
         // ==========================================
         function checkFoodQueue() { 
-            // هذا الجزء يظل على LocalStorage لأنه ممر تواصل بين التطبيقين (مساحته صغيرة جداً)
+            // هذا الجزء يظل على LocalStorage لأنه ممر تواصل سريع بين التطبيقين (مساحته صغيرة جداً)
             let q = localStorage.getItem('SakrOS_PendingFoodQueue'); 
             if(!q) return; 
             let arr = JSON.parse(q); 
@@ -1438,7 +1472,7 @@
             showToast("تم تحميل النسخة الاحتياطية", "success");
         }
         
-        async function importBackup(event) { 
+        function importBackup(event) { 
             const file = event.target.files[0]; 
             if (!file) return; 
             const reader = new FileReader(); 
@@ -1446,10 +1480,10 @@
                 try { 
                     const imported = JSON.parse(e.target.result); 
                     if(imported.history) { 
-                        if(confirm('استرجاع البيانات؟ سيتم مسح الحالي.')) { 
+                        if(confirm('استرجاع البيانات؟ سيتم مسح الحالي والسحب من الملف السحابي.')) { 
                             DB = imported; 
-                            await saveDataToDB(DB); // استخدام الحفظ الذي ينتظر الانتهاء
-                            location.reload(); 
+                            saveDB(); // حفظ للسحابة فوراً
+                            setTimeout(() => location.reload(), 1000); 
                         } 
                     } else {
                         showToast("ملف غير صالح!", "error");
@@ -1461,6 +1495,5 @@
 
         window.addEventListener('visibilitychange', () => { if (!document.hidden) checkFoodQueue(); });
     </script>
-    <script type="module" src="./js/firebase-config.js"></script>
 </body>
 </html>
