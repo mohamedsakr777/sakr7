@@ -400,27 +400,13 @@
 
     <script type="module">
         import { database, ref, set, get } from './js/firebase-config.js';
-        // تمرير أدوات الفايربيز للنافذة العامة
+        // تمرير أدوات الفايربيز للنافذة العامة عشان الكود اللي تحت يشوفها
         window.FirebaseAPI = { database, ref, set, get };
     </script>
 
     <script>
-        // 🧹 المكنسة البرمجية (The Cleaner): نسف كل الملفات الميتة اللي قافلة المتصفح
-        try {
-            const deadKeys = [
-                'IronForge_Kitchen_Backup', 
-                'IronForge_Backup', 
-                'SakrOS_Kitchen_V19', 
-                'IronForge_V18_EMPIRE',
-                'SakrOS_Lingua_Backup',
-                'SakrOS_Religious_Backup'
-            ];
-            deadKeys.forEach(k => localStorage.removeItem(k));
-        } catch(e) {}
-
         // --- CLOUD DATABASE SYSTEM (Firebase) ---
-        const FIREBASE_PATH = 'SakrOS_Kitchen/Catalog';
-        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; 
+        const FIREBASE_CATALOG_PATH = 'SakrOS_Kitchen/Catalog';
         
         let recipes = [];
         let filter = 'All';
@@ -433,7 +419,7 @@
             try {
                 if(!window.FirebaseAPI) return null;
                 const { database, ref, get } = window.FirebaseAPI;
-                const snapshot = await get(ref(database, FIREBASE_PATH));
+                const snapshot = await get(ref(database, FIREBASE_CATALOG_PATH));
                 return snapshot.exists() ? snapshot.val() : null;
             } catch (e) {
                 console.error("خطأ في جلب الكتالوج من السحابة:", e);
@@ -450,10 +436,8 @@
                 if(!window.FirebaseAPI) return;
                 const { database, ref, set } = window.FirebaseAPI;
                 try {
-                    // الحفظ الكامل للسحابة
-                    await set(ref(database, FIREBASE_PATH), recipes);
+                    await set(ref(database, FIREBASE_CATALOG_PATH), recipes);
                     if(statusUI) { statusUI.innerText = "متصل بالسحابة ✔️"; statusUI.style.color = "var(--green)"; }
-                    // تم إيقاف الحفظ المحلي للصور بالكامل لتجنب خنق المتصفح!
                 } catch(e) {
                     console.error("فشل الحفظ:", e);
                     if(statusUI) { statusUI.innerText = "خطأ في الاتصال ⚠️"; statusUI.style.color = "var(--accent-red)"; }
@@ -466,7 +450,6 @@
             if (window.FirebaseAPI) {
                 clearInterval(appBootInterval);
                 await initializeAppLogic();
-                // إخفاء شاشة التحميل
                 document.getElementById('appLoader').style.opacity = '0';
                 setTimeout(() => document.getElementById('appLoader').style.display = 'none', 500);
             }
@@ -474,11 +457,9 @@
 
         async function initializeAppLogic() {
             let saved = await loadDataFromDB();
-            
             if(saved) {
                 recipes = Array.isArray(saved) ? saved : Object.values(saved);
             }
-
             render();
         }
 
@@ -495,18 +476,77 @@
             setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateY(-20px)'; setTimeout(() => t.remove(), 300); }, 3000);
         }
 
-        function getSafeJSON(k, d) { try { let v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){return d;} }
+        function getLocalYMD() { let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().split('T')[0]; }
+        
         function closeOnBackdrop(e, modal) { if(e.target === modal) closeAll(); }
         function closeAll() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
-        // --- EXPORT TO PHYSICAL (SINGLE) ---
+        // ==========================================
+        // 🚀 EXPORT TO PHYSICAL DIRECTLY VIA FIREBASE (No LocalStorage)
+        // ==========================================
+        async function sendFoodToPhysicalDirectly(foodArray) {
+            if(!window.FirebaseAPI) return showToast("غير متصل بالسحابة!", "error");
+            
+            const TODAY = getLocalYMD();
+            const { database, ref, get, set } = window.FirebaseAPI;
+            const PHYSICAL_PATH = 'SakrOS_Kitchen/Data'; // مسار صفحة الدايت/Physical
+            
+            try {
+                // 1. جلب بيانات صفحة Physical أولاً عشان منمسحش القديم
+                const snapshot = await get(ref(database, PHYSICAL_PATH));
+                let physicalDB = snapshot.exists() ? snapshot.val() : { foodDB: [], history: {} };
+                
+                if(!physicalDB.history) physicalDB.history = {};
+                if(!physicalDB.history[TODAY]) physicalDB.history[TODAY] = { locked: false, carbCycle: 'high', weight: null, foodLog: [] };
+                if(physicalDB.history[TODAY].locked) return showToast("اليوم مغلق في صفحة الدايت!", "error");
+                
+                if(!physicalDB.foodDB) physicalDB.foodDB = [];
+
+                // 2. دمج الأكلات الجديدة
+                foodArray.forEach(f => {
+                    // هل الأكلة دي موجودة في قاعدة بيانات Physical؟
+                    let existingFood = physicalDB.foodDB.find(x => x.name === f.title);
+                    let foodIdToLog;
+                    
+                    if(!existingFood) {
+                        // لو مش موجودة، نضيفها
+                        let newFoodObj = {
+                            id: Date.now() + Math.random(),
+                            name: f.title,
+                            p: f.pro || 0, c: f.carbs || 0, f: f.fats || 0,
+                            kcal: f.cals || 0, cost: f.cost || 0,
+                            zinc: f.zinc || 0, iron: f.iron || 0, mag: f.mag || 0, calc: f.calc || 0,
+                            vitc: f.vitc || 0, vitd: f.vitd || 0, vita: f.vita || 0, omega: f.omega || 0,
+                            ing: f.ing || ""
+                        };
+                        physicalDB.foodDB.unshift(newFoodObj);
+                        foodIdToLog = newFoodObj.id;
+                    } else {
+                        foodIdToLog = existingFood.id;
+                    }
+                    
+                    // إضافة الأكلة للسجل اليومي
+                    physicalDB.history[TODAY].foodLog.push({ uid: Date.now() + Math.random().toString(), id: foodIdToLog });
+                });
+
+                // 3. رفع الداتا الجديدة المدمجة لصفحة Physical
+                await set(ref(database, PHYSICAL_PATH), physicalDB);
+                
+                closeAll();
+                showToast("تم إرسال الوجبات للسحابة مباشرة! 🚀", "success");
+                fireConfetti();
+
+            } catch(e) {
+                console.error("Direct Sync Error:", e);
+                showToast("فشل الإرسال المباشر للسحابة.", "error");
+            }
+        }
+
         function exportToPhysical() {
             if(!baseRecipe) return;
-            
             let scaleVal = parseFloat(document.getElementById('scaleInput').value) || 1;
             
             let exportedData = {
-                id: 'food_' + Date.now(),
                 title: baseRecipe.title,
                 cals: Math.round(baseRecipe.cals * scaleVal),
                 pro: Math.round(baseRecipe.pro * scaleVal),
@@ -521,28 +561,10 @@
                 vita: Math.round((baseRecipe.vita || 0) * scaleVal),
                 omega: Math.round((baseRecipe.omega || 0) * scaleVal),
                 cost: Math.round((baseRecipe.cost || 0) * scaleVal),
-                ing: baseRecipe.ing || "",
-                steps: baseRecipe.steps || "",
-                scale: scaleVal,
-                dateAdded: new Date().toISOString()
+                ing: baseRecipe.ing || ""
             };
 
-            let pendingQueue = getSafeJSON(EXPORT_QUEUE_KEY, []);
-            pendingQueue.push(exportedData);
-            
-            try {
-                localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
-                closeAll();
-                showToast("تم إرسال الوجبة لليومي الغذائي 🚀", "success");
-                fireConfetti();
-            } catch(e) {
-                if(confirm("مساحة المتصفح مخنوقة! هل تريد تفريغ الطابور وإعادة المحاولة؟")) {
-                    localStorage.removeItem(EXPORT_QUEUE_KEY);
-                    exportToPhysical();
-                } else {
-                    showToast("تم الإلغاء.", "error");
-                }
-            }
+            sendFoodToPhysicalDirectly([exportedData]);
         }
 
         // --- GROUP DAY EXPORT (تجميع يوم) ---
@@ -578,37 +600,22 @@
             
             if(checkedIds.length === 0) return showToast("اختر وجبة واحدة على الأقل!", "error");
 
-            let pendingQueue = getSafeJSON(EXPORT_QUEUE_KEY, []);
+            let bulkExportData = [];
 
             checkedIds.forEach(id => {
                 let r = recipes.find(x => x.id === id);
                 if(r) {
-                    let exportedData = {
-                        id: 'food_' + Date.now() + Math.random(),
+                    bulkExportData.push({
                         title: r.title + nameTag,
                         cals: r.cals || 0, pro: r.pro || 0, carbs: r.carbs || 0, fats: r.fats || 0,
                         zinc: r.zinc || 0, iron: r.iron || 0, mag: r.mag || 0, calc: r.calc || 0,
                         vitc: r.vitc || 0, vitd: r.vitd || 0, vita: r.vita || 0, omega: r.omega || 0,
-                        cost: r.cost || 0, ing: r.ing || "", steps: r.steps || "",
-                        scale: 1, dateAdded: new Date().toISOString()
-                    };
-                    pendingQueue.push(exportedData);
+                        cost: r.cost || 0, ing: r.ing || ""
+                    });
                 }
             });
 
-            try {
-                localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
-                closeAll();
-                showToast(`تم إرسال (${checkedIds.length}) وجبات بنجاح 🚀`, "success");
-                fireConfetti();
-            } catch(e) {
-                if(confirm("مساحة المتصفح مخنوقة! هل تريد تفريغ الطابور وإعادة المحاولة؟")) {
-                    localStorage.removeItem(EXPORT_QUEUE_KEY);
-                    exportDayPlan();
-                } else {
-                    showToast("تم الإلغاء.", "error");
-                }
-            }
+            sendFoodToPhysicalDirectly(bulkExportData);
         }
 
         // --- Data Center ---
@@ -630,7 +637,7 @@
                     let imported = JSON.parse(e.target.result);
                     if(Array.isArray(imported)) {
                         recipes = imported;
-                        saveDB(); // Push imported data to cloud
+                        saveDB(); 
                         render(); closeAll();
                         showToast("تم استرجاع كتالوج الإمبراطورية للسحابة! 🦅", "success");
                         fireConfetti();
