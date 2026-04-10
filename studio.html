@@ -457,5 +457,6 @@
         function exportBackup() { const blob = new Blob([JSON.stringify(db)], {type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='SakrOS_YT_Studio_Backup.json'; a.click(); }
         function importBackup(inp) { const r=new FileReader(); r.onload=e=>{ try { db=JSON.parse(e.target.result); saveDB(); init(); alert('تم استعادة أرشيف الاستوديو بنجاح! 🎬'); } catch(err) { alert('الملف غير صالح'); } }; if(inp.files[0]) r.readAsText(inp.files[0]); inp.value = ''; }
     </script>
+    <script type="module" src="./js/firebase-config.js"></script>
 </body>
 </html>
