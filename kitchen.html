@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAKR OS | Crimson Kitchen (Final Masterpiece)</title>
+    <title>SAKR OS | Crimson Kitchen (Pro Edition)</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -357,9 +357,9 @@
                 <div class="m-close" onclick="closeAll()"><i class="fas fa-times"></i></div>
             </div>
             
-            <button class="btn-data" onclick="exportDB()"><i class="fas fa-download"></i> حفظ نسخة احتياطية (Backup)</button>
+            <button class="btn-data" onclick="exportData()"><i class="fas fa-download"></i> حفظ نسخة احتياطية (Backup)</button>
             <button class="btn-data" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> استرجاع نسخة سابقة</button>
-            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importDB(event)">
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
             
             <div style="height:1px; background:var(--border); margin: 10px 0;"></div>
             
@@ -382,18 +382,64 @@
     </div>
 
     <script>
-        const DB_KEY = 'SakrOS_Kitchen_V19'; 
+        // --- ADVANCED DATABASE SYSTEM (IndexedDB) ---
+        // يحمي من رسالة "الذاكرة ممتلئة" ويستوعب مساحات ضخمة
+        const DB_NAME = 'SakrOS_KitchenDB';
+        const STORE_NAME = 'recipes';
+        const OLD_LOCAL_KEY = 'SakrOS_Kitchen_V19'; // للبحث عن بياناتك القديمة
         const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; 
+        
         let recipes = [];
         let filter = 'All';
         let baseRecipe = null; 
         let compressedImgData = ""; 
 
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    let db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
         // --- Core System & UI Feedback ---
-        window.onload = () => {
-            let local = getSafeJSON(DB_KEY, []);
-            recipes = local;
-            render();
+        window.onload = async () => {
+            try {
+                let db = await initDB();
+                let tx = db.transaction(STORE_NAME, 'readonly');
+                let store = tx.objectStore(STORE_NAME);
+                let request = store.getAll();
+                
+                request.onsuccess = async () => {
+                    recipes = request.result || [];
+                    
+                    // الترحيل التلقائي من النظام القديم (LocalStorage) إلى النظام الجديد
+                    let oldDataStr = localStorage.getItem(OLD_LOCAL_KEY);
+                    if (oldDataStr) {
+                        try {
+                            let oldData = JSON.parse(oldDataStr);
+                            if (Array.isArray(oldData) && oldData.length > 0) {
+                                for (let r of oldData) {
+                                    await saveRecipeToDB(r); // حفظ في القاعدة الجديدة
+                                }
+                                recipes = [...recipes, ...oldData];
+                                localStorage.removeItem(OLD_LOCAL_KEY); // تنظيف الذاكرة القديمة
+                                showToast("تم ترقية قاعدة البيانات ونقل ملفاتك بنجاح! 🚀", "success");
+                            }
+                        } catch(e) {}
+                    }
+                    render();
+                };
+            } catch(e) {
+                showToast("خطأ في تهيئة قاعدة البيانات المتقدمة.", "error");
+            }
         };
 
         function showToast(msg, type = 'success') {
@@ -409,13 +455,27 @@
         }
 
         function getSafeJSON(k, d) { try { let v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){return d;} }
-        
-        function saveDB() {
-            try {
-                localStorage.setItem(DB_KEY, JSON.stringify(recipes));
-            } catch(e) {
-                showToast("مساحة تخزين المتصفح ممتلئة! يرجى حذف بعض الوجبات.", "error");
-            }
+
+        // --- IndexedDB Operations ---
+        async function saveRecipeToDB(recipe) {
+            let db = await initDB();
+            let tx = db.transaction(STORE_NAME, 'readwrite');
+            tx.objectStore(STORE_NAME).put(recipe);
+            return new Promise((resolve) => { tx.oncomplete = resolve; });
+        }
+
+        async function deleteRecipeFromDB(id) {
+            let db = await initDB();
+            let tx = db.transaction(STORE_NAME, 'readwrite');
+            tx.objectStore(STORE_NAME).delete(id);
+            return new Promise((resolve) => { tx.oncomplete = resolve; });
+        }
+
+        async function clearAllDB() {
+            let db = await initDB();
+            let tx = db.transaction(STORE_NAME, 'readwrite');
+            tx.objectStore(STORE_NAME).clear();
+            return new Promise((resolve) => { tx.oncomplete = resolve; });
         }
 
         function closeOnBackdrop(e, modal) { if(e.target === modal) closeAll(); }
@@ -427,6 +487,7 @@
             
             let scaleVal = parseFloat(document.getElementById('scaleInput').value) || 1;
             
+            // لا نرسل الصورة لتوفير المساحة في الطابور!
             let exportedData = {
                 id: 'food_' + Date.now(),
                 title: baseRecipe.title,
@@ -458,7 +519,13 @@
                 showToast("تم إرسال الوجبة لليومي الغذائي 🚀", "success");
                 fireConfetti();
             } catch(e) {
-                showToast("المساحة ممتلئة! لا يمكن إرسال الوجبة.", "error");
+                // إذا امتلأ طابور الإرسال نسأله إذا كان يريد تفريغه
+                if(confirm("طابور التصدير ممتلئ! (ربما صفحة Physical لم تقم بتفريغه). هل تريد مسح الطابور القديم وإعادة الإرسال؟")) {
+                    localStorage.removeItem(EXPORT_QUEUE_KEY);
+                    exportToPhysical();
+                } else {
+                    showToast("تم الإلغاء.", "error");
+                }
             }
         }
 
@@ -519,30 +586,39 @@
                 showToast(`تم إرسال (${checkedIds.length}) وجبات بنجاح 🚀`, "success");
                 fireConfetti();
             } catch(e) {
-                showToast("المساحة ممتلئة! يرجى حذف بعض الوجبات.", "error");
+                if(confirm("طابور التصدير ممتلئ! هل تريد مسح الطابور القديم وإعادة الإرسال؟")) {
+                    localStorage.removeItem(EXPORT_QUEUE_KEY);
+                    exportDayPlan();
+                } else {
+                    showToast("تم الإلغاء.", "error");
+                }
             }
         }
 
         // --- Data Center ---
-        function exportDB() {
+        function exportData() {
             let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recipes));
             let dl = document.createElement('a');
             dl.setAttribute("href", dataStr);
-            dl.setAttribute("download", "SakrOS_Kitchen_Backup.json");
+            dl.setAttribute("download", "SakrOS_Kitchen_Backup_V2.json");
             document.body.appendChild(dl); dl.click(); dl.remove();
             showToast("تم حفظ النسخة الاحتياطية", "success");
         }
 
-        function importDB(event) {
+        function importData(event) {
             let file = event.target.files[0];
             if(!file) return;
             let reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     let imported = JSON.parse(e.target.result);
                     if(Array.isArray(imported)) {
                         recipes = imported;
-                        saveDB(); render(); closeAll();
+                        await clearAllDB(); // مسح القاعدة الحالية
+                        for (let r of recipes) {
+                            await saveRecipeToDB(r); // حفظ الوصفات المستوردة
+                        }
+                        render(); closeAll();
                         showToast("تم استرجاع كتالوج الإمبراطورية بنجاح! 🦅", "success");
                         fireConfetti();
                     } else {
@@ -598,7 +674,7 @@
             }
         }
 
-        // --- Image Compression ---
+        // --- Image Compression (Improved) ---
         function processImage(event) {
             const file = event.target.files[0];
             if(!file) return;
@@ -612,7 +688,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 400; 
+                    const MAX_WIDTH = 300; // تقليل الحجم لضمان سرعة فائقة
                     const scaleSize = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
                     canvas.height = img.height * scaleSize;
@@ -620,7 +696,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                    compressedImgData = canvas.toDataURL('image/jpeg', 0.5); 
+                    compressedImgData = canvas.toDataURL('image/jpeg', 0.4); // ضغط أقوى بقليل يحافظ على الشكل
 
                     const preview = document.getElementById('imgPreview');
                     preview.src = compressedImgData;
@@ -686,14 +762,14 @@
             document.getElementById('addModal').style.display = 'flex'; 
         }
 
-        function saveRecipe() {
+        async function saveRecipe() {
             let t = document.getElementById('iTitle').value.trim();
             if(!t) return showToast("اكتب اسم الوصفة!", "error");
 
             let cat = document.getElementById('iDietType').value;
             let time = document.getElementById('iMealTime').value;
             
-            recipes.push({
+            let newRecipe = {
                 id: 'r_' + Date.now(),
                 title: t,
                 cat: cat,
@@ -717,9 +793,11 @@
                 cost: parseInt(document.getElementById('iCost').value) || 0,
                 ing: document.getElementById('iIng').value,
                 steps: document.getElementById('iSteps').value
-            });
+            };
 
-            saveDB();
+            recipes.push(newRecipe);
+            await saveRecipeToDB(newRecipe); // حفظ في القاعدة المتقدمة
+
             closeAll(); render();
             showToast("تم حفظ الوصفة بنجاح", "success");
 
@@ -771,7 +849,6 @@
                 baseRecipe.ing.split('\n').forEach(i => {
                     let txt = i.trim().replace('-','').replace('•','').trim();
                     if(txt) {
-                        // Regex improved to scale numbers carefully
                         let scaledTxt = txt.replace(/(\d+(\.\d+)?)/g, (match) => {
                             return (parseFloat(match) * val).toFixed(1).replace(/\.0$/, '');
                         });
@@ -784,10 +861,11 @@
             }
         }
 
-        function deleteRecipe() {
+        async function deleteRecipe() {
             if(!confirm("هل أنت متأكد من حذف هذه الوصفة من الكتالوج؟")) return;
             recipes = recipes.filter(r => r.id !== baseRecipe.id);
-            saveDB(); closeAll(); render();
+            await deleteRecipeFromDB(baseRecipe.id); // مسح من القاعدة
+            closeAll(); render();
             showToast("تم الحذف من الكتالوج", "info");
         }
     </script>
