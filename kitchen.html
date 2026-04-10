@@ -405,6 +405,13 @@
     </script>
 
     <script>
+        // 🧹 كود تنظيف الطوارئ: إزالة النسخ القديمة الثقيلة لفتح المساحة فور فتح الصفحة
+        try {
+            localStorage.removeItem('IronForge_Kitchen_Backup');
+            // لو حابب تفضي مساحة أكتر تقدر تمسح القديم بتاع Physical لو مش محتاجه
+            // localStorage.removeItem('IronForge_Backup');
+        } catch(e) {}
+
         // --- CLOUD DATABASE SYSTEM (Firebase) ---
         const FIREBASE_PATH = 'SakrOS_Kitchen/Catalog';
         const OLD_LOCAL_KEY = 'SakrOS_Kitchen_V19'; // للبحث عن بياناتك القديمة
@@ -438,9 +445,13 @@
                 if(!window.FirebaseAPI) return;
                 const { database, ref, set } = window.FirebaseAPI;
                 try {
+                    // 1. الحفظ الكامل على السحابة (شامل الصور وكل التفاصيل)
                     await set(ref(database, FIREBASE_PATH), recipes);
                     if(statusUI) { statusUI.innerText = "متصل بالسحابة ✔️"; statusUI.style.color = "var(--green)"; }
-                    localStorage.setItem('IronForge_Kitchen_Backup', JSON.stringify(recipes));
+                    
+                    // 2. 🔴 التعديل السحري: تفريغ الصور من النسخة المحلية عشان منقفلش مساحة الـ 5 ميجا بتاعة المتصفح
+                    let lightBackup = recipes.map(r => ({...r, img: ""}));
+                    localStorage.setItem('IronForge_Kitchen_Backup', JSON.stringify(lightBackup));
                 } catch(e) {
                     console.error("فشل الحفظ:", e);
                     if(statusUI) { statusUI.innerText = "خطأ في الاتصال ⚠️"; statusUI.style.color = "var(--accent-red)"; }
