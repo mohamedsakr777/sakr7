@@ -233,7 +233,7 @@
     </style>
 </head>
 <body>
-    
+
     <div id="appLoader">
         <i class="fas fa-satellite-dish loader-icon"></i>
         <div class="loader-text">جاري الاتصال بقاعدة البيانات...</div>
@@ -677,26 +677,17 @@
         }
 
         function saveDB() { 
-            // 1. تغيير حالة الهيدر لـ (جاري الحفظ)
             let statusUI = document.getElementById('sysSyncStatus');
             if(statusUI) { statusUI.innerText = "جاري المزامنة ☁️"; statusUI.style.color = "var(--neon-orange)"; }
 
-            // 2. تطبيق الـ Debounce (تأخير الحفظ ثانية لتجميع التعديلات)
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(async () => {
                 if(!window.FirebaseAPI) return;
                 const { database, ref, set } = window.FirebaseAPI;
                 try {
-                    // 1. الحفظ الكامل على السحابة
+                    // الحفظ المباشر على السحابة فقط (لا يوجد LocalStorage هنا)
                     await set(ref(database, FIREBASE_PATH), DB);
                     if(statusUI) { statusUI.innerText = "متصل بالسحابة ✔️"; statusUI.style.color = "var(--neon-green)"; }
-                    
-                    // 2. 🔴 الإصلاح: تفريغ صور التطور من النسخة المحلية لحماية مساحة المتصفح
-                    let lightDB = JSON.parse(JSON.stringify(DB)); 
-                    if(lightDB.progressPics) {
-                        lightDB.progressPics = lightDB.progressPics.map(p => ({...p, src: ""}));
-                    }
-                    localStorage.setItem('IronForge_Backup', JSON.stringify(lightDB));
                 } catch(e) {
                     console.error("فشل الحفظ السحابي:", e);
                     if(statusUI) { statusUI.innerText = "خطأ في الاتصال ⚠️"; statusUI.style.color = "var(--neon-red)"; }
@@ -737,12 +728,10 @@
 
         function fireConfetti() { confetti({ particleCount: 100, spread: 60, origin: { y: 0.5 }, colors: ['#ff6b22', '#32d74b', '#ffd60a'] }); }
 
-        // نظام انتظار السيرفر (Polling) قبل إقلاع التطبيق
         let appBootInterval = setInterval(async () => {
             if (window.FirebaseAPI) {
                 clearInterval(appBootInterval);
                 await initializeAppLogic();
-                // إخفاء شاشة التحميل السحابية
                 document.getElementById('appLoader').style.opacity = '0';
                 setTimeout(() => document.getElementById('appLoader').style.display = 'none', 500);
             }
@@ -750,18 +739,10 @@
 
         async function initializeAppLogic() {
             try {
-                // جلب البيانات من السحابة (Firebase)
                 let saved = await loadDataFromDB(); 
-                
-                // في حالة فشل السحابة، محاولة الجلب من الطوارئ
-                if(!saved) {
-                    let backup = localStorage.getItem('IronForge_Backup');
-                    if(backup) saved = JSON.parse(backup);
-                }
 
                 if (saved) { 
                     DB = saved; 
-                    // تنظيف قواعد بيانات السحابة (Firebase converts empty arrays to objects, this fixes it)
                     if(DB.foodDB && !Array.isArray(DB.foodDB)) DB.foodDB = Object.values(DB.foodDB);
                     if(DB.mealGroups && !Array.isArray(DB.mealGroups)) DB.mealGroups = Object.values(DB.mealGroups);
                     if(DB.progressPics && !Array.isArray(DB.progressPics)) DB.progressPics = Object.values(DB.progressPics);
@@ -772,7 +753,6 @@
                     });
                 } 
                 
-                // تهيئة المتغيرات الأساسية إذا لم تكن موجودة
                 if(!DB.foodDB) DB.foodDB = []; 
                 if(!DB.mealGroups) DB.mealGroups = []; 
                 if(!DB.settings) DB.settings = {}; 
@@ -792,7 +772,6 @@
                 renderDBLists(); 
                 renderMeasurementsUI(); 
                 renderProgressPics(); 
-                checkFoodQueue();
                 
                 updateFastingUI();
                 setInterval(updateFastingUI, 1000);
@@ -1373,26 +1352,6 @@
         // ==========================================
         // ⚙️ 7. إعدادات القاعدة (DB Settings & Sync)
         // ==========================================
-        function checkFoodQueue() { 
-            // هذا الجزء يظل على LocalStorage لأنه ممر تواصل سريع بين التطبيقين (مساحته صغيرة جداً)
-            let q = localStorage.getItem('SakrOS_PendingFoodQueue'); 
-            if(!q) return; 
-            let arr = JSON.parse(q); 
-            if(arr && arr.length) { 
-                if(DB.history[TODAY].locked) return; 
-                arr.forEach(f => { 
-                    let d = DB.foodDB.find(x => x.name === f.title); 
-                    if(!d) { 
-                        d = {id:Date.now()+Math.random(), name:f.title, p:f.pro||0, c:f.carbs||0, f:f.fats||0, kcal:f.cals||0, cost:f.cost||0, ing:f.ing||"", zinc:f.zinc||0, iron:f.iron||0, calc:f.calc||0, mag:f.mag||0, vitc:f.vitc||0, vitd:f.vitd||0, vita:f.vita||0, omega:f.omega||0}; 
-                        DB.foodDB.unshift(d); 
-                    } 
-                    DB.history[TODAY].foodLog.push({uid:Date.now()+Math.random(), id:d.id}); 
-                }); 
-                localStorage.removeItem('SakrOS_PendingFoodQueue'); 
-                saveDB(); updateDashboard(); renderDBLists(); fireConfetti(); 
-            } 
-        }
-        
         function loadTargetSettings() { 
             let m = document.getElementById('targetModeSelect').value; 
             let t = DB.settings.targets[m]; 
@@ -1500,8 +1459,6 @@
             }; 
             reader.readAsText(file); 
         }
-
-        window.addEventListener('visibilitychange', () => { if (!document.hidden) checkFoodQueue(); });
     </script>
 </body>
 </html>
