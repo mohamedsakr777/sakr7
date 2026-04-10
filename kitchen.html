@@ -6,6 +6,7 @@
     <title>SAKR OS | Crimson Kitchen (Final Masterpiece)</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <meta name="theme-color" content="#050505">
     
@@ -37,6 +38,14 @@
         }
 
         @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { 0% { transform: translateY(-20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+
+        /* --- TOAST NOTIFICATIONS --- */
+        .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 400px; }
+        .toast { background: rgba(17, 17, 17, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); color: #fff; padding: 12px 20px; border-radius: 16px; font-size: 0.9rem; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: slideDown 0.3s ease forwards; display: flex; align-items: center; gap: 10px; }
+        .toast.success { border-right: 4px solid var(--green); }
+        .toast.error { border-right: 4px solid var(--accent-red); }
+        .toast.info { border-right: 4px solid var(--cyan); }
 
         /* --- HEADER --- */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; animation: fadeUp 0.4s ease-out forwards;}
@@ -63,20 +72,21 @@
         /* --- GRID --- */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; animation: fadeUp 0.6s ease-out forwards;}
         
-        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s;}
+        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; position: relative;}
         .card:active { transform: scale(0.96); border-color: var(--accent-red);}
         
         .c-img-wrap { width: 100%; height: 160px; position: relative; background: #000;}
-        .c-img { width: 100%; height: 100%; background-size: cover; background-position: center;}
-        .c-img::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, var(--card-bg), transparent);}
+        .c-img { width: 100%; height: 100%; background-size: cover; background-position: center; transition: 0.3s;}
+        .card:hover .c-img { transform: scale(1.05); }
+        .c-img::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 70%; background: linear-gradient(to top, var(--card-bg), transparent);}
         
         .c-badges { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; align-items: flex-end;}
         .c-tag { background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 900; border: 1px solid rgba(255,255,255,0.1);}
         .tag-time { border-color: var(--gold); color: var(--gold); }
         .tag-type { border-color: var(--cyan); color: var(--cyan); }
         
-        .c-content { padding: 12px; flex: 1; display: flex; flex-direction: column;}
-        .c-title { font-size: 0.95rem; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+        .c-content { padding: 12px; flex: 1; display: flex; flex-direction: column; position: relative; z-index: 2; margin-top: -30px;}
+        .c-title { font-size: 0.95rem; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-shadow: 0 2px 4px rgba(0,0,0,0.8);}
         
         .c-stats { display: flex; justify-content: space-between; margin-top: auto;}
         .stat { font-size: 0.75rem; font-weight: 900; font-family: monospace; display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 6px; border-radius: 6px;}
@@ -84,17 +94,18 @@
         .s-pro { color: var(--cyan); }
 
         /* --- MODALS --- */
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 3000; align-items: flex-end; justify-content: center; backdrop-filter: blur(10px); padding: 10px;}
-        .modal-content { background: var(--bg-main); padding: 25px 20px; border-radius: 30px 30px 15px 15px; width: 100%; max-width: 500px; border: 1px solid var(--border); box-shadow: 0 -10px 40px rgba(229, 57, 53, 0.2); display: flex; flex-direction: column; gap: 15px; max-height: 90vh; overflow-y: auto;}
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: flex-end; justify-content: center; backdrop-filter: blur(8px); padding: 10px;}
+        .modal-content { background: var(--bg-main); padding: 25px 20px; border-radius: 30px 30px 15px 15px; width: 100%; max-width: 500px; border: 1px solid var(--border); box-shadow: 0 -10px 40px rgba(229, 57, 53, 0.2); display: flex; flex-direction: column; gap: 15px; max-height: 90vh; overflow-y: auto; animation: fadeUp 0.3s ease-out;}
         .modal-content::-webkit-scrollbar { display: none; }
         
         .m-header { font-size: 1.3rem; font-weight: 900; color: #fff; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg-main); z-index: 10; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);}
-        .m-close { width: 35px; height: 35px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--text-secondary);}
+        .m-close { width: 35px; height: 35px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--text-secondary); transition: 0.2s;}
+        .m-close:active { transform: scale(0.9); background: rgba(255,255,255,0.1); }
         
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         .input-group label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 700; display:flex; justify-content:space-between; align-items:center;}
         .input-group input, .input-group select, .input-group textarea { width: 100%; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); color: #fff; padding: 14px; border-radius: 14px; font-weight: 700; transition: 0.3s; font-size: 0.95rem;}
-        .input-group input:focus, .input-group textarea:focus { border-color: var(--accent-red); background: rgba(229, 57, 53, 0.05);}
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus { border-color: var(--accent-red); background: rgba(229, 57, 53, 0.05);}
         .input-group textarea { resize: vertical; min-height: 80px;}
 
         .upload-box { width: 100%; height: 130px; border: 2px dashed rgba(255,255,255,0.2); border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-secondary); cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; background: var(--card-bg);}
@@ -106,6 +117,7 @@
 
         .btn-submit { background: var(--accent-red); color: #fff; border: none; padding: 18px; border-radius: 16px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 5px 20px rgba(229, 57, 53, 0.3); transition: 0.2s;}
         .btn-submit:active { transform: scale(0.97); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* --- VIEW MODAL --- */
         .v-hero { width: 100%; height: 240px; border-radius: 20px; background-size: cover; background-position: center; position: relative; border: 1px solid rgba(255,255,255,0.05);}
@@ -147,13 +159,16 @@
         .gemini-paste { background: rgba(0, 188, 212, 0.05); border: 1px solid rgba(0, 188, 212, 0.3); color: var(--cyan); margin-top: 15px;}
         
         /* Day Plan Checkboxes */
-        .day-check-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .day-check-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s;}
+        .day-check-item:active { background: rgba(255,255,255,0.02); }
         .day-check-item input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--cyan); }
         .day-check-title { font-size: 0.95rem; font-weight: 900; color: #fff; }
         .day-check-sub { font-size: 0.75rem; color: var(--text-secondary); font-family: monospace; }
     </style>
 </head>
 <body>
+
+    <div id="toastContainer" class="toast-container"></div>
 
     <header class="header">
         <a href="physical.html" class="btn-circle"><i class="fas fa-arrow-right"></i></a>
@@ -180,7 +195,7 @@
 
     <div class="grid" id="mainGrid"></div>
 
-    <div class="modal" id="addModal">
+    <div class="modal" id="addModal" onclick="closeOnBackdrop(event, this)">
         <div class="modal-content">
             <div class="m-header">
                 إضافة وجبة ذكية
@@ -215,38 +230,38 @@
             <div class="input-group">
                 <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInp').click()">
                     <img id="imgPreview" src="">
-                    <i class="fas fa-camera" style="font-size:1.8rem; margin-bottom:5px; color:var(--accent-red);"></i>
-                    <div style="font-size:0.8rem;">صورة الوجبة (سيتم ضغطها تلقائياً)</div>
+                    <i class="fas fa-camera" id="uploadIcon" style="font-size:1.8rem; margin-bottom:5px; color:var(--accent-red);"></i>
+                    <div id="uploadText" style="font-size:0.8rem;">صورة الوجبة (سيتم ضغطها تلقائياً)</div>
                 </div>
                 <input type="file" id="fileInp" accept="image/*" style="display:none;" onchange="processImage(event)">
             </div>
 
             <label style="font-size:0.85rem; color:var(--text-secondary); font-weight:800; margin-top:10px;">الماكروز الأساسية:</label>
             <div class="row-2">
-                <input type="number" id="iCals" placeholder="Kcal السعرات">
-                <input type="number" id="iPro" placeholder="Pro البروتين (g)">
+                <input type="number" id="iCals" placeholder="Kcal السعرات" min="0">
+                <input type="number" id="iPro" placeholder="Pro البروتين (g)" min="0">
             </div>
             <div class="row-2">
-                <input type="number" id="iCarbs" placeholder="Carbs الكارب (g)">
-                <input type="number" id="iFats" placeholder="Fats الدهون (g)">
+                <input type="number" id="iCarbs" placeholder="Carbs الكارب (g)" min="0">
+                <input type="number" id="iFats" placeholder="Fats الدهون (g)" min="0">
             </div>
 
             <label style="font-size:0.85rem; color:var(--purple); font-weight:800; margin-top:10px;">الفيتامينات والمعادن (اختياري):</label>
             <div class="row-4">
-                <input type="number" id="iZinc" placeholder="Zinc mg">
-                <input type="number" id="iIron" placeholder="Iron mg">
-                <input type="number" id="iMag" placeholder="Mag mg">
-                <input type="number" id="iCalc" placeholder="Calc mg">
+                <input type="number" id="iZinc" placeholder="Zinc mg" min="0">
+                <input type="number" id="iIron" placeholder="Iron mg" min="0">
+                <input type="number" id="iMag" placeholder="Mag mg" min="0">
+                <input type="number" id="iCalc" placeholder="Calc mg" min="0">
             </div>
             <div class="row-4">
-                <input type="number" id="iVitC" placeholder="VitC mg">
-                <input type="number" id="iVitD" placeholder="VitD IU">
-                <input type="number" id="iVitA" placeholder="VitA IU">
-                <input type="number" id="iOmega" placeholder="Omg3 mg">
+                <input type="number" id="iVitC" placeholder="VitC mg" min="0">
+                <input type="number" id="iVitD" placeholder="VitD IU" min="0">
+                <input type="number" id="iVitA" placeholder="VitA IU" min="0">
+                <input type="number" id="iOmega" placeholder="Omg3 mg" min="0">
             </div>
 
             <div class="input-group" style="margin-top: 10px;">
-                <input type="number" id="iCost" placeholder="التكلفة التقريبية (ج.م)">
+                <input type="number" id="iCost" placeholder="التكلفة التقريبية (ج.م)" min="0">
             </div>
 
             <div class="input-group">
@@ -261,7 +276,7 @@
         </div>
     </div>
 
-    <div class="modal" id="viewModal">
+    <div class="modal" id="viewModal" onclick="closeOnBackdrop(event, this)">
         <div class="modal-content" style="padding: 12px; gap: 12px;">
             <div class="v-hero" id="vHero">
                 <div class="m-close" style="position:absolute; top:15px; right:15px; z-index:10; background:rgba(0,0,0,0.5); color:#fff;" onclick="closeAll()"><i class="fas fa-times"></i></div>
@@ -316,7 +331,7 @@
         </div>
     </div>
 
-    <div class="modal" id="dayPlanModal">
+    <div class="modal" id="dayPlanModal" onclick="closeOnBackdrop(event, this)">
         <div class="modal-content">
             <div class="m-header">
                 <span style="color:var(--cyan);"><i class="fas fa-layer-group"></i> تجميع يوم كامل</span>
@@ -329,13 +344,13 @@
 
             <label style="font-size:0.85rem; color:var(--text-secondary); margin-top:10px;">اختر الوجبات لإرسالها معاً لصفحة Physical:</label>
             <div id="dayPlanList" style="max-height: 250px; overflow-y: auto; background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border);">
-                </div>
+            </div>
 
             <button class="btn-submit" style="background:var(--cyan); box-shadow: 0 5px 20px rgba(0, 188, 212, 0.3);" onclick="exportDayPlan()"><i class="fas fa-paper-plane"></i> إرسال اليوم بالكامل</button>
         </div>
     </div>
 
-    <div class="modal" id="dataModal">
+    <div class="modal" id="dataModal" onclick="closeOnBackdrop(event, this)">
         <div class="modal-content">
             <div class="m-header">
                 مركز البيانات
@@ -352,7 +367,7 @@
         </div>
     </div>
 
-    <div class="modal" id="geminiModal">
+    <div class="modal" id="geminiModal" onclick="closeOnBackdrop(event, this)">
         <div class="modal-content">
             <div class="m-header">
                 <span style="color:var(--cyan);"><i class="fas fa-robot"></i> لصق كود Gemini</span>
@@ -374,12 +389,24 @@
         let baseRecipe = null; 
         let compressedImgData = ""; 
 
-        // --- Core System ---
+        // --- Core System & UI Feedback ---
         window.onload = () => {
             let local = getSafeJSON(DB_KEY, []);
             recipes = local;
             render();
         };
+
+        function showToast(msg, type = 'success') {
+            let container = document.getElementById('toastContainer');
+            let t = document.createElement('div');
+            t.className = `toast ${type}`;
+            let icon = type === 'success' ? '<i class="fas fa-check-circle" style="color:var(--green);"></i>' : 
+                       type === 'error' ? '<i class="fas fa-exclamation-circle" style="color:var(--accent-red);"></i>' : 
+                       '<i class="fas fa-info-circle" style="color:var(--cyan);"></i>';
+            t.innerHTML = `${icon} <span>${msg}</span>`;
+            container.appendChild(t);
+            setTimeout(() => { t.style.opacity = 0; t.style.transform = 'translateY(-20px)'; setTimeout(() => t.remove(), 300); }, 3000);
+        }
 
         function getSafeJSON(k, d) { try { let v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){return d;} }
         
@@ -387,9 +414,12 @@
             try {
                 localStorage.setItem(DB_KEY, JSON.stringify(recipes));
             } catch(e) {
-                alert("تنبيه: مساحة تخزين المتصفح ممتلئة! يرجى حذف بعض الوجبات القديمة.");
+                showToast("مساحة تخزين المتصفح ممتلئة! يرجى حذف بعض الوجبات.", "error");
             }
         }
+
+        function closeOnBackdrop(e, modal) { if(e.target === modal) closeAll(); }
+        function closeAll() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
         // --- EXPORT TO PHYSICAL (SINGLE) ---
         function exportToPhysical() {
@@ -425,9 +455,10 @@
             try {
                 localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
                 closeAll();
-                alert(`تم إرسال (${exportedData.title}) لليومي الغذائي! 🚀\nافتح Physical لاستلامها.`);
+                showToast("تم إرسال الوجبة لليومي الغذائي 🚀", "success");
+                fireConfetti();
             } catch(e) {
-                alert("المساحة ممتلئة! لا يمكن إرسال الوجبة.");
+                showToast("المساحة ممتلئة! لا يمكن إرسال الوجبة.", "error");
             }
         }
 
@@ -462,7 +493,7 @@
             let nameTag = dayName ? ` [${dayName}]` : "";
             let checkedIds = Array.from(document.querySelectorAll('.day-chk:checked')).map(cb => cb.value);
             
-            if(checkedIds.length === 0) return alert("اختر وجبة واحدة على الأقل!");
+            if(checkedIds.length === 0) return showToast("اختر وجبة واحدة على الأقل!", "error");
 
             let pendingQueue = getSafeJSON(EXPORT_QUEUE_KEY, []);
 
@@ -485,9 +516,10 @@
             try {
                 localStorage.setItem(EXPORT_QUEUE_KEY, JSON.stringify(pendingQueue));
                 closeAll();
-                alert(`تم إرسال (${checkedIds.length}) وجبات لليومي الغذائي! 🚀\nافتح Physical لاستلامهم.`);
+                showToast(`تم إرسال (${checkedIds.length}) وجبات بنجاح 🚀`, "success");
+                fireConfetti();
             } catch(e) {
-                alert("المساحة ممتلئة! يرجى حذف بعض الوجبات.");
+                showToast("المساحة ممتلئة! يرجى حذف بعض الوجبات.", "error");
             }
         }
 
@@ -498,6 +530,7 @@
             dl.setAttribute("href", dataStr);
             dl.setAttribute("download", "SakrOS_Kitchen_Backup.json");
             document.body.appendChild(dl); dl.click(); dl.remove();
+            showToast("تم حفظ النسخة الاحتياطية", "success");
         }
 
         function importDB(event) {
@@ -510,9 +543,12 @@
                     if(Array.isArray(imported)) {
                         recipes = imported;
                         saveDB(); render(); closeAll();
-                        alert("تم استرجاع كتالوج الإمبراطورية بنجاح! 🦅");
+                        showToast("تم استرجاع كتالوج الإمبراطورية بنجاح! 🦅", "success");
+                        fireConfetti();
+                    } else {
+                        showToast("ملف غير صالح.", "error");
                     }
-                } catch(err) { alert("ملف غير صالح."); }
+                } catch(err) { showToast("حدث خطأ أثناء قراءة الملف", "error"); }
             };
             reader.readAsText(file);
         }
@@ -525,6 +561,7 @@
 
         function processGeminiImport() {
             let val = document.getElementById('geminiInput').value.trim();
+            if(!val) return showToast("أدخل الكود أولاً!", "error");
             try {
                 let data = JSON.parse(val);
                 
@@ -555,26 +592,27 @@
                 closeAll();
                 
                 document.getElementById('addModal').style.display = 'flex';
-                
+                showToast("تم تفريغ البيانات، راجعها ثم احفظ", "info");
             } catch(e) {
-                alert("الكود غير صالح! تأكد من نسخ كود الـ JSON بالكامل.");
+                showToast("الكود غير صالح! تأكد من نسخ الـ JSON بالكامل.", "error");
             }
         }
 
-        // --- Image Compression (Fixed for 5MB Limit) ---
+        // --- Image Compression ---
         function processImage(event) {
             const file = event.target.files[0];
             if(!file) return;
 
             const btn = document.getElementById('btnSave');
-            btn.innerText = "جاري معالجة الصورة..."; btn.disabled = true;
+            btn.innerText = "جاري معالجة الصورة..."; 
+            btn.disabled = true;
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 400; // حجم ممتاز للموبايل وموفر جداً للمساحة
+                    const MAX_WIDTH = 400; 
                     const scaleSize = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
                     canvas.height = img.height * scaleSize;
@@ -582,15 +620,19 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                    // ضغط الجودة لـ 50%
                     compressedImgData = canvas.toDataURL('image/jpeg', 0.5); 
 
                     const preview = document.getElementById('imgPreview');
                     preview.src = compressedImgData;
                     preview.style.display = 'block';
-                    document.getElementById('uploadBox').classList.add('has-img');
                     
-                    btn.innerText = "حفظ الوصفة الشاملة"; btn.disabled = false;
+                    document.getElementById('uploadBox').classList.add('has-img');
+                    document.getElementById('uploadIcon').style.display = 'none';
+                    document.getElementById('uploadText').style.display = 'none';
+                    
+                    btn.innerText = "حفظ الوصفة الشاملة"; 
+                    btn.disabled = false;
+                    showToast("تم تجهيز الصورة", "success");
                 }
                 img.src = e.target.result;
             }
@@ -633,13 +675,20 @@
             });
         }
 
-        function filterData(f, el) { filter = f; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); render(); }
-        function openAdd() { document.getElementById('addModal').style.display = 'flex'; }
-        function closeAll() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+        function filterData(f, el) { 
+            filter = f; 
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); 
+            el.classList.add('active'); 
+            render(); 
+        }
+        
+        function openAdd() { 
+            document.getElementById('addModal').style.display = 'flex'; 
+        }
 
         function saveRecipe() {
             let t = document.getElementById('iTitle').value.trim();
-            if(!t) return alert("اكتب اسم الوصفة!");
+            if(!t) return showToast("اكتب اسم الوصفة!", "error");
 
             let cat = document.getElementById('iDietType').value;
             let time = document.getElementById('iMealTime').value;
@@ -672,10 +721,14 @@
 
             saveDB();
             closeAll(); render();
+            showToast("تم حفظ الوصفة بنجاح", "success");
 
+            // Reset form
             ['iTitle','iCals','iPro','iCarbs','iFats','iZinc','iIron','iMag','iCalc','iVitC','iVitD','iVitA','iOmega','iCost','iIng','iSteps','fileInp'].forEach(id => document.getElementById(id).value='');
             document.getElementById('imgPreview').style.display = 'none';
             document.getElementById('uploadBox').classList.remove('has-img');
+            document.getElementById('uploadIcon').style.display = 'block';
+            document.getElementById('uploadText').style.display = 'block';
             compressedImgData = "";
         }
 
@@ -718,6 +771,7 @@
                 baseRecipe.ing.split('\n').forEach(i => {
                     let txt = i.trim().replace('-','').replace('•','').trim();
                     if(txt) {
+                        // Regex improved to scale numbers carefully
                         let scaledTxt = txt.replace(/(\d+(\.\d+)?)/g, (match) => {
                             return (parseFloat(match) * val).toFixed(1).replace(/\.0$/, '');
                         });
@@ -731,9 +785,10 @@
         }
 
         function deleteRecipe() {
-            if(!confirm("حذف هذه الوصفة؟")) return;
+            if(!confirm("هل أنت متأكد من حذف هذه الوصفة من الكتالوج؟")) return;
             recipes = recipes.filter(r => r.id !== baseRecipe.id);
             saveDB(); closeAll(); render();
+            showToast("تم الحذف من الكتالوج", "info");
         }
     </script>
 </body>
