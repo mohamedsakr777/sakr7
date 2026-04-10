@@ -491,25 +491,38 @@
             const { database, ref, get, set } = window.FirebaseAPI;
             const PHYSICAL_PATH = 'SakrOS_Kitchen/Data'; // مسار صفحة الدايت/Physical
             
+            showToast("جاري الإرسال للسحابة...", "info"); // تغيير حالة للإعلام بالعملية
+
             try {
-                // 1. جلب بيانات صفحة Physical أولاً عشان منمسحش القديم
+                // 1. جلب بيانات صفحة Physical أولاً
                 const snapshot = await get(ref(database, PHYSICAL_PATH));
                 let physicalDB = snapshot.exists() ? snapshot.val() : { foodDB: [], history: {} };
                 
-                if(!physicalDB.history) physicalDB.history = {};
-                if(!physicalDB.history[TODAY]) physicalDB.history[TODAY] = { locked: false, carbCycle: 'high', weight: null, foodLog: [] };
-                if(physicalDB.history[TODAY].locked) return showToast("اليوم مغلق في صفحة الدايت!", "error");
-                
-                if(!physicalDB.foodDB) physicalDB.foodDB = [];
+                // 🔴 تنظيف البيانات الجاية من فايربيز (لو راجعة على هيئة Object نحولها لـ Array عشان الـ find يشتغل)
+                if (physicalDB.foodDB && !Array.isArray(physicalDB.foodDB)) {
+                    physicalDB.foodDB = Object.values(physicalDB.foodDB);
+                }
+                if (!physicalDB.foodDB) physicalDB.foodDB = [];
+
+                if (!physicalDB.history) physicalDB.history = {};
+                if (!physicalDB.history[TODAY]) {
+                    physicalDB.history[TODAY] = { locked: false, carbCycle: 'high', weight: null, foodLog: [] };
+                }
+
+                if (physicalDB.history[TODAY].foodLog && !Array.isArray(physicalDB.history[TODAY].foodLog)) {
+                    physicalDB.history[TODAY].foodLog = Object.values(physicalDB.history[TODAY].foodLog);
+                }
+                if (!physicalDB.history[TODAY].foodLog) physicalDB.history[TODAY].foodLog = [];
+
+                if (physicalDB.history[TODAY].locked) return showToast("اليوم مغلق في صفحة الدايت!", "error");
 
                 // 2. دمج الأكلات الجديدة
                 foodArray.forEach(f => {
-                    // هل الأكلة دي موجودة في قاعدة بيانات Physical؟
+                    // دلوقتي الـ find هيشتغل لأننا متأكدين إنه Array بنسبة 100%
                     let existingFood = physicalDB.foodDB.find(x => x.name === f.title);
                     let foodIdToLog;
                     
                     if(!existingFood) {
-                        // لو مش موجودة، نضيفها
                         let newFoodObj = {
                             id: Date.now() + Math.random(),
                             name: f.title,
@@ -525,11 +538,10 @@
                         foodIdToLog = existingFood.id;
                     }
                     
-                    // إضافة الأكلة للسجل اليومي
                     physicalDB.history[TODAY].foodLog.push({ uid: Date.now() + Math.random().toString(), id: foodIdToLog });
                 });
 
-                // 3. رفع الداتا الجديدة المدمجة لصفحة Physical
+                // 3. رفع الداتا الجديدة
                 await set(ref(database, PHYSICAL_PATH), physicalDB);
                 
                 closeAll();
@@ -637,7 +649,7 @@
                     let imported = JSON.parse(e.target.result);
                     if(Array.isArray(imported)) {
                         recipes = imported;
-                        saveDB(); 
+                        saveDB(); // Push imported data to cloud
                         render(); closeAll();
                         showToast("تم استرجاع كتالوج الإمبراطورية للسحابة! 🦅", "success");
                         fireConfetti();
