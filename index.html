@@ -614,5 +614,6 @@
         function exportBackup() { let mData = {}; for (let i = 0; i < localStorage.length; i++) { let k = localStorage.key(i); if(k.startsWith('SakrOS') || k.startsWith('IronForge') || k.startsWith('Falcon') || k.startsWith('الجانب اللغوى')) mData[k] = localStorage.getItem(k); } const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(mData)); a.download = `SakrOS_Backup_${TODAY}.json`; document.body.appendChild(a); a.click(); a.remove(); }
         function importBackup(event) { const f = event.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(e) { try { const c = JSON.parse(e.target.result); if(!confirm('سيتم الاستبدال. متأكد؟')) return; for (let k in c) localStorage.setItem(k, c[k]); alert('تم الاسترجاع!'); location.reload(); } catch (err) { alert("الملف غير صالح."); } }; r.readAsText(f); }
     </script>
+    <script type="module" src="./js/firebase-config.js"></script>
 </body>
 </html>
