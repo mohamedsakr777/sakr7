@@ -405,17 +405,22 @@
     </script>
 
     <script>
-        // 🧹 كود تنظيف الطوارئ: إزالة النسخ القديمة الثقيلة لفتح المساحة فور فتح الصفحة
+        // 🧹 المكنسة البرمجية (The Cleaner): نسف كل الملفات الميتة اللي قافلة المتصفح
         try {
-            localStorage.removeItem('IronForge_Kitchen_Backup');
-            // لو حابب تفضي مساحة أكتر تقدر تمسح القديم بتاع Physical لو مش محتاجه
-            // localStorage.removeItem('IronForge_Backup');
+            const deadKeys = [
+                'IronForge_Kitchen_Backup', 
+                'IronForge_Backup', 
+                'SakrOS_Kitchen_V19', 
+                'IronForge_V18_EMPIRE',
+                'SakrOS_Lingua_Backup',
+                'SakrOS_Religious_Backup'
+            ];
+            deadKeys.forEach(k => localStorage.removeItem(k));
         } catch(e) {}
 
         // --- CLOUD DATABASE SYSTEM (Firebase) ---
         const FIREBASE_PATH = 'SakrOS_Kitchen/Catalog';
-        const OLD_LOCAL_KEY = 'SakrOS_Kitchen_V19'; // للبحث عن بياناتك القديمة
-        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; // هذا يظل محلي لأنه طابور إرسال للصفحة الأخرى
+        const EXPORT_QUEUE_KEY = 'SakrOS_PendingFoodQueue'; 
         
         let recipes = [];
         let filter = 'All';
@@ -445,21 +450,18 @@
                 if(!window.FirebaseAPI) return;
                 const { database, ref, set } = window.FirebaseAPI;
                 try {
-                    // 1. الحفظ الكامل على السحابة (شامل الصور وكل التفاصيل)
+                    // الحفظ الكامل للسحابة
                     await set(ref(database, FIREBASE_PATH), recipes);
                     if(statusUI) { statusUI.innerText = "متصل بالسحابة ✔️"; statusUI.style.color = "var(--green)"; }
-                    
-                    // 2. 🔴 التعديل السحري: تفريغ الصور من النسخة المحلية عشان منقفلش مساحة الـ 5 ميجا بتاعة المتصفح
-                    let lightBackup = recipes.map(r => ({...r, img: ""}));
-                    localStorage.setItem('IronForge_Kitchen_Backup', JSON.stringify(lightBackup));
+                    // تم إيقاف الحفظ المحلي للصور بالكامل لتجنب خنق المتصفح!
                 } catch(e) {
                     console.error("فشل الحفظ:", e);
                     if(statusUI) { statusUI.innerText = "خطأ في الاتصال ⚠️"; statusUI.style.color = "var(--accent-red)"; }
                 }
-            }, 1500); // 1.5 second debounce
+            }, 1500); 
         }
 
-        // --- Boot & Migration Logic ---
+        // --- Boot Logic ---
         let appBootInterval = setInterval(async () => {
             if (window.FirebaseAPI) {
                 clearInterval(appBootInterval);
@@ -473,29 +475,8 @@
         async function initializeAppLogic() {
             let saved = await loadDataFromDB();
             
-            // Fallback to local backup if cloud fails
-            if(!saved) {
-                let backup = localStorage.getItem('IronForge_Kitchen_Backup');
-                if(backup) saved = JSON.parse(backup);
-            }
-
             if(saved) {
-                // Firebase might turn arrays into objects if keys are weird, ensure it's an array
                 recipes = Array.isArray(saved) ? saved : Object.values(saved);
-            }
-
-            // Old migration (from IndexedDB/LocalStorage v19)
-            let oldDataStr = localStorage.getItem(OLD_LOCAL_KEY);
-            if (oldDataStr) {
-                try {
-                    let oldData = JSON.parse(oldDataStr);
-                    if (Array.isArray(oldData) && oldData.length > 0) {
-                        recipes = [...recipes, ...oldData];
-                        localStorage.removeItem(OLD_LOCAL_KEY);
-                        saveDB(); // Push to cloud
-                        showToast("تم ترقية الكتالوج للسحابة! 🚀", "success");
-                    }
-                } catch(e) {}
             }
 
             render();
@@ -524,7 +505,6 @@
             
             let scaleVal = parseFloat(document.getElementById('scaleInput').value) || 1;
             
-            // لا نرسل الصورة لتوفير المساحة في الطابور!
             let exportedData = {
                 id: 'food_' + Date.now(),
                 title: baseRecipe.title,
@@ -556,7 +536,7 @@
                 showToast("تم إرسال الوجبة لليومي الغذائي 🚀", "success");
                 fireConfetti();
             } catch(e) {
-                if(confirm("طابور التصدير ممتلئ! (ربما صفحة Physical لم تقم بتفريغه). هل تريد مسح الطابور القديم وإعادة الإرسال؟")) {
+                if(confirm("مساحة المتصفح مخنوقة! هل تريد تفريغ الطابور وإعادة المحاولة؟")) {
                     localStorage.removeItem(EXPORT_QUEUE_KEY);
                     exportToPhysical();
                 } else {
@@ -622,7 +602,7 @@
                 showToast(`تم إرسال (${checkedIds.length}) وجبات بنجاح 🚀`, "success");
                 fireConfetti();
             } catch(e) {
-                if(confirm("طابور التصدير ممتلئ! هل تريد مسح الطابور القديم وإعادة الإرسال؟")) {
+                if(confirm("مساحة المتصفح مخنوقة! هل تريد تفريغ الطابور وإعادة المحاولة؟")) {
                     localStorage.removeItem(EXPORT_QUEUE_KEY);
                     exportDayPlan();
                 } else {
